@@ -8,7 +8,7 @@ from datetime import datetime
 
 app = FastAPI(title="Contextual Chat API", version="1.0.0")
 
-# Pydantic Models
+# Core Pydantic Models
 class Block(BaseModel):
     topic: str
     description: str
@@ -28,34 +28,14 @@ class Chat(BaseModel):
     title: str
     chat_history: List[ChatHistory]
 
-# Request Models
-class SendMessageRequest(BaseModel):
-    chat_id: str
-    message: str
-
-class NewChatRequest(BaseModel):
-    first_message: str
-
-class NewChatContextRequest(BaseModel):
-    required_context: List[str]  # List of chat IDs and memory topics
-    chat_id: str
-
-# Response Models
-class RootResponse(BaseModel):
-    message: str
-    version: str
-
-class NewChatResponse(BaseModel):
-    chat_id: str
-    chat: Chat
-
-class SSEChunk(BaseModel):
-    content: Optional[str] = None
-    done: Optional[bool] = None
-
 # In-memory storage (replace with database in production)
 chats_db: Dict[str, Chat] = {}
 chat_list: List[str] = []  # List of chat IDs
+
+# Root endpoint models
+class RootResponse(BaseModel):
+    message: str
+    version: str
 
 @app.get("/", response_model=RootResponse)
 async def root():
@@ -76,6 +56,15 @@ async def get_chat(chat_id: str):
     if chat_id not in chats_db:
         raise HTTPException(status_code=404, detail="Chat not found")
     return chats_db[chat_id]
+
+# Send message endpoint models
+class SendMessageRequest(BaseModel):
+    chat_id: str
+    message: str
+
+class SSEChunk(BaseModel):
+    content: Optional[str] = None
+    done: Optional[bool] = None
 
 @app.post("/chats/{chat_id}/send")
 async def send_message(request: SendMessageRequest):
@@ -117,6 +106,14 @@ async def send_message(request: SendMessageRequest):
         media_type="text/plain",
         headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
     )
+
+# New chat endpoint models
+class NewChatRequest(BaseModel):
+    first_message: str
+
+class NewChatResponse(BaseModel):
+    chat_id: str
+    chat: Chat
 
 @app.post("/chats/new", response_model=NewChatResponse)
 async def new_chat(request: NewChatRequest):
@@ -160,6 +157,11 @@ async def new_chat(request: NewChatRequest):
     chat_list.append(chat_id)
     
     return NewChatResponse(chat_id=chat_id, chat=new_chat)
+
+# New chat context endpoint models
+class NewChatContextRequest(BaseModel):
+    required_context: List[str]  # List of chat IDs and memory topics
+    chat_id: str
 
 @app.post("/chats/{chat_id}/context")
 async def new_chat_context_set(request: NewChatContextRequest):
