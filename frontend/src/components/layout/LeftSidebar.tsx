@@ -45,8 +45,7 @@ export const LeftSidebar = ({
 
   if (isCollapsed) {
     return (
-      <div className="w-16 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 
-                      flex flex-col items-center py-4 space-y-4">
+      <div className="w-16 bg-[var(--bg-secondary)] border-r border-[var(--border-color)] flex flex-col items-center py-4 space-y-4">
         <button
           onClick={() => setIsCollapsed(false)}
           className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
@@ -64,12 +63,11 @@ export const LeftSidebar = ({
   }
 
   return (
-    <div className="w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 
-                    flex flex-col h-full min-h-0">
+  <div className="w-64 bg-[var(--bg-secondary)] border-r border-[var(--border-color)] flex flex-col h-full min-h-0">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+  <div className="p-4 border-b border-[var(--border-color)] flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             All Chats
           </h2>
           <button
@@ -86,7 +84,7 @@ export const LeftSidebar = ({
       </div>
 
       {/* New Chat Button */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+  <div className="p-4 border-b border-[var(--border-color)] flex-shrink-0">
         <button
           onClick={onNewChat}
           className="w-full flex items-center justify-center space-x-2 py-2 px-4 

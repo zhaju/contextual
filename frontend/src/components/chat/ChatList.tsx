@@ -34,7 +34,7 @@ export const ChatList = ({ chats, topics, onChatSelect, selectedChatId }: ChatLi
           className={`p-3 rounded-lg cursor-pointer transition-colors group ${
             selectedChatId === chat.id
               ? 'bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700'
-              : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+              : 'hover:bg-[var(--bg-tertiary)]'
           }`}
         >
           <div className="flex items-start justify-between mb-1">
@@ -43,7 +43,7 @@ export const ChatList = ({ chats, topics, onChatSelect, selectedChatId }: ChatLi
                 className="w-3 h-3 rounded-full flex-shrink-0"
                 style={{ backgroundColor: getTopicColor(chat.topicId) }}
               />
-              <h3 className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
+              <h3 className="font-medium text-sm text-[var(--text-primary)] truncate">
                 {chat.title}
               </h3>
             </div>
@@ -51,13 +51,13 @@ export const ChatList = ({ chats, topics, onChatSelect, selectedChatId }: ChatLi
               {chat.starred && (
                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
               )}
-              <Clock className="w-3 h-3 text-gray-400" />
+              <Clock className="w-3 h-3 text-[var(--text-muted)]" />
             </div>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 truncate mb-1">
+          <p className="text-xs text-[var(--text-secondary)] truncate mb-1">
             {chat.last}
           </p>
-          <p className="text-xs text-gray-400 dark:text-gray-500">
+          <p className="text-xs text-[var(--text-muted)]">
             {chat.updatedAt}
           </p>
         </div>

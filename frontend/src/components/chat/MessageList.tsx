@@ -25,7 +25,7 @@ export const MessageList = ({ messages }: MessageListProps) => {
             className={`max-w-[80%] rounded-2xl px-4 py-3 ${
               message.role === 'user'
                 ? 'bg-blue-600 text-white'
-                : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-700'
+                : 'bg-[var(--bg-primary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-color)]'
             }`}
           >
             {message.role === 'assistant' ? (

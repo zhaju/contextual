@@ -75,12 +75,11 @@ export const AppShell = ({
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white dark:bg-gray-900">
+  <div className="h-screen flex flex-col bg-[var(--bg-primary)]">
       {/* Header */}
-      <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 
-                         flex items-center justify-between px-6 flex-shrink-0 z-10">
+  <header className="h-16 bg-[var(--bg-primary)] border-b border-[var(--border-color)] flex items-center justify-between px-6 flex-shrink-0 z-10">
         <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-xl font-bold text-[var(--text-primary)]">
             Contextual Chat
           </h1>
         </div>

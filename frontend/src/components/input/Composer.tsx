@@ -49,7 +49,7 @@ export const Composer = ({
   };
 
   return (
-    <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+    <div className="border-t border-[var(--border-color)] bg-[var(--bg-primary)] p-4">
       {/* Context Pills */}
       {contextPills.length > 0 && (
         <div className="mb-3 flex flex-wrap gap-2">
@@ -97,7 +97,7 @@ export const Composer = ({
             className={`w-full resize-none rounded-lg border p-3 pr-12 min-h-[44px] max-h-32 ${
               disabled 
                 ? 'border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                : 'border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             } placeholder-gray-400 dark:placeholder-gray-500`}
             rows={1}
           />

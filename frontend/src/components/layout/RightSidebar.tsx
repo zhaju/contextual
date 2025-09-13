@@ -48,8 +48,7 @@ export const RightSidebar = ({
   firstMessageSent,
 }: RightSidebarProps) => {
   return (
-    <div className="w-80 bg-gray-50 dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 
-                    flex flex-col h-full min-h-0">
+  <div className="w-80 bg-[var(--bg-secondary)] border-l border-[var(--border-color)] flex flex-col h-full min-h-0">
       <div className="flex-1 overflow-y-auto min-h-0 p-4">
         {/* Show relevant chats for new chat context selection */}
         {isNewChat && firstMessageSent && !contextSubmitted && relevantChats.length > 0 && (

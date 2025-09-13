@@ -30,7 +30,7 @@ export const ChatView = ({ messages, isTyping = false }: ChatViewProps) => {
   }, [messages, isTyping]);
 
   return (
-    <div className="flex-1 flex flex-col bg-white dark:bg-gray-900 min-h-0">
+    <div className="flex-1 flex flex-col bg-[var(--bg-primary)] min-h-0">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto min-h-0">
         <MessageList messages={messages} />
