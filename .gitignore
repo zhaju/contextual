@@ -1,1 +1,48 @@
-.env
+# Python venv
+venv/
+.env/
+.venv/
+ENV/
+env/
+
+# Environment variables
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.pkl
+*.pickle
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Coverage / testing
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# Local development
+.mypy_cache/
+.pyre/
+.pytype/
