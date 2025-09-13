@@ -200,11 +200,19 @@ async def root():
 @app.get("/chats", response_model=List[Chat])
 async def list_chats():
     """
-    Get list of all chats
+    Get list of all chats sorted by most recent first
     """
     if chats_db is None:
         return []
-    return list(chats_db.values())
+    
+    # Sort chats by the timestamp of their most recent message (reverse chronological order)
+    def get_latest_timestamp(chat: Chat) -> datetime:
+        if not chat.chat_history:
+            return datetime.min  # If no messages, put at the end
+        return max(msg.timestamp for msg in chat.chat_history)
+    
+    chats = list(chats_db.values())
+    return sorted(chats, key=get_latest_timestamp, reverse=True)
 
 @app.get("/chats/{chat_id}", response_model=Chat)
 async def get_chat(chat_id: str):
