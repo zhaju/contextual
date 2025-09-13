@@ -4,14 +4,13 @@ import { ChatView } from '../chat/ChatView';
 import { Composer } from '../input/Composer';
 import { RightSidebar } from './RightSidebar';
 import { ThemeToggle } from '../ui/ThemeToggle';
-import type { Chat, Topic, Message, Memory, RelevantChat } from '../../types';
+import type { Chat, Topic, Message, Memory } from '../../types';
 
 interface AppShellProps {
   chats: Chat[];
   topics: Topic[];
   messages: Message[];
   memories: Memory[];
-  relevantChats?: RelevantChat[];
   selectedChatId?: string | null;
   isTyping?: boolean;
   isNewChat?: boolean;
@@ -51,7 +50,6 @@ export const AppShell = ({
   topics,
   messages,
   memories,
-  relevantChats = [],
   selectedChatId,
   isTyping = false,
   isNewChat = false,
@@ -154,7 +152,6 @@ export const AppShell = ({
         {isRightSidebarOpen && (
           <RightSidebar
             memories={memories}
-            relevantChats={relevantChats}
             onMemoryToggle={onMemoryToggle}
             onBlockToggle={onBlockToggle}
             onMemoryExpand={onMemoryExpand}

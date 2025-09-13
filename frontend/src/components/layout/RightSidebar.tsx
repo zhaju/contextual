@@ -1,10 +1,8 @@
 import { MemoryDirectory } from '../memory/MemoryDirectory';
-import { RelevantChats } from '../features/RelevantChats';
-import type { Memory, RelevantChat } from '../../types';
+import type { Memory } from '../../types';
 
 interface RightSidebarProps {
   memories: Memory[];
-  relevantChats?: RelevantChat[];
   onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
@@ -37,7 +35,6 @@ interface RightSidebarProps {
  */
 export const RightSidebar = ({
   memories,
-  relevantChats = [],
   onMemoryToggle,
   onBlockToggle,
   onMemoryExpand,
@@ -54,16 +51,6 @@ export const RightSidebar = ({
   return (
   <div className="w-80 bg-[var(--bg-secondary)] border-l border-[var(--border-color)] flex flex-col h-full min-h-0">
       <div className="flex-1 overflow-y-auto min-h-0 p-4">
-        {/* Show relevant chats for new chat context selection */}
-        {isNewChat && firstMessageSent && !contextSubmitted && relevantChats.length > 0 && (
-          <RelevantChats
-            items={relevantChats}
-            onPin={onChatPin}
-            onPreview={onChatPreview}
-            onExclude={onChatExclude}
-          />
-        )}
-        
         {/* Show memory directory for context selection */}
         <MemoryDirectory
           memories={memories}

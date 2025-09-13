@@ -769,9 +769,8 @@ function App() {
       topics={[]} // Topics functionality removed - implement if needed
       messages={currentMessages}
       memories={getDisplayMemories()}
-      relevantChats={relevantChats}
       selectedChatId={selectedChatId}
-      isTyping={isTyping}
+      isTyping={isTyping} 
       isNewChat={isNewChat()}
       contextSubmitted={isContextSubmitted()}
       firstMessageSent={isFirstMessageSent()}
