@@ -31,7 +31,7 @@ export function convertBackendMemoryToFrontend(backendMemory: BackendMemory, mem
   const blocks: MemoryBlock[] = backendMemory.blocks.map((block) => ({
     topic: block.topic,
     description: block.description,
-    selected: false,
+    selected: true, // Auto-select all blocks by default
     chatReferences: []
   }));
 
@@ -39,7 +39,7 @@ export function convertBackendMemoryToFrontend(backendMemory: BackendMemory, mem
     id: memoryId,
     title: backendMemory.summary_string || 'Memory',
     blocks,
-    selected: false,
+    selected: true, // Auto-select memory by default
     isLocked: false,
     isExpanded: false,
     chatReferences: []

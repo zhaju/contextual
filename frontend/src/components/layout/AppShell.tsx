@@ -26,6 +26,7 @@ interface AppShellProps {
   onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
+  onSkipContext?: () => void;
   onTopicSelect: (topicId: string) => void;
   onChatPin: (chatId: string) => void;
   onChatPreview: (chatId: string) => void;
@@ -65,6 +66,7 @@ export const AppShell = ({
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
+  onSkipContext,
   onTopicSelect: _onTopicSelect,
   onChatPin: _onChatPin,
   onChatPreview: _onChatPreview,
@@ -154,6 +156,7 @@ export const AppShell = ({
             onBlockToggle={onBlockToggle}
             onMemoryExpand={onMemoryExpand}
             onSubmitContext={onSubmitContext}
+            onSkipContext={onSkipContext}
             onChatPin={_onChatPin}
             onChatPreview={_onChatPreview}
             onChatExclude={_onChatExclude}
