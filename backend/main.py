@@ -30,7 +30,6 @@ class Chat(BaseModel):
 
 # In-memory storage (replace with database in production)
 chats_db: Dict[str, Chat] = {}
-chat_list: List[str] = []  # List of chat IDs
 
 # Root endpoint models
 class RootResponse(BaseModel):
@@ -46,7 +45,7 @@ async def list_chats():
     """
     Get list of all chats
     """
-    return [chats_db[chat_id] for chat_id in chat_list]
+    return list(chats_db.values())
 
 @app.get("/chats/{chat_id}", response_model=Chat)
 async def get_chat(chat_id: str):
@@ -123,7 +122,8 @@ async def new_chat(request: NewChatRequest):
     chat_id = str(uuid.uuid4())
     
     # Create initial memory with context from other chats
-    context_prompt = "Context from previous chats: " + ", ".join(chat_list[:5])  # Limit to 5 recent chats
+    recent_chat_ids = list(chats_db.keys())[-5:]  # Limit to 5 recent chats
+    context_prompt = "Context from previous chats: " + ", ".join(recent_chat_ids)
     
     initial_memory = Memory(
         summary_string=f"New chat started with context: {context_prompt}",
@@ -154,7 +154,6 @@ async def new_chat(request: NewChatRequest):
     
     # Store chat
     chats_db[chat_id] = new_chat
-    chat_list.append(chat_id)
     
     return NewChatResponse(chat_id=chat_id, chat=new_chat)
 
