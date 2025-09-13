@@ -1,4 +1,9 @@
 import json
+from datetime import datetime
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from custom_types import ChatMessage
 
 def extract_conversations(file_path, output_path=None):
     with open(file_path, "r", encoding="utf-8") as f:
@@ -8,6 +13,7 @@ def extract_conversations(file_path, output_path=None):
 
     # Each top-level conversation
     for conv in data:
+        convo = []
         mapping = conv.get("mapping", {})
         for node in mapping.values():
             message = node.get("message")
@@ -35,16 +41,13 @@ def extract_conversations(file_path, output_path=None):
                         texts.append(str(part))
                 text = "\n".join(texts).strip()
                 if text:  # skip empty system messages
-                    results.append({"role": role, "text": text})
-
-    # Write results or print
-    if output_path:
-        with open(output_path, "w", encoding="utf-8") as f:
-            for r in results:
-                f.write(f"{r['role'].upper()}:\n{r['text']}\n\n")
-    else:
-        for r in results:
-            print(f"{r['role'].upper()}:\n{r['text']}\n")
+                    chat_message = ChatMessage(
+                        role=role,
+                        content=text,
+                        timestamp=datetime.now()
+                    )
+                    convo.append(chat_message)
+        results.append(convo)
 
     return results
 

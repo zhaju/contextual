@@ -3,19 +3,46 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from contextlib import asynccontextmanager
+import asyncio
+import asyncio
 import json
 import uuid
 from datetime import datetime
-from custom_types import RootResponse, Chat, SendMessageRequest, SendMessageToChatRequest, ChatMessage, Memory, Block, ContextResponse, StreamedChatResponse, SetChatContextRequest
+from custom_types import *
 from prompts import get_response_generation_prompt
 from groq_caller import GroqCaller
 from claude_caller import ClaudeCaller
+from data_init.load_initial_chats import load_initial_chats
 from chat_memory_updater import ChatMemoryUpdater
 
 # Global callers - initialized in lifespan
 groq_caller: Optional[GroqCaller] = None
 claude_caller: Optional[ClaudeCaller] = None
 memory_updater: Optional[ChatMemoryUpdater] = None
+
+# In-memory storage (replace with database in production)
+chats_db: Dict[str, Chat] = None
+
+"""
+chat_db format:
+{
+    "sample_chat": Chat(
+        id="sample_chat",
+        current_memory=Memory(
+            summary_string="This is a sample memory summary.",
+            blocks=[
+                Block(topic="sample_topic", description="This is a sample block description.")
+            ]
+        ),
+        title="Sample Chat",
+        chat_history=[
+            ChatMessage(role="user", content="Hello, how are you?", timestamp=datetime.now()),
+            ChatMessage(role="assistant", content="I'm good, thank you!", timestamp=datetime.now())
+        ]
+    )
+}
+"""
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,6 +71,8 @@ async def lifespan(app: FastAPI):
         print(f"❌ Failed to initialize ChatMemoryUpdater: {e}")
         memory_updater = None
     
+    # Load initial chats
+    chats_db = await load_initial_chats(groq_caller)
     yield
     
     # Shutdown
@@ -53,24 +82,6 @@ async def lifespan(app: FastAPI):
     print("🔄 API callers cleaned up")
 
 app = FastAPI(title="Contextual Chat API", version="1.0.0", lifespan=lifespan)
-
-# In-memory storage (replace with database in production)
-chats_db: Dict[str, Chat] = {
-    "sample_chat": Chat(
-        id="sample_chat",
-        current_memory=Memory(
-            summary_string="This is a sample memory summary.",
-            blocks=[
-                Block(topic="sample_topic", description="This is a sample block description.")
-            ]
-        ),
-        title="Sample Chat",
-        chat_history=[
-            ChatMessage(role="user", content="Hello, how are you?", timestamp=datetime.now()),
-            ChatMessage(role="assistant", content="I'm good, thank you!", timestamp=datetime.now())
-        ]
-    )
-}
 
 @app.get("/", response_model=RootResponse)
 async def root():
@@ -91,7 +102,6 @@ async def get_chat(chat_id: str):
     if chat_id not in chats_db:
         raise HTTPException(status_code=404, detail="Chat not found")
     return chats_db[chat_id]
-
 
 
 @app.post("/chats/send", response_model=StreamedChatResponse)
