@@ -17,6 +17,7 @@ interface AppShellProps {
   isNewChat?: boolean;
   contextSubmitted?: boolean;
   firstMessageSent?: boolean;
+  isRightSidebarOpen?: boolean;
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
   onSendMessage: (message: string) => void;
@@ -29,6 +30,7 @@ interface AppShellProps {
   onChatPreview: (chatId: string) => void;
   onChatExclude: (chatId: string) => void;
   onContextRemove: (id: string) => void;
+  onToggleRightSidebar?: () => void;
 }
 
 /**
@@ -53,6 +55,7 @@ export const AppShell = ({
   isNewChat = false,
   contextSubmitted = false,
   firstMessageSent = false,
+  isRightSidebarOpen = true,
   onChatSelect,
   onNewChat,
   onSendMessage,
@@ -65,6 +68,7 @@ export const AppShell = ({
   onChatPreview: _onChatPreview,
   onChatExclude: _onChatExclude,
   onContextRemove,
+  onToggleRightSidebar,
 }: AppShellProps) => {
   const [isDark, setIsDark] = useState(false);
 
@@ -91,6 +95,22 @@ export const AppShell = ({
           >
             New Chat
           </button>
+          {onToggleRightSidebar && (
+            <button
+              onClick={onToggleRightSidebar}
+              className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 
+                         hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              title={isRightSidebarOpen ? "Hide sidebar" : "Show sidebar"}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isRightSidebarOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                )}
+              </svg>
+            </button>
+          )}
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
         </div>
       </header>
@@ -121,21 +141,23 @@ export const AppShell = ({
           />
         </div>
 
-        {/* Right Sidebar - Always visible, greyed out when not in new chat */}
-        <RightSidebar
-          memories={memories}
-          relevantChats={relevantChats}
-          onMemoryToggle={onMemoryToggle}
-          onBlockToggle={onBlockToggle}
-          onMemoryExpand={onMemoryExpand}
-          onSubmitContext={onSubmitContext}
-          onChatPin={_onChatPin}
-          onChatPreview={_onChatPreview}
-          onChatExclude={_onChatExclude}
-          isNewChat={isNewChat}
-          contextSubmitted={contextSubmitted}
-          firstMessageSent={firstMessageSent}
-        />
+        {/* Right Sidebar - Conditionally visible based on toggle state */}
+        {isRightSidebarOpen && (
+          <RightSidebar
+            memories={memories}
+            relevantChats={relevantChats}
+            onMemoryToggle={onMemoryToggle}
+            onBlockToggle={onBlockToggle}
+            onMemoryExpand={onMemoryExpand}
+            onSubmitContext={onSubmitContext}
+            onChatPin={_onChatPin}
+            onChatPreview={_onChatPreview}
+            onChatExclude={_onChatExclude}
+            isNewChat={isNewChat}
+            contextSubmitted={contextSubmitted}
+            firstMessageSent={firstMessageSent}
+          />
+        )}
       </div>
     </div>
   );

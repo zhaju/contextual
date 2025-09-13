@@ -27,9 +27,9 @@ export const ChatList = ({ chats, topics, onChatSelect, selectedChatId }: ChatLi
 
   return (
     <div className="space-y-1">
-      {chats.map((chat) => (
+      {chats.map((chat, index) => (
         <div
-          key={chat.id}
+          key={index}
           onClick={() => onChatSelect(chat.id)}
           className={`p-3 rounded-lg cursor-pointer transition-colors group ${
             selectedChatId === chat.id

@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AppShell } from './components';
-import { 
-  topics, 
-  mockMemories
-} from './mockData';
+// Mock data imports removed - now using backend API calls
 import { chatController } from './controllers';
 import { convertBackendChatToFrontend, convertBackendMessageToFrontend, extractMemoryBlocksFromChat, convertBackendChatToRelevantChat } from './utils';
 import type { Memory, Chat, Message, RelevantChat } from './types';
@@ -31,11 +28,12 @@ function App() {
   const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-  const [memories, setMemories] = useState<Memory[]>(mockMemories);
+  const [memories, setMemories] = useState<Memory[]>([]);
   const [allChats, setAllChats] = useState<Chat[]>([]);
   const [relevantChats, setRelevantChats] = useState<RelevantChat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
   // Load chats from backend on component mount
   useEffect(() => {
@@ -132,15 +130,7 @@ function App() {
     }
     
     setSelectedChatId(chatId);
-    
-    // Reset memory selections when switching chats (prevents context bleeding)
-    setMemories(prev => prev.map(memory => ({
-      ...memory,
-      selected: false,
-      isLocked: false,
-      blocks: memory.blocks.map(block => ({ ...block, selected: false }))
-    })));
-    
+
     try {
       // Load chat data from backend
       const backendChat = await chatController.getChat(chatId);
@@ -171,13 +161,7 @@ function App() {
     
     setSelectedChatId("");
     setCurrentMessages([]);
-    // Reset memory selections for clean context selection
-    setMemories(prev => prev.map(memory => ({
-      ...memory,
-      selected: false,
-      isLocked: false,
-      blocks: memory.blocks.map(block => ({ ...block, selected: false }))
-    })));
+    setMemories([]);
   };
 
   // Message sending with context recommendation and SSE streaming
@@ -187,8 +171,9 @@ function App() {
     // First message in new chat triggers context recommendation flow
     if (selectedChatId === "") {
       try {
-        // Call backend API to create new chat and get context recommendations
-        const contextResponse = await chatController.createNewChat({ message });
+         // Call backend API to create new chat and get context recommendations
+         console.log('Sending to backend:', { message });
+         const contextResponse = await chatController.createNewChat({ message });
         
         // Convert relevant chats to frontend format
         const relevantChatsList = contextResponse.relevant_chats.map(convertBackendChatToRelevantChat);
@@ -202,7 +187,7 @@ function App() {
              title: contextResponse.relevant_chats[0]?.title || "New Chat",
              last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
              updatedAt: "Now",
-             topicId: "t1",
+             topicId: "default", // Topics removed - using default
              starred: false,
              memoryIds: [],
              isNewChat: true,
@@ -226,9 +211,8 @@ function App() {
         
         // Extract memory blocks from relevant chats for context selection
         const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
-        if (relevantMemories.length > 0) {
-          setMemories(relevantMemories);
-        }
+        setMemories(relevantMemories);
+        toggleRightSidebar();
         console.log('Context recommendations received:', contextResponse);
         console.log("relevantMemories:", relevantMemories);
         return; // Don't proceed with assistant response until context is submitted
@@ -429,8 +413,8 @@ function App() {
   // Legacy handlers for compatibility (can be removed later)
   const handleTopicSelect = (topicId: string) => {
     console.log('Topic selected:', topicId);
-    const topic = topics.find(t => t.id === topicId);
-    alert(`Topic selected: ${topic?.name || 'Unknown'}. In a real app, this would filter the chat list.`);
+    // Topics functionality removed - implement if needed with backend API
+    alert(`Topic selected: ${topicId}. Topics functionality not implemented yet.`);
   };
 
   const handleChatPin = (chatId: string) => {
@@ -452,6 +436,10 @@ function App() {
 
   const handleContextRemove = (id: string) => {
     console.log('Context removed:', id);
+  };
+
+  const toggleRightSidebar = () => {
+    setIsRightSidebarOpen(prev => !prev);
   };
 
   // Get the appropriate memories to display
@@ -498,7 +486,7 @@ function App() {
   return (
     <AppShell
       chats={allChats}
-      topics={topics}
+      topics={[]} // Topics functionality removed - implement if needed
       messages={currentMessages}
       memories={getDisplayMemories()}
       relevantChats={relevantChats}
@@ -507,6 +495,7 @@ function App() {
       isNewChat={isNewChat()}
       contextSubmitted={isContextSubmitted()}
       firstMessageSent={isFirstMessageSent()}
+      isRightSidebarOpen={isRightSidebarOpen}
       onChatSelect={handleChatSelect}
       onNewChat={handleNewChat}
       onSendMessage={handleSendMessage}
@@ -519,6 +508,7 @@ function App() {
       onChatPreview={handleChatPreview}
       onChatExclude={handleChatExclude}
       onContextRemove={handleContextRemove}
+      onToggleRightSidebar={toggleRightSidebar}
     />
   );
 }
