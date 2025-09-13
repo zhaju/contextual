@@ -46,3 +46,5 @@ htmlcov/
 .mypy_cache/
 .pyre/
 .pytype/
+
+conversations.json
