@@ -23,13 +23,8 @@ export const MemoryDirectory = ({
   onSubmitContext,
   isNewChat,
   contextSubmitted,
-  firstMessageSent,
-  onChatSelect
+  firstMessageSent
 }: MemoryDirectoryProps) => {
-  const handleMemoryToggle = (memoryId: string) => {
-    if (memories.find(m => m.id === memoryId)?.isLocked) return;
-    onMemoryToggle(memoryId);
-  };
 
   const handleBlockToggle = (memoryId: string, blockId: string) => {
     if (memories.find(m => m.id === memoryId)?.isLocked) return;
@@ -112,7 +107,7 @@ export const MemoryDirectory = ({
                     checked={memory.selected}
                     onChange={(e) => {
                       e.stopPropagation();
-                      handleMemoryToggle(memory.id);
+                      onMemoryToggle(memory.id);
                     }}
                     disabled={!allowInteraction || memory.isLocked}
                     className="absolute w-5 h-5 opacity-0 cursor-pointer z-10"
@@ -142,30 +137,6 @@ export const MemoryDirectory = ({
                     <span className="text-xs text-gray-500 dark:text-gray-400">
                       ({memory.blocks.filter(block => block.selected).length}/{memory.blocks.length} blocks)
                     </span>
-                  </div>
-                  {/* Chat References */}
-                  <div className="flex items-center space-x-1 mt-1">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">From:</span>
-                    {memory.chatReferences.map((chatId, index) => (
-                      <button
-                        key={chatId}
-                        className={`text-xs hover:underline ${
-                          isDisabled 
-                            ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed' 
-                            : 'text-blue-600 dark:text-blue-400 cursor-pointer'
-                        }`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!isDisabled) {
-                            onChatSelect(chatId);
-                          }
-                        }}
-                        disabled={isDisabled}
-                      >
-                        Chat {chatId.replace('c', '')}
-                        {index < memory.chatReferences.length - 1 && ', '}
-                      </button>
-                    ))}
                   </div>
                 </div>
               </div>

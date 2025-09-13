@@ -1,16 +1,20 @@
 import { MemoryDirectory } from '../memory/MemoryDirectory';
-import type { Memory } from '../../types';
+import { RelevantChats } from '../features/RelevantChats';
+import type { Memory, RelevantChat } from '../../types';
 
 interface RightSidebarProps {
   memories: Memory[];
+  relevantChats?: RelevantChat[];
   onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockId: string) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
+  onChatPin: (chatId: string) => void;
+  onChatPreview: (chatId: string) => void;
+  onChatExclude: (chatId: string) => void;
   isNewChat: boolean;
   contextSubmitted: boolean;
   firstMessageSent: boolean;
-  onChatSelect: (chatId: string) => void;
 }
 
 /**
@@ -31,19 +35,33 @@ interface RightSidebarProps {
  */
 export const RightSidebar = ({
   memories,
+  relevantChats = [],
   onMemoryToggle,
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
+  onChatPin,
+  onChatPreview,
+  onChatExclude,
   isNewChat,
   contextSubmitted,
   firstMessageSent,
-  onChatSelect,
 }: RightSidebarProps) => {
   return (
     <div className="w-80 bg-gray-50 dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 
                     flex flex-col h-full min-h-0">
-      <div className="flex-1 overflow-y-auto min-h-0">
+      <div className="flex-1 overflow-y-auto min-h-0 p-4">
+        {/* Show relevant chats for new chat context selection */}
+        {isNewChat && firstMessageSent && !contextSubmitted && relevantChats.length > 0 && (
+          <RelevantChats
+            items={relevantChats}
+            onPin={onChatPin}
+            onPreview={onChatPreview}
+            onExclude={onChatExclude}
+          />
+        )}
+        
+        {/* Show memory directory for context selection */}
         <MemoryDirectory
           memories={memories}
           onMemoryToggle={onMemoryToggle}
@@ -53,7 +71,6 @@ export const RightSidebar = ({
           isNewChat={isNewChat}
           contextSubmitted={contextSubmitted}
           firstMessageSent={firstMessageSent}
-          onChatSelect={onChatSelect}
         />
       </div>
     </div>

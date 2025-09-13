@@ -18,7 +18,8 @@ export const chats: Chat[] = [
     last: 'Let\'s list them…', 
     updatedAt: '10:24', 
     topicId: 't1', 
-    starred: true 
+    starred: true,
+    memoryIds: ['mem1']
   },
   { 
     id: 'c2', 
@@ -26,7 +27,8 @@ export const chats: Chat[] = [
     last: 'Paper notes…', 
     updatedAt: 'Yesterday', 
     topicId: 't2', 
-    starred: false 
+    starred: false,
+    memoryIds: ['mem2']
   },
   { 
     id: 'c3', 
@@ -34,7 +36,8 @@ export const chats: Chat[] = [
     last: 'Throughput tradeoffs', 
     updatedAt: 'Tue', 
     topicId: 't3', 
-    starred: true 
+    starred: true,
+    memoryIds: ['mem4']
   },
   { 
     id: 'c4', 
@@ -42,7 +45,8 @@ export const chats: Chat[] = [
     last: 'Backpropagation explanation', 
     updatedAt: 'Mon', 
     topicId: 't4', 
-    starred: false 
+    starred: false,
+    memoryIds: ['mem3']
   },
   { 
     id: 'c5', 
@@ -50,7 +54,8 @@ export const chats: Chat[] = [
     last: 'Prior vs posterior', 
     updatedAt: 'Last week', 
     topicId: 't5', 
-    starred: false 
+    starred: false,
+    memoryIds: ['mem2']
   },
 ];
 
@@ -157,7 +162,7 @@ export const mockMemories: Memory[] = [
         description: 'Linearity, independence, homoscedasticity, normality, no multicollinearity',
         importance: 5,
         selected: false,
-        chatReferences: ['c1']
+        chatReferences: []
       },
       {
         id: 'block2',
@@ -165,7 +170,7 @@ export const mockMemories: Memory[] = [
         description: 'Residual analysis, Breusch-Pagan test, VIF for multicollinearity',
         importance: 4,
         selected: false,
-        chatReferences: ['c1']
+        chatReferences: []
       },
       {
         id: 'block3',
@@ -173,7 +178,7 @@ export const mockMemories: Memory[] = [
         description: 'Huber-White standard errors for heteroscedasticity-consistent inference',
         importance: 3,
         selected: false,
-        chatReferences: ['c1']
+        chatReferences: []
       }
     ]
   },
@@ -191,7 +196,7 @@ export const mockMemories: Memory[] = [
         description: 'Zero-inflation modeling with Bayesian approach and MCMC sampling',
         importance: 4,
         selected: false,
-        chatReferences: ['c2']
+        chatReferences: []
       },
       {
         id: 'block5',
@@ -199,7 +204,7 @@ export const mockMemories: Memory[] = [
         description: 'Conjugate priors, informative vs non-informative priors',
         importance: 3,
         selected: false,
-        chatReferences: ['c5']
+        chatReferences: []
       },
       {
         id: 'block6',
@@ -207,7 +212,7 @@ export const mockMemories: Memory[] = [
         description: 'Metropolis-Hastings, Gibbs sampling, convergence diagnostics',
         importance: 4,
         selected: false,
-        chatReferences: ['c5']
+        chatReferences: []
       }
     ]
   },
@@ -225,7 +230,7 @@ export const mockMemories: Memory[] = [
         description: 'Backpropagation, gradient descent, activation functions',
         importance: 5,
         selected: false,
-        chatReferences: ['c4']
+        chatReferences: []
       },
       {
         id: 'block8',
@@ -233,7 +238,7 @@ export const mockMemories: Memory[] = [
         description: 'Adam optimizer, learning rate scheduling, regularization',
         importance: 4,
         selected: false,
-        chatReferences: ['c4']
+        chatReferences: []
       }
     ]
   },
@@ -251,7 +256,7 @@ export const mockMemories: Memory[] = [
         description: 'Reliability vs speed tradeoffs, connection-oriented vs connectionless',
         importance: 3,
         selected: false,
-        chatReferences: ['c3']
+        chatReferences: []
       },
       {
         id: 'block10',
@@ -259,7 +264,7 @@ export const mockMemories: Memory[] = [
         description: 'Congestion control, window scaling, buffer management',
         importance: 2,
         selected: false,
-        chatReferences: ['c3']
+        chatReferences: []
       }
     ]
   }
