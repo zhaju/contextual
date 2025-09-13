@@ -15,8 +15,8 @@ class Block(BaseModel):
     description: str
 
 class Memory(BaseModel):
-    summary_string: str
-    blocks: List[Block]
+    summary_string: str = ""
+    blocks: List[Block] = []
     
     def to_llm_str(self) -> str:
         """
