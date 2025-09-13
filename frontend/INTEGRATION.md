@@ -175,7 +175,7 @@ const handleNewChat = async (firstMessage: string) => {
     body: JSON.stringify({ first_message: firstMessage })
   });
   
-  const { context_summary, relevant_chats } = await response.json();
+  const { relevant_chats } = await response.json();
   // Display context selection UI
 };
 ```
@@ -234,7 +234,7 @@ const handleNewChat = async (firstMessage: string) => {
   });
   
   // 2. Get context recommendations
-  const { context_summary, relevant_chats } = await response.json();
+  const { relevant_chats } = await response.json();
   
   // 3. Display context selection UI
   setShowContextSelection(true);
