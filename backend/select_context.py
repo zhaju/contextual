@@ -54,11 +54,13 @@ async def get_selected_chats(chats: List[Chat], query: str, groq_caller: GroqCal
         
         # Validate indices and convert 1-indexed to 0-indexed
         selected_chats = []
+        selected_ids = set()
         for idx in selected_indices:
             if idx == 0:
                 continue
             elif 1 <= idx <= len(chats):
-                selected_chats.append(chats[idx - 1])  # Convert to 0-indexed
+                if idx not in selected_ids:
+                    selected_chats.append(chats[idx - 1])  # Convert to 0-indexed
             else:
                 print(f"Warning: Invalid index {idx} (out of range 1-{len(chats)})")
         
