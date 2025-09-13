@@ -28,7 +28,7 @@ class Chat(BaseModel):
     title: str
     chat_history: List[ChatHistory]
 
-# Request/Response Models
+# Request Models
 class SendMessageRequest(BaseModel):
     chat_id: str
     message: str
@@ -40,20 +40,33 @@ class NewChatContextRequest(BaseModel):
     required_context: List[str]  # List of chat IDs and memory topics
     chat_id: str
 
+# Response Models
+class RootResponse(BaseModel):
+    message: str
+    version: str
+
+class NewChatResponse(BaseModel):
+    chat_id: str
+    chat: Chat
+
+class SSEChunk(BaseModel):
+    content: Optional[str] = None
+    done: Optional[bool] = None
+
 # In-memory storage (replace with database in production)
 chats_db: Dict[str, Chat] = {}
 chat_list: List[str] = []  # List of chat IDs
 
-@app.get("/")
+@app.get("/", response_model=RootResponse)
 async def root():
-    return {"message": "Contextual Chat API", "version": "1.0.0"}
+    return RootResponse(message="Contextual Chat API", version="1.0.0")
 
-@app.get("/chats", response_model=List[str])
+@app.get("/chats", response_model=List[Chat])
 async def list_chats():
     """
-    Get list of all chat IDs
+    Get list of all chats
     """
-    return chat_list
+    return [chats_db[chat_id] for chat_id in chat_list]
 
 @app.get("/chats/{chat_id}", response_model=Chat)
 async def get_chat(chat_id: str):
@@ -105,7 +118,7 @@ async def send_message(request: SendMessageRequest):
         headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
     )
 
-@app.post("/chats/new")
+@app.post("/chats/new", response_model=NewChatResponse)
 async def new_chat(request: NewChatRequest):
     """
     Create a new chat with first message and context prompt
@@ -146,7 +159,7 @@ async def new_chat(request: NewChatRequest):
     chats_db[chat_id] = new_chat
     chat_list.append(chat_id)
     
-    return {"chat_id": chat_id, "chat": new_chat}
+    return NewChatResponse(chat_id=chat_id, chat=new_chat)
 
 @app.post("/chats/{chat_id}/context")
 async def new_chat_context_set(request: NewChatContextRequest):
