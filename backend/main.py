@@ -267,7 +267,7 @@ async def new_chat(request: SendMessageRequest):
             
             # Use strict selection - only select up to 2 highly relevant chats
             # Better to have fewer, highly relevant chats than many loosely related ones
-            relevant_chats = await get_selected_chats(all_chats, request.message, groq_caller, 2)
+            relevant_chats = await get_selected_chats(all_chats, request.message, groq_caller, 5)
             
             if relevant_chats:
                 print(f"✅ Found {len(relevant_chats)} highly relevant chats for context")

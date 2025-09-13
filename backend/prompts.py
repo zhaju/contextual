@@ -170,27 +170,25 @@ def get_context_retrieval_prompt(chats: List[Chat], query: str, groq_caller, num
         List[Dict[str, str]]: List of message dictionaries for Groq API
     """
     # System prompt for instructions
-    system_instructions = f"""You are a highly selective context assistant. Your task is to analyze a query and select ONLY the most relevant chats from a provided list.
+    system_instructions = f"""You are a context assistant tasked with selecting the most likely chats that may aid in answering a specific query. Your job is to analyze the query and identify chats from a provided list that could contain relevant context.
 
-CRITICAL RELEVANCE REQUIREMENTS:
-1. ONLY select chats that are HIGHLY relevant to the specific query
-2. If a chat is only somewhat related or tangentially connected, DO NOT select it
-3. Better to return fewer chats (or even zero) than to include irrelevant ones
-4. Each selected chat must directly contribute meaningful context to answering the query
-5. Consider both the memory summary AND the specific topics discussed
+GUIDELINES FOR RELEVANCE:
+1. Prioritize chats that are clearly relevant to the query.
+2. If you are unsure about a chat’s relevance, include it.
+3. Consider both the memory summary and the topics discussed in each chat.
 
-STRICT SELECTION CRITERIA:
-- The chat must contain information that directly helps answer the query
-- The topics must be closely related to what the user is asking about
-- Avoid generic or loosely related conversations
-- If no chats are highly relevant, return an empty list
+SELECTION CRITERIA:
+- Include chats that may reasonably contain helpful or tangentially relevant information.
+- Relevance can be direct or indirect, as long as it might help understand or answer the query.
+- Avoid chats that are clearly off-topic or unrelated.
+- If no chats seem useful at all, return an empty list.
 
 INSTRUCTIONS:
-1. Analyze the query to understand the specific information needed
-2. Review each chat's memory summary and topics with extreme scrutiny
-3. Select ONLY the {num_chats} most relevant chats (or fewer if none are highly relevant)
-4. Return the 1-indexed positions of selected chats in the selected_indices array
-5. If no chats are highly relevant, return an empty selected_indices array
+1. Analyze the query to understand what kind of information is being asked for.
+2. Review each chat's memory summary and topics.
+3. Select UP TO {num_chats} chats that could be relevant (even if uncertain).
+4. Return the 1-indexed positions of selected chats in the selected_indices array.
+5. If no chats seem relevant at all, return an empty selected_indices array.
 
 You must respond with a JSON object containing a "selected_indices" array of integers."""
 
