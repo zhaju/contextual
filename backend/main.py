@@ -10,15 +10,17 @@ from custom_types import RootResponse, Chat, SendMessageRequest, SendMessageToCh
 from prompts import get_response_generation_prompt
 from groq_caller import GroqCaller
 from claude_caller import ClaudeCaller
+from chat_memory_updater import ChatMemoryUpdater
 
 # Global callers - initialized in lifespan
 groq_caller: Optional[GroqCaller] = None
 claude_caller: Optional[ClaudeCaller] = None
+memory_updater: Optional[ChatMemoryUpdater] = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Manage application lifespan - startup and shutdown events"""
-    global groq_caller, claude_caller
+    global groq_caller, claude_caller, memory_updater
     
     # Startup
     try:
@@ -35,11 +37,19 @@ async def lifespan(app: FastAPI):
         print(f"❌ Failed to initialize ClaudeCaller: {e}")
         claude_caller = None
     
+    try:
+        memory_updater = ChatMemoryUpdater(chat_db=chats_db)
+        print("✅ ChatMemoryUpdater initialized successfully")
+    except Exception as e:
+        print(f"❌ Failed to initialize ChatMemoryUpdater: {e}")
+        memory_updater = None
+    
     yield
     
     # Shutdown
     groq_caller = None
     claude_caller = None
+    memory_updater = None
     print("🔄 API callers cleaned up")
 
 app = FastAPI(title="Contextual Chat API", version="1.0.0", lifespan=lifespan)
@@ -134,6 +144,15 @@ async def send_message(request: SendMessageToChatRequest):
                 timestamp=datetime.now()
             )
             chats_db[request.chat_id].chat_history.append(assistant_message)
+            
+            # Update memory with the new messages (user + assistant)
+            if memory_updater is not None:
+                try:
+                    # Get the last two messages (user + assistant) for memory update
+                    messages_to_update = [user_message, assistant_message]
+                    await memory_updater.update_memory(request.chat_id, messages_to_update)
+                except Exception as e:
+                    print(f"⚠️ Failed to update memory for chat {request.chat_id}: {e}")
             
             yield f"data: {json.dumps({'done': True})}\n\n"
             
