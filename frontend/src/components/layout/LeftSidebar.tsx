@@ -65,7 +65,7 @@ export const LeftSidebar = ({
   return (
   <div className="w-64 bg-[var(--bg-secondary)] border-r border-[var(--border-color)] flex flex-col h-full min-h-0">
       {/* Header */}
-  <div className="p-4 border-b border-[var(--border-color)] flex-shrink-0">
+  <div className="px-6 py-4 border-b border-[var(--border-color)] flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             All Chats
@@ -84,7 +84,7 @@ export const LeftSidebar = ({
       </div>
 
       {/* New Chat Button */}
-  <div className="p-4 border-b border-[var(--border-color)] flex-shrink-0">
+  <div className="px-6 py-4 border-b border-[var(--border-color)] flex-shrink-0">
         <button
           onClick={onNewChat}
           className="w-full flex items-center justify-center space-x-2 py-2 px-4 
@@ -96,7 +96,7 @@ export const LeftSidebar = ({
       </div>
 
       {/* Chat List */}
-      <div className="flex-1 overflow-y-auto p-4 min-h-0">
+      <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
         <ChatList
           chats={filteredChats}
           topics={topics}
