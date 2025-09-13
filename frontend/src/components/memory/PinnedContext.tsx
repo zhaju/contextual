@@ -17,7 +17,7 @@ import type { PinnedContextProps } from '../../types';
 export const PinnedContext = ({ pinned, onRemove }: PinnedContextProps) => {
   return (
     <div>
-      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+      <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
         Pinned Context
       </h3>
       <div className="space-y-2">
@@ -25,11 +25,12 @@ export const PinnedContext = ({ pinned, onRemove }: PinnedContextProps) => {
           <div
             key={item.id}
             className="group flex items-center justify-between p-2 rounded-lg 
-                       bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800
+                       bg-blue-50 border border-blue-200 
+                       dark:bg-blue-900/20 dark:border-blue-800
                        hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
           >
             <div className="flex items-center space-x-2 flex-1 min-w-0">
-              <GripVertical className="w-3 h-3 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+              <GripVertical className="w-3 h-3 text-[var(--text-muted)] flex-shrink-0" />
               <span className="text-sm text-blue-800 dark:text-blue-200 truncate">
                 {item.label}
               </span>
@@ -45,7 +46,7 @@ export const PinnedContext = ({ pinned, onRemove }: PinnedContextProps) => {
           </div>
         ))}
         {pinned.length === 0 && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+          <p className="text-sm text-[var(--text-muted)] italic">
             No pinned context yet
           </p>
         )}

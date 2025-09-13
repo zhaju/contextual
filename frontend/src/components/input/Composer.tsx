@@ -56,13 +56,13 @@ export const Composer = ({
           {contextPills.map((pill) => (
             <div
               key={pill.id}
-              className="inline-flex items-center space-x-1 bg-blue-100 dark:bg-blue-900 
-                         text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm"
+              className="inline-flex items-center space-x-1 bg-blue-50 text-blue-800 
+                         dark:bg-blue-900 dark:text-blue-200 px-3 py-1 rounded-full text-sm"
             >
               <span>{pill.label}</span>
               <button
                 onClick={() => onContextRemove(pill.id)}
-                className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-0.5 transition-colors"
+                className="hover:bg-blue-100 dark:hover:bg-blue-800 rounded-full p-0.5 transition-colors"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -73,7 +73,8 @@ export const Composer = ({
 
       {/* Disabled Message */}
       {disabled && (
-        <div className="mb-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 
+        <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 
+                        dark:bg-yellow-900/20 dark:border-yellow-800 
                         rounded-lg text-yellow-800 dark:text-yellow-200 text-sm">
           <div className="flex items-center space-x-2">
             <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -96,9 +97,9 @@ export const Composer = ({
             disabled={disabled}
             className={`w-full resize-none rounded-lg border p-3 pr-12 min-h-[44px] max-h-32 ${
               disabled 
-                ? 'border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                ? 'border-[var(--disabled-border)] bg-[var(--disabled-bg)] text-[var(--disabled-text)] cursor-not-allowed'
                 : 'border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-            } placeholder-gray-400 dark:placeholder-gray-500`}
+            } placeholder-[var(--text-muted)]`}
             rows={1}
           />
         </div>
@@ -107,8 +108,8 @@ export const Composer = ({
           disabled={!message.trim() || disabled}
           className={`p-3 rounded-lg transition-colors ${
             disabled || !message.trim()
-              ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 text-white'
+              ? 'bg-[var(--disabled-bg)] text-[var(--disabled-text)] cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800'
           }`}
         >
           <Send className="w-5 h-5" />

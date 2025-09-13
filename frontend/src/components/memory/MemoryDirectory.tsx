@@ -50,8 +50,8 @@ export const MemoryDirectory = ({
       <div className="mb-6">
         <h3 className={`text-lg font-semibold mb-2 ${
           isDisabled 
-            ? 'text-gray-500 dark:text-gray-400' 
-            : 'text-gray-900 dark:text-white'
+            ? 'text-[var(--text-muted)]' 
+            : 'text-[var(--text-primary)]'
         }`}>
           {showActiveSelection ? 'Select Context' : 
            isNewChat && !firstMessageSent ? 'Send a message to see relevant context' :
@@ -59,8 +59,8 @@ export const MemoryDirectory = ({
         </h3>
         <p className={`text-sm ${
           isDisabled 
-            ? 'text-gray-400 dark:text-gray-500' 
-            : 'text-gray-600 dark:text-gray-400'
+            ? 'text-[var(--text-muted)]' 
+            : 'text-[var(--text-secondary)]'
         }`}>
           {showActiveSelection 
             ? 'Choose which memories to include in this chat' :
@@ -73,9 +73,9 @@ export const MemoryDirectory = ({
 
       <div className="space-y-2 mb-6">
         {isNewChat && !firstMessageSent ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="text-center py-8 text-[var(--text-muted)]">
             <div className="mb-4">
-              <svg className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 mx-auto text-[var(--text-muted)] opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
@@ -87,8 +87,8 @@ export const MemoryDirectory = ({
             key={memory.id} 
             className={`border rounded-lg ${
               isDisabled || memory.isLocked
-                ? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' 
-                : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600'
+                ? 'bg-[var(--bg-tertiary)] border-[var(--border-color)] opacity-60' 
+                : 'bg-[var(--bg-primary)] border-[var(--border-color)]'
             }`}
           >
             {/* Memory Header - Collapsible */}
@@ -96,7 +96,7 @@ export const MemoryDirectory = ({
               className={`flex items-center justify-between p-3 ${
                 memory.isLocked 
                   ? 'cursor-not-allowed' 
-                  : 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600'
+                  : 'cursor-pointer hover:bg-[var(--bg-secondary)]'
               }`}
               onClick={() => !memory.isLocked && handleMemoryExpand(memory.id)}
             >
@@ -115,7 +115,7 @@ export const MemoryDirectory = ({
                   />
                   <span
                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200
-                      ${memory.selected ? 'bg-blue-600 border-blue-600' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'}
+                      ${memory.selected ? 'bg-blue-600 border-blue-600' : 'border-[var(--border-color)] bg-[var(--bg-primary)]'}
                       ${!allowInteraction || memory.isLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-blue-400 hover:scale-110'}`}
                   >
                     {memory.selected && (
@@ -129,12 +129,12 @@ export const MemoryDirectory = ({
                   <div className="flex items-center space-x-2">
                     <span className={`font-medium ${
                       isDisabled || memory.isLocked 
-                        ? 'text-gray-500 dark:text-gray-400' 
-                        : 'text-gray-900 dark:text-white'
+                        ? 'text-[var(--text-muted)]' 
+                        : 'text-[var(--text-primary)]'
                     }`}>
                       {memory.title}
                     </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-xs text-[var(--text-muted)]">
                       ({memory.blocks.filter(block => block.selected).length}/{memory.blocks.length} blocks)
                     </span>
                   </div>
@@ -143,12 +143,12 @@ export const MemoryDirectory = ({
               
               <div className="flex items-center space-x-2">
                 {memory.isLocked && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-[var(--text-muted)]">
                     Locked
                   </span>
                 )}
                 <svg
-                  className={`w-4 h-4 text-gray-400 transition-transform ${
+                  className={`w-4 h-4 text-[var(--text-muted)] transition-transform ${
                     memory.isExpanded ? 'rotate-90' : ''
                   }`}
                   fill="none"
@@ -162,15 +162,15 @@ export const MemoryDirectory = ({
 
             {/* Memory Blocks - Collapsible */}
             {memory.isExpanded && (
-              <div className="border-t border-gray-200 dark:border-gray-600 p-3 bg-gray-50 dark:bg-gray-800">
+              <div className="border-t border-[var(--border-color)] p-3 bg-[var(--bg-secondary)]">
                 <div className="space-y-2">
                   {memory.blocks.map((block) => (
                     <div 
                       key={block.id}
                       className={`flex items-start space-x-3 p-2 rounded-lg ${
                         memory.isLocked 
-                          ? 'bg-gray-100 dark:bg-gray-700' 
-                          : 'hover:bg-gray-100 dark:hover:bg-gray-600'
+                          ? 'bg-[var(--bg-tertiary)]' 
+                          : 'hover:bg-[var(--bg-tertiary)]'
                       }`}
                     >
                       <label className="relative w-5 h-5 flex items-center justify-center cursor-pointer select-none">
@@ -184,7 +184,7 @@ export const MemoryDirectory = ({
                         />
                         <span
                           className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200
-                            ${block.selected ? 'bg-blue-600 border-blue-600' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'}
+                            ${block.selected ? 'bg-blue-600 border-blue-600' : 'border-[var(--border-color)] bg-[var(--bg-primary)]'}
                             ${!allowInteraction || memory.isLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-blue-400 hover:scale-110'}`}
                         >
                           {block.selected && (
@@ -198,8 +198,8 @@ export const MemoryDirectory = ({
                         <div className="flex items-center justify-between mb-1">
                           <span className={`text-sm font-medium ${
                             isDisabled || memory.isLocked 
-                              ? 'text-gray-500 dark:text-gray-400' 
-                              : 'text-gray-800 dark:text-gray-200'
+                              ? 'text-[var(--text-muted)]' 
+                              : 'text-[var(--text-primary)]'
                           }`}>
                             {block.topic}
                           </span>
@@ -209,8 +209,8 @@ export const MemoryDirectory = ({
                         </div>
                         <p className={`text-xs leading-relaxed ${
                           isDisabled || memory.isLocked 
-                            ? 'text-gray-400 dark:text-gray-500' 
-                            : 'text-gray-600 dark:text-gray-300'
+                            ? 'text-[var(--text-muted)]' 
+                            : 'text-[var(--text-secondary)]'
                         }`}>
                           {block.description}
                         </p>
@@ -232,8 +232,8 @@ export const MemoryDirectory = ({
           disabled={!hasSelectedBlocks}
           className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
             hasSelectedBlocks
-              ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg'
-              : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+              ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg dark:bg-blue-700 dark:hover:bg-blue-800'
+              : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)] cursor-not-allowed'
           }`}
         >
           Submit Context

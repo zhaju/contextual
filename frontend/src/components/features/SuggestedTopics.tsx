@@ -16,7 +16,7 @@ import type { SuggestedTopicsProps } from '../../types';
 export const SuggestedTopics = ({ topics, onTopicSelect }: SuggestedTopicsProps) => {
   return (
     <div className="mb-6">
-      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+      <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
         Suggested Topics
       </h3>
       <div className="flex flex-wrap gap-2">
@@ -25,9 +25,9 @@ export const SuggestedTopics = ({ topics, onTopicSelect }: SuggestedTopicsProps)
             key={topic.id}
             onClick={() => onTopicSelect(topic.id)}
             className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium
-                       bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300
-                       hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors
-                       border border-gray-200 dark:border-gray-600"
+                       bg-[var(--bg-tertiary)] text-[var(--text-primary)]
+                       hover:bg-[var(--bg-secondary)] transition-colors
+                       border border-[var(--border-color)]"
             style={{ borderLeftColor: topic.color, borderLeftWidth: '3px' }}
           >
             {topic.name}

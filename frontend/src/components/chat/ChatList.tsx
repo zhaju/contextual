@@ -33,7 +33,7 @@ export const ChatList = ({ chats, topics, onChatSelect, selectedChatId }: ChatLi
           onClick={() => onChatSelect(chat.id)}
           className={`p-3 rounded-lg cursor-pointer transition-colors group ${
             selectedChatId === chat.id
-              ? 'bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700'
+              ? 'bg-blue-50 border border-blue-200 dark:bg-blue-900/30 dark:border-blue-700'
               : 'hover:bg-[var(--bg-tertiary)]'
           }`}
         >

@@ -48,15 +48,15 @@ export const LeftSidebar = ({
       <div className="w-16 bg-[var(--bg-secondary)] border-r border-[var(--border-color)] flex flex-col items-center py-4 space-y-4">
         <button
           onClick={() => setIsCollapsed(false)}
-          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          className="p-2 hover:bg-[var(--bg-tertiary)] rounded-lg transition-colors"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-5 h-5 text-[var(--text-primary)]" />
         </button>
         <button
           onClick={onNewChat}
-          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          className="p-2 hover:bg-[var(--bg-tertiary)] rounded-lg transition-colors"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-5 h-5 text-[var(--text-primary)]" />
         </button>
       </div>
     );
@@ -72,9 +72,9 @@ export const LeftSidebar = ({
           </h2>
           <button
             onClick={() => setIsCollapsed(true)}
-            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+            className="p-1 hover:bg-[var(--bg-tertiary)] rounded transition-colors"
           >
-            <Menu className="w-4 h-4" />
+            <Menu className="w-4 h-4 text-[var(--text-primary)]" />
           </button>
         </div>
         <ChatSearchInput

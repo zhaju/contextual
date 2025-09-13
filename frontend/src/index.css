@@ -10,6 +10,21 @@
   --text-muted: #94a3b8;
   --border-color: #e2e8f0;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  
+  /* Additional light mode colors */
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+  --accent-blue-light: #dbeafe;
+  --accent-blue-text: #1e40af;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #6366f1;
+  
+  /* Disabled states */
+  --disabled-bg: #f3f4f6;
+  --disabled-border: #d1d5db;
+  --disabled-text: #9ca3af;
 }
 
 [data-theme="dark"] {
@@ -21,6 +36,21 @@
   --text-muted: #94a3b8;
   --border-color: #475569;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  
+  /* Additional dark mode colors */
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+  --accent-blue-light: #1e3a8a;
+  --accent-blue-text: #93c5fd;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #6366f1;
+  
+  /* Disabled states */
+  --disabled-bg: #374151;
+  --disabled-border: #4b5563;
+  --disabled-text: #6b7280;
 }
 
 * {
@@ -102,4 +132,62 @@ body {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* Prose styling for light/dark mode compatibility */
+.prose {
+  color: var(--text-primary);
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: var(--text-primary);
+}
+
+.prose strong {
+  color: var(--text-primary);
+}
+
+.prose a {
+  color: var(--accent-blue);
+}
+
+.prose a:hover {
+  color: var(--accent-blue-hover);
+}
+
+.prose code {
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+}
+
+.prose pre {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.prose blockquote {
+  border-left-color: var(--border-color);
+  color: var(--text-secondary);
+}
+
+.prose hr {
+  border-color: var(--border-color);
+}
+
+.prose table {
+  border-color: var(--border-color);
+}
+
+.prose thead {
+  color: var(--text-primary);
+  border-bottom-color: var(--border-color);
+}
+
+.prose tbody tr {
+  border-bottom-color: var(--border-color);
 }

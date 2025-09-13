@@ -24,7 +24,7 @@ export const MarkdownMessage = ({ text }: MarkdownMessageProps) => {
             if (inline) {
               return (
                 <code 
-                  className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono"
+                  className="bg-[var(--bg-tertiary)] px-1 py-0.5 rounded text-sm font-mono text-[var(--text-primary)]"
                   {...props}
                 >
                   {children}
@@ -32,7 +32,7 @@ export const MarkdownMessage = ({ text }: MarkdownMessageProps) => {
               );
             }
             return (
-              <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto">
+              <pre className="bg-[var(--bg-tertiary)] p-4 rounded-lg overflow-x-auto">
                 <code className={className} {...props}>
                   {children}
                 </code>

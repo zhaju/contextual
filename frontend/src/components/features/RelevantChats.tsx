@@ -19,45 +19,45 @@ import type { RelevantChatsProps } from '../../types';
 export const RelevantChats = ({ items, onPin, onPreview, onExclude }: RelevantChatsProps) => {
   return (
     <div className="mb-6">
-      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+      <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
         Relevant Chats
       </h3>
       <div className="space-y-2">
         {items.map((item) => (
           <div
             key={item.chatId}
-            className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                       hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-color)]
+                       hover:bg-[var(--bg-secondary)] transition-colors"
           >
             <div className="flex items-start justify-between mb-2">
-              <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-1">
+              <h4 className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">
                 {item.title}
               </h4>
               <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
                 <button
                   onClick={() => onPin(item.chatId)}
-                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                  className="p-1 hover:bg-[var(--bg-primary)] rounded transition-colors"
                   title="Pin chat"
                 >
-                  <Pin className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                  <Pin className="w-3 h-3 text-[var(--text-secondary)]" />
                 </button>
                 <button
                   onClick={() => onPreview(item.chatId)}
-                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                  className="p-1 hover:bg-[var(--bg-primary)] rounded transition-colors"
                   title="Preview chat"
                 >
-                  <Eye className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                  <Eye className="w-3 h-3 text-[var(--text-secondary)]" />
                 </button>
                 <button
                   onClick={() => onExclude(item.chatId)}
-                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                  className="p-1 hover:bg-[var(--bg-primary)] rounded transition-colors"
                   title="Exclude from suggestions"
                 >
-                  <X className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                  <X className="w-3 h-3 text-[var(--text-secondary)]" />
                 </button>
               </div>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+            <p className="text-xs text-[var(--text-muted)] line-clamp-2">
               {item.snippet}
             </p>
           </div>
