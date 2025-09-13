@@ -27,7 +27,7 @@ export function convertBackendChatToFrontend(backendChat: BackendChat): Chat {
 /**
  * Convert backend memory to frontend memory format
  */
-export function convertBackendMemoryToFrontend(backendMemory: BackendMemory, memoryId: string): Memory {
+export function convertBackendMemoryToFrontend(backendMemory: BackendMemory, memoryId: string, chatTitle?: string): Memory {
   const blocks: MemoryBlock[] = backendMemory.blocks.map((block) => ({
     topic: block.topic,
     description: block.description,
@@ -37,7 +37,8 @@ export function convertBackendMemoryToFrontend(backendMemory: BackendMemory, mem
 
   return {
     id: memoryId,
-    title: backendMemory.summary_string || 'Memory',
+    summary: backendMemory.summary_string || 'Memory',
+    title: chatTitle || backendMemory.summary_string || 'Unknown Chat',
     blocks,
     selected: true, // Auto-select memory by default
     isLocked: false,
@@ -76,7 +77,7 @@ export function extractMemoryBlocksFromChat(backendChat: BackendChat): Memory[] 
     return [];
   }
 
-  const memory = convertBackendMemoryToFrontend(backendChat.current_memory, `mem-${backendChat.id}`);
+  const memory = convertBackendMemoryToFrontend(backendChat.current_memory, `mem-${backendChat.id}`, backendChat.title);
   
   // Set the chatReferences to include the source chat ID
   memory.chatReferences = [backendChat.id];

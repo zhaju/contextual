@@ -47,7 +47,8 @@ export interface MemoryBlock {
 
 export interface Memory {
   id: string;
-  title: string;
+  summary: string;
+  title: string; // Title of the chat this memory is associated with
   blocks: MemoryBlock[];
   selected: boolean;
   isLocked: boolean; // true when context is submitted

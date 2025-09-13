@@ -113,7 +113,8 @@ function App() {
         },
         memories: chatMemories.map(memory => ({
           id: memory.id,
-          title: memory.title,
+          summary: memory.summary,
+          title: currentChat.title,
           selected: memory.selected,
           isLocked: memory.isLocked,
           isExpanded: memory.isExpanded,
