@@ -71,4 +71,5 @@ class StreamedChatResponse(BaseModel):
 
 
 class SetChatContextRequest(BaseModel):
-    wanted_context: List[str] # List of chat IDs for now #TODO
+    chat_id: str
+    required_context: List[str] # List of chat IDs for now #TODO

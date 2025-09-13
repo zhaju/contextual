@@ -196,7 +196,7 @@ async def new_chat(request: SendMessageRequest):
 
 
 
-@app.post("/chats/{chat_id}/set_context")
+@app.post("/chats/set_context")
 async def new_chat_context_set(request: SetChatContextRequest):
     """
     Set context for a chat and get SSE response from GPT
