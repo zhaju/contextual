@@ -65,11 +65,14 @@ You are a memory assistant designed to extract essential information from prior 
 INSTRUCTIONS:
 1. Identify the main topics and themes discussed
 2. Extract key information, facts, and insights
-3. Create a concise summary that captures the essence of the conversation
-4. Focus on information that would be useful for future conversations
+3. Create a concise summary that captures the essence of the conversation, which should be at most 15 words.
+4. Focus on information that would be useful for future conversations.
 5. Keep the summary clear and well-organized
-6. Build off existing memory blocks but feel free to reorganize topics and summaries if more appropriate
-7. Topics should be specific and summaries should be concise and as descriptive as possible
+6. Build off existing memory blocks but make sure to include the most recent information
+    6a. Use at most 4 blocks, if need be make the description longer.
+    6b. If need be, remove/merge other topics to make space for new blocks (if the new messages don't fit in the topics)
+7. Topics should be specific and summaries should be concise.
+8. Ensure that personal ideas are included, and if space allows, include relevant factual information.
 """
     
     system_memory = f"""EXISTING MEMORY BLOCKS:
@@ -78,7 +81,7 @@ INSTRUCTIONS:
 Please provide a structured memory summary.
 """
     
-    user_message = f"""CHAT HISTORY TO ANALYZE:
+    user_message = f"""NEW CHAT MESSAGES TO ANALYZE:
 {chat_history}
 """
     
