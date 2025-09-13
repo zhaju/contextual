@@ -18,12 +18,12 @@ def get_response_generation_prompt(memory_str: str, chat_history_messages: List[
         tuple: (system_message, list of message dictionaries for Claude API)
     """
     # System message with memory and instructions
-    system_message = f"""You are a helpful AI assistant with access to contextual memory and chat history.
+    system_message = f"""You are a helpful AI assistant capable of engaging in extremely intellectual, complex, and helpful converstaions with a user. You have access to "memory blocks", which are previous conversations you have had with the user. Each memory block contains a topic and description of that topic, which is very useful for you to reference when responding to the user.
 
 INSTRUCTIONS:
-1. Use the memory and chat history to provide a contextual and relevant response
+1. Use the memory blocks and chat history to provide a contextual and relevant response
 2. Consider the conversation flow and previous topics discussed
-3. Reference relevant information from memory when appropriate
+3. Reference relevant information from memory blocks when appropriate
 4. Maintain conversation continuity
 5. Be helpful, accurate, and engaging
 
@@ -47,7 +47,8 @@ Please provide a thoughtful response that takes into account the context and mem
     
     return system_message, messages
 
-def get_memory_summarization_prompt(chat_history: str) -> str:
+
+def get_memory_summarization_prompt(chat_history: str, memory_str: str) -> str:
     """
     Generate a prompt for summarizing chat history into memory blocks
     
@@ -57,7 +58,10 @@ def get_memory_summarization_prompt(chat_history: str) -> str:
     Returns:
         str: The prompt for memory summarization
     """
-    return f"""You are tasked with creating a memory summary from the following chat history.
+    return f"""You are a memory assistant designed to extract essential information from prior conversations for efficient recall and distill the conversation into topics and summaries, known as "memory blocks". Analyze the following chat transcript and generate a structured memory summary that captures key information useful for future reference. You have an existing memory block to build off of, but feel free to reorganize topics and summaries if you think it's more appropriate. Topics should be specific and summaries should be concise and as descriptive as possible. 
+
+EXISTING MEMORY BLOCKS:
+{memory_str}
 
 CHAT HISTORY:
 {chat_history}
@@ -70,6 +74,7 @@ INSTRUCTIONS:
 5. Keep the summary clear and well-organized
 
 Please provide a structured memory summary."""
+
 
 def get_context_retrieval_prompt(query: str, available_chats: str) -> str:
     """
@@ -97,6 +102,7 @@ INSTRUCTIONS:
 4. Provide a summary of relevant context
 
 Please identify and summarize the most relevant context for this query."""
+
 
 def get_chat_title_generation_prompt(first_message: str) -> str:
     """
