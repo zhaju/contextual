@@ -6,11 +6,27 @@ import json
 import uuid
 from datetime import datetime
 from custom_types import RootResponse, Chat, SendMessageRequest, SendMessageToChatRequest, ChatMessage, Memory, Block, ContextResponse, StreamedChatResponse, SetChatContextRequest
+from prompts import get_response_generation_prompt
 
 app = FastAPI(title="Contextual Chat API", version="1.0.0")
 
 # In-memory storage (replace with database in production)
-chats_db: Dict[str, Chat] = {}
+chats_db: Dict[str, Chat] = {
+    "sample_chat": Chat(
+        id="sample_chat",
+        current_memory=Memory(
+            summary_string="This is a sample memory summary.",
+            blocks=[
+                Block(topic="sample_topic", description="This is a sample block description.")
+            ]
+        ),
+        title="Sample Chat",
+        chat_history=[
+            ChatMessage(role="user", content="Hello, how are you?", timestamp=datetime.now()),
+            ChatMessage(role="assistant", content="I'm good, thank you!", timestamp=datetime.now())
+        ]
+    )
+}
 
 
 @app.get("/", response_model=RootResponse)
@@ -35,7 +51,7 @@ async def get_chat(chat_id: str):
 
 
 
-@app.post("/chats/{chat_id}/send", response_model=StreamedChatResponse)
+@app.post("/chats/send", response_model=StreamedChatResponse)
 async def send_message(request: SendMessageToChatRequest):
     """
     Send a message to a chat and get SSE response from GPT
@@ -51,10 +67,27 @@ async def send_message(request: SendMessageToChatRequest):
     )
     chats_db[request.chat_id].chat_history.append(user_message)
     
-    # Placeholder SSE response
+    # Prepare context for the prompt
+    chat = chats_db[request.chat_id]
+    
+    # Get memory as string
+    memory_str = chat.current_memory.to_llm_str()
+    
+    # Get last 6 chat messages (truncated)
+    recent_messages = chat.chat_history[-6:] if len(chat.chat_history) > 6 else chat.chat_history
+    chat_history_str = "\n".join([
+        f"{msg.role.upper()}: {msg.content[:200]}{'...' if len(msg.content) > 200 else ''}"
+        for msg in recent_messages
+    ])
+    
+    # Create the prompt
+    prompt = get_response_generation_prompt(memory_str, chat_history_str, request.message)
+    
+    # TODO: Replace with actual Claude model call
+    # For now, using placeholder response
     async def generate_response():
-        # Simulate GPT response streaming
-        response_text = f"Placeholder response to: {request.message}"
+        # Placeholder response - will be replaced with actual Claude call
+        response_text = f"Contextual response to: {request.message}\n\nMemory: {memory_str[:100]}...\n\nChat History: {chat_history_str[:100]}..."
         chunks = [response_text[i:i+10] for i in range(0, len(response_text), 10)]
         
         for chunk in chunks:
