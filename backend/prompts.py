@@ -48,23 +48,19 @@ Please provide a thoughtful response that takes into account the context and mem
     return system_message, messages
 
 
-def get_memory_summarization_prompt(chat_history: str, memory_str: str) -> str:
+def get_memory_summarization_prompt(chat_history: str, memory_str: str) -> List[Dict[str, str]]:
     """
-    Generate a prompt for summarizing chat history into memory blocks
+    Generate a list of messages for summarizing chat history into memory blocks
     
     Args:
         chat_history: String representation of chat history
+        memory_str: String representation of existing memory
         
     Returns:
-        str: The prompt for memory summarization
+        List[Dict[str, str]]: List of message dictionaries for Groq API
     """
-    return f"""You are a memory assistant designed to extract essential information from prior conversations for efficient recall and distill the conversation into topics and summaries, known as "memory blocks". Analyze the following chat transcript and generate a structured memory summary that captures key information useful for future reference. You have an existing memory block to build off of, but feel free to reorganize topics and summaries if you think it's more appropriate. Topics should be specific and summaries should be concise and as descriptive as possible. 
-
-EXISTING MEMORY BLOCKS:
-{memory_str}
-
-CHAT HISTORY:
-{chat_history}
+    system_overview = """
+You are a memory assistant designed to extract essential information from prior conversations for efficient recall and distill the conversation into topics and summaries, known as "memory blocks". Your task is to analyze chat transcripts and generate structured memory summaries that capture key information useful for future reference.
 
 INSTRUCTIONS:
 1. Identify the main topics and themes discussed
@@ -72,8 +68,25 @@ INSTRUCTIONS:
 3. Create a concise summary that captures the essence of the conversation
 4. Focus on information that would be useful for future conversations
 5. Keep the summary clear and well-organized
+6. Build off existing memory blocks but feel free to reorganize topics and summaries if more appropriate
+7. Topics should be specific and summaries should be concise and as descriptive as possible
+"""
+    
+    system_memory = f"""EXISTING MEMORY BLOCKS:
+{memory_str}
 
-Please provide a structured memory summary."""
+Please provide a structured memory summary.
+"""
+    
+    user_message = f"""CHAT HISTORY TO ANALYZE:
+{chat_history}
+"""
+    
+    return [
+        {"role": "system", "content": system_overview},
+        {"role": "system", "content": system_memory},
+        {"role": "user", "content": user_message}
+    ]
 
 
 def get_context_retrieval_prompt(query: str, available_chats: str) -> str:

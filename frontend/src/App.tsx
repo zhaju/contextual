@@ -228,6 +228,39 @@ function App() {
   };
 
   // Memory handling functions
+  const handleMemoryToggle = (memoryId: string) => {
+    setMemories(prev => prev.map(memory => {
+      if (memory.id === memoryId) {
+        // Toggle only the selected memory, leave others unchanged
+        const newSelected = !memory.selected;
+        return {
+          ...memory,
+          selected: newSelected,
+          blocks: memory.blocks.map(block => ({ ...block, selected: newSelected }))
+        };
+      } else {
+        // Leave other memories as they are
+        return memory;
+      }
+    }));
+    
+    // Also update filtered memories if they exist
+    if (filteredMemories.length > 0) {
+      setFilteredMemories(prev => prev.map(memory => {
+        if (memory.id === memoryId) {
+          const newSelected = !memory.selected;
+          return {
+            ...memory,
+            selected: newSelected,
+            blocks: memory.blocks.map(block => ({ ...block, selected: newSelected }))
+          };
+        } else {
+          // Leave other memories as they are
+          return memory;
+        }
+      }));
+    }
+  };
 
   const handleBlockToggle = (memoryId: string, blockId: string) => {
     setMemories(prev => prev.map(memory => {
