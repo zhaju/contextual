@@ -39,10 +39,8 @@ export interface PinnedContext {
 }
 
 export interface MemoryBlock {
-  id: string;
   topic: string;
   description: string;
-  importance: number; // 1-5 scale for # importance
   selected: boolean;
   chatReferences: string[]; // Array of chat IDs that reference this block
 }
@@ -115,10 +113,11 @@ export interface PinnedContextProps {
 export interface MemoryDirectoryProps {
   memories: Memory[];
   onMemoryToggle: (memoryId: string) => void;
-  onBlockToggle: (memoryId: string, blockId: string) => void;
+  onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
   isNewChat: boolean;
   contextSubmitted: boolean;
   firstMessageSent: boolean;
+  isSubmittingContext?: boolean;
 }

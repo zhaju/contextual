@@ -6,7 +6,7 @@ interface RightSidebarProps {
   memories: Memory[];
   relevantChats?: RelevantChat[];
   onMemoryToggle: (memoryId: string) => void;
-  onBlockToggle: (memoryId: string, blockId: string) => void;
+  onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
   onChatPin: (chatId: string) => void;
@@ -15,6 +15,7 @@ interface RightSidebarProps {
   isNewChat: boolean;
   contextSubmitted: boolean;
   firstMessageSent: boolean;
+  isSubmittingContext?: boolean;
 }
 
 /**
@@ -46,6 +47,7 @@ export const RightSidebar = ({
   isNewChat,
   contextSubmitted,
   firstMessageSent,
+  isSubmittingContext = false,
 }: RightSidebarProps) => {
   return (
   <div className="w-80 bg-[var(--bg-secondary)] border-l border-[var(--border-color)] flex flex-col h-full min-h-0">
@@ -70,6 +72,7 @@ export const RightSidebar = ({
           isNewChat={isNewChat}
           contextSubmitted={contextSubmitted}
           firstMessageSent={firstMessageSent}
+          isSubmittingContext={isSubmittingContext}
         />
       </div>
     </div>

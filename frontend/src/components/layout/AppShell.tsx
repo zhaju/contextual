@@ -18,11 +18,12 @@ interface AppShellProps {
   contextSubmitted?: boolean;
   firstMessageSent?: boolean;
   isRightSidebarOpen?: boolean;
+  isSubmittingContext?: boolean;
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
   onSendMessage: (message: string) => void;
   onMemoryToggle: (memoryId: string) => void;
-  onBlockToggle: (memoryId: string, blockId: string) => void;
+  onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
   onTopicSelect: (topicId: string) => void;
@@ -56,6 +57,7 @@ export const AppShell = ({
   contextSubmitted = false,
   firstMessageSent = false,
   isRightSidebarOpen = true,
+  isSubmittingContext = false,
   onChatSelect,
   onNewChat,
   onSendMessage,
@@ -156,6 +158,7 @@ export const AppShell = ({
             isNewChat={isNewChat}
             contextSubmitted={contextSubmitted}
             firstMessageSent={firstMessageSent}
+            isSubmittingContext={isSubmittingContext}
           />
         )}
       </div>

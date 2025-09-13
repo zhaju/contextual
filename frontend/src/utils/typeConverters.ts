@@ -28,11 +28,9 @@ export function convertBackendChatToFrontend(backendChat: BackendChat): Chat {
  * Convert backend memory to frontend memory format
  */
 export function convertBackendMemoryToFrontend(backendMemory: BackendMemory, memoryId: string): Memory {
-  const blocks: MemoryBlock[] = backendMemory.blocks.map((block, index) => ({
-    id: `block-${memoryId}-${index}`,
+  const blocks: MemoryBlock[] = backendMemory.blocks.map((block) => ({
     topic: block.topic,
     description: block.description,
-    importance: 3, // Default importance
     selected: false,
     chatReferences: []
   }));
@@ -79,6 +77,10 @@ export function extractMemoryBlocksFromChat(backendChat: BackendChat): Memory[] 
   }
 
   const memory = convertBackendMemoryToFrontend(backendChat.current_memory, `mem-${backendChat.id}`);
+  
+  // Set the chatReferences to include the source chat ID
+  memory.chatReferences = [backendChat.id];
+  
   return [memory];
 }
 
@@ -88,7 +90,6 @@ export function extractMemoryBlocksFromChat(backendChat: BackendChat): Memory[] 
 export function convertBackendChatToRelevantChat(backendChat: BackendChat): RelevantChat {
   const lastMessage = backendChat.chat_history[backendChat.chat_history.length - 1];
   const snippet = lastMessage ? lastMessage.content.substring(0, 100) + '...' : 'No messages';
-  console.log('Converting backend chat to relevant chat:', backendChat);
   return {
     chatId: backendChat.id,
     title: backendChat.title,

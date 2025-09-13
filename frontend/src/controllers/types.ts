@@ -24,6 +24,7 @@ export interface BackendChatMessage {
 
 export interface ContextResponse {
   relevant_chats: BackendChat[];
+  chat_id: string;
 }
 
 export interface SendMessageRequest {
@@ -37,7 +38,7 @@ export interface SendMessageToChatRequest {
 
 export interface SetChatContextRequest {
   chat_id: string;
-  required_context: string[];
+  required_context: BackendChat[];
 }
 
 export interface StreamedChatResponse {

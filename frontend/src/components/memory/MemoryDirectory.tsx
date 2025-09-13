@@ -23,12 +23,13 @@ export const MemoryDirectory = ({
   onSubmitContext,
   isNewChat,
   contextSubmitted,
-  firstMessageSent
+  firstMessageSent,
+  isSubmittingContext = false
 }: MemoryDirectoryProps) => {
 
-  const handleBlockToggle = (memoryId: string, blockId: string) => {
+  const handleBlockToggle = (memoryId: string, blockIndex: number) => {
     if (memories.find(m => m.id === memoryId)?.isLocked) return;
-    onBlockToggle(memoryId, blockId);
+    onBlockToggle(memoryId, blockIndex);
   };
 
   const handleMemoryExpand = (memoryId: string) => {
@@ -164,9 +165,9 @@ export const MemoryDirectory = ({
             {memory.isExpanded && (
               <div className="border-t border-[var(--border-color)] p-3 bg-[var(--bg-secondary)]">
                 <div className="space-y-2">
-                  {memory.blocks.map((block) => (
+                  {memory.blocks.map((block, blockIndex) => (
                     <div 
-                      key={block.id}
+                      key={blockIndex}
                       className={`flex items-start space-x-3 p-2 rounded-lg ${
                         memory.isLocked 
                           ? 'bg-[var(--bg-tertiary)]' 
@@ -177,7 +178,7 @@ export const MemoryDirectory = ({
                         <input
                           type="checkbox"
                           checked={block.selected}
-                          onChange={() => handleBlockToggle(memory.id, block.id)}
+                          onChange={() => handleBlockToggle(memory.id, blockIndex)}
                           disabled={!allowInteraction || memory.isLocked}
                           className="absolute w-5 h-5 opacity-0 cursor-pointer z-10"
                           tabIndex={0}
@@ -229,14 +230,21 @@ export const MemoryDirectory = ({
       {showActiveSelection && (
         <button
           onClick={onSubmitContext}
-          disabled={!hasSelectedBlocks}
+          disabled={!hasSelectedBlocks || isSubmittingContext}
           className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-            hasSelectedBlocks
+            hasSelectedBlocks && !isSubmittingContext
               ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg dark:bg-blue-700 dark:hover:bg-blue-800'
               : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)] cursor-not-allowed'
           }`}
         >
-          Submit Context
+          {isSubmittingContext ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <span>Setting Context...</span>
+            </div>
+          ) : (
+            'Submit Context'
+          )}
         </button>
       )}
     </div>

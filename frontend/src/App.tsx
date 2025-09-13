@@ -34,6 +34,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+  const [isSubmittingContext, setIsSubmittingContext] = useState(false);
 
   // Load chats from backend on component mount
   useEffect(() => {
@@ -118,10 +119,8 @@ function App() {
           isExpanded: memory.isExpanded,
           chatReferences: memory.chatReferences,
           blocks: memory.blocks.map(block => ({
-            id: block.id,
             topic: block.topic,
             description: block.description,
-            importance: block.importance,
             selected: block.selected,
             chatReferences: block.chatReferences
           }))
@@ -169,7 +168,7 @@ function App() {
     console.log('Message sent:', message);
     
     // First message in new chat triggers context recommendation flow
-    if (selectedChatId === "") {
+    if (selectedChatId === "" || selectedChatId === null) {
       try {
          // Call backend API to create new chat and get context recommendations
          console.log('Sending to backend:', { message });
@@ -180,11 +179,14 @@ function App() {
         setRelevantChats(relevantChatsList);
         
          // Create a new chat object with the actual chat ID from backend
-         const actualChatId = contextResponse.relevant_chats[0]?.id;
-         if (actualChatId) {
+         const actualChatId = contextResponse.chat_id;
+         
+         // Fetch the full chat details from backend to get the proper title
+         try {
+           const fullChat = await chatController.getChat(actualChatId);
            const newChat: Chat = {
              id: actualChatId,
-             title: contextResponse.relevant_chats[0]?.title || "New Chat",
+             title: fullChat.title,
              last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
              updatedAt: "Now",
              topicId: "default", // Topics removed - using default
@@ -193,17 +195,36 @@ function App() {
              isNewChat: true,
              contextSubmitted: false,
              firstMessageSent: true,
-             filteredMemories: contextResponse.relevant_chats.map((c: any) => c.id)
+             filteredMemories: [] // Will be populated with memory IDs after memories are extracted
            };
            
            // Add the new chat to the beginning of the array
+           setAllChats(prev => [newChat, ...prev]);
+           setSelectedChatId(actualChatId);
+         } catch (error) {
+           console.error('Failed to fetch chat details:', error);
+           // Fallback: create chat with basic info
+           const newChat: Chat = {
+             id: actualChatId,
+             title: "New Chat",
+             last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
+             updatedAt: "Now",
+             topicId: "default",
+             starred: false,
+             memoryIds: [],
+             isNewChat: true,
+             contextSubmitted: false,
+             firstMessageSent: true,
+             filteredMemories: []
+           };
+           
            setAllChats(prev => [newChat, ...prev]);
            setSelectedChatId(actualChatId);
          }
         
         // Store the user message
         const userMessage = {
-          id: `msg-${Date.now()}`,
+          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           role: 'user' as const,
           text: message
         };
@@ -212,6 +233,80 @@ function App() {
         // Extract memory blocks from relevant chats for context selection
         const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
         setMemories(relevantMemories);
+        
+        // Update the chat with the memory IDs for filtering
+        if (actualChatId) {
+          setAllChats(prev => prev.map(chat => 
+            chat.id === actualChatId 
+              ? { ...chat, filteredMemories: relevantMemories.map(mem => mem.id) }
+              : chat
+          ));
+        }
+        
+        // If no relevant memories, skip context selection and proceed directly
+        if (relevantMemories.length === 0) {
+          console.log('No relevant memories found, proceeding directly with message');
+          
+          // Update chat to mark context as submitted and no longer new
+          if (actualChatId) {
+            setAllChats(prev => prev.map(chat => 
+              chat.id === actualChatId 
+                ? { 
+                    ...chat, 
+                    contextSubmitted: true,
+                    isNewChat: false
+                  }
+                : chat
+            ));
+          }
+          
+          // Proceed with sending the message to get assistant response
+          setIsTyping(true);
+          
+          try {
+            // Send message to backend and get SSE response
+            const stream = await chatController.sendMessage({
+              chat_id: actualChatId,
+              message: message
+            });
+            
+            // Parse SSE stream
+            let assistantResponse = '';
+            await chatController.parseSSEStream(
+              stream,
+              (data: any) => {
+                if (data.content) {
+                  assistantResponse += data.content;
+                  // Update the assistant message in real-time
+                  setCurrentMessages(prev => {
+                    const lastMessage = prev[prev.length - 1];
+                    if (lastMessage && lastMessage.role === 'assistant') {
+                      return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
+                    } else {
+                      return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', text: assistantResponse }];
+                    }
+                  });
+                }
+              },
+              () => {
+                // Stream complete
+                setIsTyping(false);
+              },
+              (error: any) => {
+                console.error('SSE stream error:', error);
+                setIsTyping(false);
+                setError('Failed to get response. Please try again.');
+              }
+            );
+          } catch (error) {
+            console.error('Failed to send message:', error);
+            setIsTyping(false);
+            setError('Failed to send message. Please try again.');
+          }
+          
+          return; // Exit early since we handled the message
+        }
+        
         toggleRightSidebar();
         console.log('Context recommendations received:', contextResponse);
         console.log("relevantMemories:", relevantMemories);
@@ -224,8 +319,14 @@ function App() {
     }
     
     // For subsequent messages or after context is submitted, proceed normally
+    if (!selectedChatId) {
+      console.error('No chat selected');
+      setError('No chat selected. Please select a chat or create a new one.');
+      return;
+    }
+    
     const userMessage = {
-      id: `msg-${Date.now()}`,
+      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       role: 'user' as const,
       text: message
     };
@@ -236,7 +337,7 @@ function App() {
     try {
       // Send message to backend and get SSE response
       const stream = await chatController.sendMessage({
-        chat_id: selectedChatId!,
+        chat_id: selectedChatId,
         message: message
       });
       
@@ -253,7 +354,7 @@ function App() {
               if (lastMessage && lastMessage.role === 'assistant') {
                 return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
               } else {
-                return [...prev, { id: `msg-${Date.now() + 1}`, role: 'assistant', text: assistantResponse }];
+                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', text: assistantResponse }];
               }
             });
           }
@@ -313,11 +414,11 @@ function App() {
     }
   };
 
-  const handleBlockToggle = (memoryId: string, blockId: string) => {
+  const handleBlockToggle = (memoryId: string, blockIndex: number) => {
     setMemories(prev => prev.map(memory => {
       if (memory.id === memoryId) {
-        const updatedBlocks = memory.blocks.map(block => 
-          block.id === blockId ? { ...block, selected: !block.selected } : block
+        const updatedBlocks = memory.blocks.map((block, index) => 
+          index === blockIndex ? { ...block, selected: !block.selected } : block
         );
         const someBlocksSelected = updatedBlocks.some(block => block.selected);
         
@@ -341,27 +442,100 @@ function App() {
 
   // Context submission after user selection
   const handleSubmitContext = async () => {
+    if (isSubmittingContext) {
+      console.log('Context submission already in progress, ignoring duplicate request');
+      return;
+    }
+    
     console.log('Context submitted');
+    console.log('Selected chat ID:', selectedChatId);
+    console.log('Available memories:', memories);
+    console.log('Relevant chats:', relevantChats);
     
     // Get selected memory descriptions for context injection
-    const selectedContexts = memories
-      .filter(memory => memory.selected || memory.blocks.some(block => block.selected))
-      .flatMap(memory => [
-        memory.title,
-        ...memory.blocks.filter(block => block.selected).map(block => `${block.topic}: ${block.description}`)
-      ]);
+    const selectedMemories = memories.filter(memory => 
+      memory.selected || memory.blocks.some(block => block.selected)
+    );
     
-    if (selectedContexts.length === 0) {
+    console.log('Selected memories:', selectedMemories);
+    
+    if (selectedMemories.length === 0) {
       setError('Please select at least one context item before submitting.');
       return;
     }
     
+    if (!selectedChatId) {
+      setError('No chat selected. Please try again.');
+      return;
+    }
+    
+    setIsSubmittingContext(true);
+    setError(null);
+    
     try {
-      // Call backend API to set context for the chat
-      const stream = await chatController.setChatContext({
-        chat_id: selectedChatId!,
-        required_context: selectedContexts
+      // Get the relevant chats that correspond to the selected memories
+      // We need to map the selected memories back to their source chats
+      const selectedChatIds = selectedMemories.flatMap(memory => {
+        // Use the chatReferences field which contains the actual chat IDs
+        return memory.chatReferences || [];
       });
+      
+      console.log('Selected chat IDs:', selectedChatIds);
+      
+      // Fetch the full chat objects from the backend
+      const fullChats = await Promise.all(
+        selectedChatIds.map(chatId => chatController.getChat(chatId))
+      );
+      
+      console.log('Full chats for context:', fullChats);
+      
+      if (fullChats.length === 0) {
+        setError('No relevant chats found for selected context.');
+        setIsSubmittingContext(false);
+        return;
+      }
+      
+      // Filter the memory blocks based on user selection
+      const selectedChats = fullChats.map(chat => {
+        // Find the corresponding memory for this chat
+        const memory = selectedMemories.find(mem => 
+          mem.chatReferences.includes(chat.id)
+        );
+        
+        if (!memory) {
+          // If no memory found, return the chat as-is
+          return chat;
+        }
+        
+        // Filter the blocks to only include selected ones
+        const selectedBlocks = memory.blocks.filter(block => block.selected);
+        
+        // Create a new chat object with filtered memory blocks
+        return {
+          ...chat,
+          current_memory: {
+            ...chat.current_memory,
+            blocks: selectedBlocks.map(block => ({
+              topic: block.topic,
+              description: block.description
+            }))
+          }
+        };
+      });
+      
+      console.log('Selected chats with filtered blocks:', selectedChats);
+      
+      // Call backend API to set context for the chat
+      const request = {
+        chat_id: selectedChatId,
+        required_context: selectedChats
+      };
+      console.log('Sending context request:', request);
+      
+      const stream = await chatController.setChatContext(request);
+      
+      // Set typing indicator since backend will generate response
+      setIsTyping(true);
       
       // Update the current chat to mark context as submitted
       if (selectedChatId) {
@@ -382,31 +556,40 @@ function App() {
         isLocked: memory.selected || memory.blocks.some(block => block.selected)
       })));
       
-      // Parse SSE stream for context confirmation
-      let contextResponse = '';
+      // Parse SSE stream for context confirmation and assistant response
+      let assistantResponse = '';
       await chatController.parseSSEStream(
         stream,
         (data: any) => {
           if (data.content) {
-            contextResponse += data.content;
+            assistantResponse += data.content;
+            // Update the assistant message in real-time
+            setCurrentMessages(prev => {
+              const lastMessage = prev[prev.length - 1];
+              if (lastMessage && lastMessage.role === 'assistant') {
+                return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
+              } else {
+                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', text: assistantResponse }];
+              }
+            });
           }
         },
         () => {
-          // Context set successfully, now send the first message
-          const firstMessage = currentMessages[0];
-          if (firstMessage) {
-            // Trigger the message sending flow with the first message
-            handleSendMessage(firstMessage.text);
-          }
+          // Context set and assistant response received successfully
+          setIsSubmittingContext(false);
+          setIsTyping(false);
         },
         (error: any) => {
           console.error('Context setting error:', error);
           setError('Failed to set context. Please try again.');
+          setIsSubmittingContext(false);
+          setIsTyping(false);
         }
       );
     } catch (error) {
       console.error('Failed to set context:', error);
       setError('Failed to set context. Please try again.');
+      setIsSubmittingContext(false);
     }
   };
 
@@ -445,6 +628,7 @@ function App() {
   // Get the appropriate memories to display
   const getDisplayMemories = () => {
     if (isNewChat() && isFirstMessageSent()) {
+      // For new chats, return filtered memories for context selection
       return getFilteredMemories();
     }
     if (selectedChatId) {
@@ -496,6 +680,7 @@ function App() {
       contextSubmitted={isContextSubmitted()}
       firstMessageSent={isFirstMessageSent()}
       isRightSidebarOpen={isRightSidebarOpen}
+      isSubmittingContext={isSubmittingContext}
       onChatSelect={handleChatSelect}
       onNewChat={handleNewChat}
       onSendMessage={handleSendMessage}
