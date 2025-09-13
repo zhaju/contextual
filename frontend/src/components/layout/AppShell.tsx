@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { LeftSidebar } from './LeftSidebar';
-import { ChatView } from './ChatView';
-import { Composer } from './Composer';
+import { ChatView } from '../chat/ChatView';
+import { Composer } from '../input/Composer';
 import { RightSidebar } from './RightSidebar';
-import { ThemeToggle } from './ThemeToggle';
-import type { Chat, Topic, Message, Memory } from '../types';
+import { ThemeToggle } from '../ui/ThemeToggle';
+import type { Chat, Topic, Message, Memory } from '../../types';
 
 interface AppShellProps {
   chats: Chat[];

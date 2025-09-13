@@ -1,5 +1,5 @@
 import ReactMarkdown from 'react-markdown';
-import type { MarkdownMessageProps } from '../types';
+import type { MarkdownMessageProps } from '../../types';
 
 /**
  * MarkdownMessage Component

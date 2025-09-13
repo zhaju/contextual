@@ -1,5 +1,5 @@
 import { GripVertical, X } from 'lucide-react';
-import type { PinnedContextProps } from '../types';
+import type { PinnedContextProps } from '../../types';
 
 /**
  * PinnedContext Component

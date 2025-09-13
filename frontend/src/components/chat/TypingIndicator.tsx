@@ -1,4 +1,4 @@
-import type { TypingIndicatorProps } from '../types';
+import type { TypingIndicatorProps } from '../../types';
 
 /**
  * TypingIndicator Component

@@ -1,5 +1,5 @@
-import { MemoryDirectory } from './MemoryDirectory';
-import type { Memory } from '../types';
+import { MemoryDirectory } from '../memory/MemoryDirectory';
+import type { Memory } from '../../types';
 
 interface RightSidebarProps {
   memories: Memory[];

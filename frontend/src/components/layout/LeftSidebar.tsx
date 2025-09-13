@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Plus, Menu } from 'lucide-react';
-import { ChatSearchInput } from './ChatSearchInput';
-import { ChatList } from './ChatList';
-import type { Chat, Topic } from '../types';
+import { ChatSearchInput } from '../chat/ChatSearchInput';
+import { ChatList } from '../chat/ChatList';
+import type { Chat, Topic } from '../../types';
 
 interface LeftSidebarProps {
   chats: Chat[];

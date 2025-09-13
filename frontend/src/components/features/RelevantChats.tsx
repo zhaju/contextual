@@ -1,5 +1,5 @@
 import { Pin, Eye, X } from 'lucide-react';
-import type { RelevantChatsProps } from '../types';
+import type { RelevantChatsProps } from '../../types';
 
 /**
  * RelevantChats Component

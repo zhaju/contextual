@@ -1,4 +1,4 @@
-import type { SuggestedTopicsProps } from '../types';
+import type { SuggestedTopicsProps } from '../../types';
 
 /**
  * SuggestedTopics Component

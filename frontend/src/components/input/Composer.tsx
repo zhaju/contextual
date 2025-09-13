@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, X } from 'lucide-react';
-import type { ComposerProps } from '../types';
+import type { ComposerProps } from '../../types';
 
 /**
  * Composer Component

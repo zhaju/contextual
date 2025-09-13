@@ -1,4 +1,4 @@
-import type { MessageListProps } from '../types';
+import type { MessageListProps } from '../../types';
 import { MarkdownMessage } from './MarkdownMessage';
 
 /**

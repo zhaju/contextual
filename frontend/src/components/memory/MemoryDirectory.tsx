@@ -1,4 +1,4 @@
-import type { MemoryDirectoryProps } from '../types';
+import type { MemoryDirectoryProps } from '../../types';
 
 /**
  * MemoryDirectory Component

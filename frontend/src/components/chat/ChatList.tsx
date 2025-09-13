@@ -1,5 +1,5 @@
 import { Star, Clock } from 'lucide-react';
-import type { ChatListProps } from '../types';
+import type { ChatListProps } from '../../types';
 
 /**
  * ChatList Component
