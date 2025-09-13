@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,7 +28,8 @@ chats_db: Optional[Dict[str, Chat]] = None
 
 """
 chat_db format:
-{
+"""
+sample_chats_db = {
     "sample_chat": Chat(
         id="sample_chat",
         current_memory=Memory(
@@ -43,7 +45,6 @@ chat_db format:
         ]
     )
 }
-"""
 
 
 @asynccontextmanager
@@ -68,6 +69,16 @@ async def lifespan(app: FastAPI):
     
     # Initialize chats_db as empty dict first
     chats_db = {}
+    # Load initial chats
+    if os.environ.get("LOAD_INITIAL_CHATS", "false").lower() == "true":
+        if groq_caller is not None:
+            initial_chats = await load_initial_chats(groq_caller)
+            chats_db.update(initial_chats)
+            print(f"✅ Loaded {len(chats_db)} initial chats")
+        else:
+            print("⚠️ Skipping initial chat loading - GroqCaller not available")
+    else:
+        chats_db = sample_chats_db
     
     try:
         memory_updater = ChatMemoryUpdater(chat_db=chats_db)
@@ -76,13 +87,6 @@ async def lifespan(app: FastAPI):
         print(f"❌ Failed to initialize ChatMemoryUpdater: {e}")
         memory_updater = None
     
-    # Load initial chats
-    if groq_caller is not None:
-        initial_chats = await load_initial_chats(groq_caller)
-        chats_db.update(initial_chats)
-        print(f"✅ Loaded {len(chats_db)} initial chats")
-    else:
-        print("⚠️ Skipping initial chat loading - GroqCaller not available")
     
     yield
     
