@@ -123,14 +123,6 @@ async def test_groq_caller():
             response_format=PersonInfo
         )
         print(f"✅ Structured response: {response}")
-        
-        # Try to parse the response as JSON to verify it's structured
-        import json
-        try:
-            parsed_response = json.loads(response)
-            print(f"✅ Successfully parsed JSON: {parsed_response}")
-        except json.JSONDecodeError:
-            print("⚠️  Response is not valid JSON, but that's okay for this test")
             
     except Exception as e:
         print(f"❌ Pydantic response format test failed: {e}")

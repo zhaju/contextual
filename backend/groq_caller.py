@@ -2,10 +2,12 @@ import os
 from groq import Groq
 from groq.types.chat.completion_create_params import ResponseFormat
 from groq._types import NotGiven
-from typing import Dict, List, AsyncGenerator
+from typing import Dict, List, AsyncGenerator, TypeVar, Type, Union
 import asyncio
 
 from pydantic import BaseModel
+
+T = TypeVar('T', bound=BaseModel)
 
 class GroqCaller:
     def __init__(self) -> None:
@@ -32,7 +34,6 @@ class GroqCaller:
                         "schema": response_format.model_json_schema()
                     }
                 } if response_format else None
-            print(groq_response_format)
             completion = self.client.chat.completions.create(
                 model=model,
                 messages=messages,
@@ -41,7 +42,7 @@ class GroqCaller:
                 top_p=1,
                 stream=stream,
                 stop=None,
-                response_format= if groq_response_format else None
+                response_format=groq_response_format
             )
             
             if stream:
@@ -55,7 +56,7 @@ class GroqCaller:
         except Exception as e:
             yield f"Error calling Groq API: {str(e)}"
 
-    async def call_groq_single(self, messages: List[Dict], model: str = "openai/gpt-oss-20b", response_format: type[BaseModel] | None = None) -> str:
+    async def call_groq_single(self, messages: List[Dict], model: str = "openai/gpt-oss-20b", response_format: Type[T] | None = None) -> Union[str, T]:
         """
         Single non-streaming call to Groq API that returns the complete response
         
@@ -65,16 +66,23 @@ class GroqCaller:
             response_format: Optional Pydantic model for structured output
             
         Returns:
-            str: The complete response
+            Union[str, T]: The complete response as string or parsed Pydantic model
         """
         response = ""
         
         async for chunk in self.call_groq(messages, model, response_format=response_format, stream=False):
             response += chunk
             
+        if response_format:
+            try:
+                parsed = response_format.model_validate_json(response)
+                return parsed
+            except Exception as e:
+                # Return error message with raw response for debugging
+                return f"Error parsing response into {response_format.__name__}: {str(e)}\nRaw response: {response}"
         return response
 
-    async def call_groq_simple(self, message: str, model: str = "openai/gpt-oss-20b", response_format: type[BaseModel] | None = None) -> str:
+    async def call_groq_simple(self, message: str, model: str = "openai/gpt-oss-20b", response_format: Type[T] | None = None) -> Union[str, T]:
         """
         Simple non-streaming call to Groq API with a single user message
         
@@ -84,7 +92,7 @@ class GroqCaller:
             response_format: Optional Pydantic model for structured output
             
         Returns:
-            str: The complete response
+            Union[str, T]: The complete response as string or parsed Pydantic model
         """
         messages = [{"role": "user", "content": message}]
         return await self.call_groq_single(messages, model, response_format)
