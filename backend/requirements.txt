@@ -6,3 +6,4 @@ sentence-transformers
 uvicorn
 pydantic
 asyncio
+aiohttp
