@@ -29,21 +29,15 @@ class ClaudeCaller:
             # Filter out any system messages from the messages list
             filtered_messages = [msg for msg in messages if msg.get("role") != "system"]
             
-            # Build the API call parameters
-            api_params = {
-                "model": model,
-                "messages": filtered_messages,
-                "max_tokens": 8192,
-                "temperature": 1,
-                "top_p": 1,
-                "stream": stream,
-            }
-            
-            # Add system parameter if provided
-            if system:
-                api_params["system"] = system
-            
-            completion = await self.client.messages.create(**api_params)
+            completion = await self.client.messages.create(
+                model=model,
+                messages=filtered_messages,
+                system=system if system else None,
+                max_tokens=8192,
+                temperature=1,
+                top_p=1,
+                stream=stream,
+            )
 
             if not stream:
                 raw_text = "".join([c.text for c in completion.content if c.type == "text"])
