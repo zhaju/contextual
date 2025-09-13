@@ -5,7 +5,7 @@ from typing import List, Optional, Dict, Any
 import json
 import uuid
 from datetime import datetime
-from types import RootResponse, Chat, SendMessageRequest, SendMessageToChatRequest, ChatMessage, Memory, Block, ContextResponse, StreamedChatResponse, SetChatContextRequest
+from custom_types import RootResponse, Chat, SendMessageRequest, SendMessageToChatRequest, ChatMessage, Memory, Block, ContextResponse, StreamedChatResponse, SetChatContextRequest
 
 app = FastAPI(title="Contextual Chat API", version="1.0.0")
 

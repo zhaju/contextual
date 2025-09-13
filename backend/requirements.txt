@@ -8,4 +8,4 @@ uvicorn
 pydantic
 asyncio
 aiohttp
-dotenv
+python-dotenv
