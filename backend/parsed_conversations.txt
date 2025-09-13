@@ -1,569 +1,1127 @@
 USER:
 give me some hackathon ideas based on what you know of me and this prize list
 
-
-Hack the North 2025: Finalists
-12 winners
-The finalists of Hack the North 2025!
-
-Hack the North 2025: People's Choice Award
-1 winner
-The project that receives the most votes in the Project Expo! Only projects that advanced to the second round of judging are eligible for this prize.
-
-Amazon: AWS Campus Champions - Best Use of DynamoDB Streams
-1 winner
-Ever wanted to build apps that react in real-time and make a genuine difference for students? Join the AWS Campus Champions hackathon track! DynamoDB is Amazon's serverless NoSQL database that powers millions of apps around the world. Now imagine being able to capture every single change to that data as it happens - that's what DynamoDB Streams does. In just 36 hours, we invite students to build something meaningful with DynamoDB Streams to better the student experience - like a real-time chat app where messages from co-op advisors appear instantly, a collaborative white board that syncs between users for interview prep, or any innovation that addresses real challenges that students face today.
-
-Whether you're a beginner or a tenured hacker, this is your chance to work with the same tech that powers massive platforms while building something for students. Are you ready to make that impact?
-
-Cerebras: Best Use of Cerebras
-1 winner
-Cerebras is redefining AI inference. Unlike GPU-based providers, we build our own chips, designed from the ground up for large language model inference. The result: unprecedented speed of up to 3,000 tokens per second.
-
-This track rewards the most creative and impactful projects that showcase what becomes possible when inference is no longer the bottleneck. Think real-time applications, agentic workflows, or entirely new user experiences powered by world-record inference performance.
-
-The winning team will receive Keychron K2 HE Rapid Trigger Wireless Custom Mechanical Keyboards for each member of the team.
-
-Cohere: Best Use of Cohere API
-1 winner
-This year, we’re bringing Cohere’s most advanced capabilities to Hack the North. Our API now powers multimodal intelligence - AI that reads documents, interprets images, reasons across inputs, and takes action through agentic workflows. From an assistant that analyzes slide decks to an agent that chains tasks with live data, we want to see your boldest ideas that push what’s possible with Cohere.
-
-Prizes
-1st: $500 cash per member (max 4) + $4,000 Cohere Credits
-2nd: $100 cash per member (max 4) + $2,000 Credits
-3rd: $1,000 Credits
-
-Bonus: $25 Credits for all hackers - register for your key, then enter code HackTheNorth2025.
-
-Judging criteria: WOW factor, API integration, technical depth, originality.
-
-CSE: Network Traffic Exploration
-1 winner
-This project will revisit the U.S. National CyberWatch Mid-Atlantic Collegiate Cyber Defense Competition (MACCDC) 2012 network traffic dataset. How would new tools and fresh ideas perform on this legacy dataset? Do you have an inquisitive detective mind? Do you have a cool idea for big data project? Or just curious to know more? Please join us on this exploration!
-
-Cua: Best State-of-the-Art Computer-Use Agent
-1 winner
-Build a SOTA Computer-Use Agent using Cua (https://github.com/trycua/cua), the open-source infrastructure and agent framework for controlling real desktop and browser environments.
-Submissions are evaluated in HUD's OSWorld-Verified benchmarking environment. The top-scoring team earns a secured interview with a Y Combinator partner for the next batch.
-
-Prizes:
-1. Guaranteed YC partner interview
-2. Feature on the Cua blog + social channels
-3. Swag pack for each team member
-
-Eligibility: To be considered for judging and prizes, sign up at https://www.trycua.com/hackathon
-
-Databricks: Best Use of Databricks
-1 winner
-Teams will use the Databricks platform in their application with the Databricks Free Edition. Judging will be based on creative and effective use of the Databricks platform, as well as the overall project idea. The winning team will receive special Databricks swag and $150 Amazon Gift Card for each member (up to 4).
-
-ETHGlobal: Ethereum's Infinite Garden
-3 winners
-The Ethereum community has been focused on scaling to get transaction costs lower to make onchain apps more seamless to use more.
-
-ETHGlobal will award 0.2 ETH, 0.1 ETH, and 0.05 ETH to the top three teams projects building with smart contract to enable a unique experience that is only possible onchain - requirements are to write a smart contract, and deploy to Ethereum or Ethereum L2 testnet, and directly interact with that contract on your backend or frontend.
-
-Federato: Best RiskOps Solution for Underwriters
-1 winner
-Federato will be awarding $2,000 to the hacker with the best solution from this challenge!
-
-Objective:
-Design a next-generation underwriting dashboard that enables underwriters to quickly identify and
-prioritize high-value, in-appetite submissions. This challenge offers participants an opportunity to
-work on a real-world problem our Forward Deployed Engineering (FDE) team actively tackles, giving
-them hands-on insight into Federato’s mission and technical challenges.
-
-Problem Statement:
-Reimagine the RiskOps landing page experience. The goal is to build a dashboard experience
-that, upon user login, intelligently surfaces a curated set of submissions that are most aligned with
-the carrier's appetite—enabling faster and more effective underwriting decisions.
-
-Provided Resources:
-1. Sample Dataset via API
-2. Endpoint Documentation - Concise documentation covering field definitions and query usage.
-3. $50 credit per team to make OpenAI API calls
-4. Sample Appetite Guidelines - A set of underwriting guidelines based on fields in the provided data
-
-Genesys: Empathy in Action with Genesys Cloud APIs
-1 winner
-Genesys Cloud offers a robust set of APIs (https://developer.genesys.cloud/) that let you build smarter, more empathetic customer experiences. From post-interaction surveys to real-time sentiment analysis and topic detection, you can create solutions that help businesses better understand and support their users.
-
-Whether you're building a chatbot, assistant, or analytics tool, this is your chance to explore the power of customer experience technology. We are looking for creative and impactful uses of the Genesys Cloud APIs through thoughtful design and innovation.
-
-The top project will receive a $1,000 gift card, shared among the team. Winners will be selected by Genesys experts. Our team will be available during the API workshop and throughout the weekend to support your project.
-
-Start building with empathy, powered by Genesys.
-
-Graphite: Engineering Dream Team
-1 winner
-At Graphite, we believe the best software comes from teams that move fast while raising the bar for code quality. Our AI-powered code review platform helps engineers ship cleaner code through smarter collaboration on top of git. With a modern interface, Graphite makes good engineering practices feel satisfying and effortless. Whether you're debugging solo or coordinating with teammates, great engineering habits make all the difference.
-
-Prize Description
-- NEW** AirPod Pros 3rd Gen (all team members)
-- Free Graphite AI features (stay tuned!)
-
-Eligibility & Judging Criteria
-Build anything you want! We're looking for teams that excel in both technical execution and collaborative engineering practices:
-- Technical Excellence: Build ambitious, well-architected solutions that demonstrate impressive depth and rigour
-- Engineering Practices: Demonstrate great team development practices - Are you pushing changes incrementally? Is your work easy to understand? Are you catching bugs in review before merging?
-
-Show us what happens when great engineers work as one unified force!
-
-Groq
-1 winner
-$500 credit in Groq swag store
-
-Martian: LLM Routing with Martian
-1 winner
-Martian (withmartian.com) provides an LLM Routing service that lowers the cost of token generation while maintaining output quality. Our Code Router matches or exceeds flagship code generation models by routing your request to the model best able to answer your prompt. And our gateway lowers costs for calling any other model from our list of over 100 closed- and open-source models from every major provider (and many small and independent ones).
-
-We are offering $2000 in gift cards and $2000 in free Martian API credits to the team that uses Martian LLM Routing or the Martian Code Router in the most interesting, inspiring, or creative way. If you want to compete for this prize, come to the Martian API Workshop or visit our table to get free credits for the duration of the Hackathon.
-
-QNX: Best Use of QNX: Hardware and Software Prizes
-2 winners
-QNX is awarding two prizes: one for the best QNX + hardware project and one for the best QNX + software-only project. This is a great opportunity to demonstrate your embedded development skills while gaining experience with an industry-leading embedded realtime OS! Here are some thought prompts, but please take these and think outside the box!
-Can you make something that moves and accomplishes a goal?
-Can you prototype an industrial control system?
-Can you prototype a hardware solution to a real-world problem?
-Can you create an entertaining game or physical challenge?
-Can you port an open-source Linux utility or library to QNX and show a running demo?
-Can you create an interesting prototype dashboard for industrial control or automation?
-Can you create a game or some other useful UI running on QNX? (Available frameworks include QT, GTK, etc, plus core QNX Screen API.)
-
-RBC: RBC InvestEase - Investing for the Future
-2 winners
-RBC InvestEase is an innovative investment platform that's making it easy for Canadians to start investing with confidence. In this challenge, we invite you to unleash your creativity and build a solution that helps students achieve their life goals and milestones by investing early and wisely.
-
-Using RBC InvestEase, design a product that empowers students to take control of their financial goals. Whether it’s saving for their first car or booking that dream graduation trip, we want you to get creative and show us how you can make investing accessible, fun, and rewarding!
-
-Students who submit their projects will have the chance to win exclusive prizes, so be sure to invest your time so you don’t miss out!
-
-Prizes:
-1st Place - $1200.00
-2nd Place - $800.00
-
-Ripple: Best in Ledger Award
-3 winners
-Build a financial service MVP that leverages the XRP Ledger's core features to solve a real-world problem. We're seeking innovative solutions focusing on payments, Real-World Asset (RWA) tokenization, RLUSD integration, or decentralized identity (DID).
-
-What does success look like? What are possible features that we are looking for? A successful project will solve a real-world financial problem using XRPL. Features could include:
-- RLUSD-based apps
-- DID-integrated fintech identity flows
-- SDKs for other developers to easily integrate XRPL features like RLUSD, escrows, and DIDs into their app
-- Payment apps, microfinance, Real-World Asset (RWA) Tokenization
-
-To compete, you must submit a working, testable MVP that is publicly available on GitHub with a detailed README. Two winning projects will be awarded a track prize: $500 for 1st & $250 for 2nd, with an additional $250 bounty for the best developer feedback. Show us how you can use the XRPL to innovate in DeFi!
-
-Rox: Best AI Agent
-2 winners
-To qualify for this award, your team must build a system that leverages large language models to operate on real-world, messy data and take meaningful actions. More specifically, qualifying teams must build agents that can handle unstructured information, incomplete datasets, conflicting sources, or noisy data - the kind of messy reality that exists in customer databases, support tickets, financial records, or operational systems. Teams should demonstrate techniques like data cleaning and validation, multi-source resolution, intelligent error handling, or robust decision-making under uncertainty.
-
-Teams will be judged on technical complexity, creativity, how well the system handles real-world messiness, and practical utility. Show us agents that don't just work in clean demos, but can actually operate in the chaotic data environments that businesses deal with every day. We will award 2 prizes: $10K for top and $2K for second place.
-
-Shopify: Hack Shopping with AI
-1 winner
-Build AI solutions that make commerce better for everyone.
-
-At Shopify, we see AI fundamentally transforming how commerce happens across physical stores, online shops, social selling, and beyond.
-
-We're looking for the unexpected—the stuff that makes us say "wait, that's possible?" Build technical innovations that challenge what we think AI can do for entrepreneurs and unlock new possibilities for merchants everywhere.
-
-From AI-powered merchant superpowers to workflow automation, from commerce intelligence to customer experience enhancements—show us where your creativity takes you when you apply AI to the commerce ecosystem.
-
-Optional: Leverage Shopify's ecosystem (Shopify APIs, Remix framework, Polaris design system) to accelerate your build.
-
-Prizes: ShopCash ($500 per team member), Shopify Keyboards, Meta Ray-Bans
-
-Build something that makes merchants' lives easier or their customers happier. We've got the infinite commerce playground, you bring the AI magic.
-
-Snap: Spectacles AR Hackathon: Game On!
-3 winners
-The Challenge: With the latest Spectacles OS update introducing experimental Bluetooth HID game controller support, your challenge is to create a compelling and innovative AR experience that reimagines how users interact with augmented reality.
-The Mission:
-Design and build a Spectacles Lens that uses a Bluetooth-enabled game controller (like an Xbox Series X/S) as the primary input mechanism. Your project should seamlessly blend the physical controls of the game controller with the Spectacles' AR capabilities.
-
-OR
-
-Generative 3D Objects :art:
-The Challenge: Develop a Lens that leverages the new Snap3D API to generate high-quality 3D objects on the fly within an AR experience.
-The Mission: Your project should demonstrate the creative potential of real-time 3D object generation. The Lens could be a creative tool, a collaborative experience, or a game that relies on dynamically created 3D assets.
-
-Prizes (each team member gets):
-1st: Spectacles
-2nd: Nintendo Switch
-3rd: Speakers
-
-Solana: Best Consumer Payment Experience with Solana Pay
-1 winner
-Build innovative consumer payment and finance applications using Solana Pay and Token-2022 extensions. We're seeking solutions that push boundaries - create a Stripe-like API for Solana enabling merchants to accept payments seamlessly, extend the Solana Pay protocol with subscription-like features using token delegation or streaming payments, or build exotic financial instruments tokenizing real-world assets (RWAs) for consumer access.
-Leverage Token-2022 extensions: use transfer fees for automatic revenue sharing, interest-bearing tokens for yield-generating wallets, confidential transfers for privacy-preserving payments, or permanent delegate for managed investment accounts. Ideas include tokenized invoice financing, micro-investment platforms for RWAs, programmable cashback systems, decentralized BNPL services, or payment orchestration APIs.
-Your solution should make innovative financial products accessible to everyday consumers while showcasing capabilities unique to Solana. We'll evaluate based on technical innovation, practical utility, developer experience (for API submissions), user experience, and creative use of Solana's payment infrastructure. Winners receive grants for continued development.
-
-VAPI: Best Voice AI Application
-3 winners
-Students will compete to create the most innovative applications of voice AI technology using VAPI. Participants will showcase their creativity, technical skills, and problem-solving abilities as they build impactful voice-powered solutions. The top teams will win VAPI credits and exclusive swag.
-
-Prize tracks:
-
-1. Best Voice-Powered App
-
-2. Best Multi-Modal Agent
-
-3. Most Creative Use of Voice AI
-
-All winners will receive: 500 Vapi credits and Vapi swag bag with AirPods.
-
-Warp: Best Developer Tool by Warp
-1 winner
-Introduction
-Build a hack that focuses on improving the developer experience in some meaningful way - this could be tackling any part of the development lifecycle (creating, modifying or testing software)!
-
-Prize description
-Keychron keyboards for each member of the team.
-
-Eligibility
-No API requirements for this prize! You do not need to use Warp, but we'd love for you to try it out to build this!
-
-Judging Criteria
-Does the project improve the developer experience?
-- Wow factor: Does the project stand out?
-- Technical difficulty: How technically complex is the project?
-- Originality: Is the project new or unique?
-- Design: Is the project easy to use and polished?
-
-Note that many developer tools may not have traditional GUIs - we are referring to all relevant aspects of UI/UX design here, there's no need to add a GUI for the sake of adding one!
-
-Windsurf: Best Project built with Windsurf
-3 winners
-Windsurf will recognize the teams that create the most creative and impactful project while fully showcasing the capabilities of the Windsurf AI-assisted IDE. As the first AI-native IDE, Windsurf is designed to keep developers in flow by combining intelligent code assistance, natural-language commands, and external tool calling via MCPs.
-Grand Prize – 1st Place (1 Team)
-1 year of Windsurf Pro (per teammate)
-5,000 credits (per teammate)
-
-Runner-up Prize – 2nd & 3rd Place (2 Teams)
-6 months of Windsurf Pro (per teammate)
-2,500 credits (per teammate)
-
-Y Combinator: Unicorn Prize
-3 winners
-Y Combinator is an accelerator built by and for builders. Four times a year, we fund and support early-stage startups, giving them resources, mentorship, and a network of peers who’ve faced the same challenges. Companies like Airbnb, Stripe, and Coinbase all started with YC, but what excites us the most are the young technical founders chasing bold ideas today. We back founders at the very beginning and help them turn their ideas into successful companies. If you’re hacking this weekend and wondering ‘what if this became real?’, that’s exactly the kind of spark we want to support.
-
-Prize Description:
-The best 3 teams will receive $2,000 and be guaranteed a YC interview for an upcoming batch.
-
-Eligibility:
-Functional project that has the potential to become a $B company
-
-Judging Criteria:
-Potential for growth and impact
-Unique insights
-
-MLH: Best Use of Gemini API
-1 winner
-It’s time to push the boundaries of what's possible with AI using Google Gemini. Check out the Gemini API to build AI-powered apps that make your friends say WHOA. So, what can Gemini do for your hackathon project?
-
-• Understand language like a human and build a chatbot that gives personalized
-• Analyze info like a supercomputer and create an app that summarizes complex research
-• Generate creative content like code, scripts, music, and more
-
-Think of the possibilities… what will you build with the Google Gemini API this weekend?
-
-The winning team will receive mechanical keyboards!
-
-MLH: Best Use of MongoDB Atlas
-1 winner
-MongoDB Atlas takes the leading modern database and makes it accessible in the cloud! Get started with a $50 credit for students (https://mlh.link/mongodb) or sign up for the Atlas free forever tier (https://mlh.link/mongodb-free, no credit card required). Along with a suite of services and functionalities, you'll have everything you need to manage all of your data, and you can get a headstart with free resources from MongoDB University! Build a hack using MongoDB Atlas for a chance to win a M5GO IoT Starter Kit for you and each member of your team.
-
-MLH: Best Use of Auth0
-1 winner
-Auth0 wants your applications to be secure! Why spend hours building features like social sign-in, Multi-Factor Authentication, and passwordless log-in when you can enable them through Auth0 straight out of the box? Auth0 is free to try, doesn’t require a credit card, and allows for up to 7,000 free active users and unlimited log-ins. Make your new account today and use any of the Auth0 APIs for a chance to win a pair of wireless headphones for you and each member of your team!
-
-MLH: Best AI Application Built with Cloudflare
-1 winner
+
+
+Hack the North 2025: Finalists
+
+12 winners
+
+The finalists of Hack the North 2025!
+
+
+
+Hack the North 2025: People's Choice Award
+
+1 winner
+
+The project that receives the most votes in the Project Expo! Only projects that advanced to the second round of judging are eligible for this prize.
+
+
+
+Amazon: AWS Campus Champions - Best Use of DynamoDB Streams
+
+1 winner
+
+Ever wanted to build apps that react in real-time and make a genuine difference for students? Join the AWS Campus Champions hackathon track! DynamoDB is Amazon's serverless NoSQL database that powers millions of apps around the world. Now imagine being able to capture every single change to that data as it happens - that's what DynamoDB Streams does. In just 36 hours, we invite students to build something meaningful with DynamoDB Streams to better the student experience - like a real-time chat app where messages from co-op advisors appear instantly, a collaborative white board that syncs between users for interview prep, or any innovation that addresses real challenges that students face today.
+
+
+
+Whether you're a beginner or a tenured hacker, this is your chance to work with the same tech that powers massive platforms while building something for students. Are you ready to make that impact?
+
+
+
+Cerebras: Best Use of Cerebras
+
+1 winner
+
+Cerebras is redefining AI inference. Unlike GPU-based providers, we build our own chips, designed from the ground up for large language model inference. The result: unprecedented speed of up to 3,000 tokens per second.
+
+
+
+This track rewards the most creative and impactful projects that showcase what becomes possible when inference is no longer the bottleneck. Think real-time applications, agentic workflows, or entirely new user experiences powered by world-record inference performance.
+
+
+
+The winning team will receive Keychron K2 HE Rapid Trigger Wireless Custom Mechanical Keyboards for each member of the team.
+
+
+
+Cohere: Best Use of Cohere API
+
+1 winner
+
+This year, we’re bringing Cohere’s most advanced capabilities to Hack the North. Our API now powers multimodal intelligence - AI that reads documents, interprets images, reasons across inputs, and takes action through agentic workflows. From an assistant that analyzes slide decks to an agent that chains tasks with live data, we want to see your boldest ideas that push what’s possible with Cohere.
+
+
+
+Prizes
+
+1st: $500 cash per member (max 4) + $4,000 Cohere Credits
+
+2nd: $100 cash per member (max 4) + $2,000 Credits
+
+3rd: $1,000 Credits
+
+
+
+Bonus: $25 Credits for all hackers - register for your key, then enter code HackTheNorth2025.
+
+
+
+Judging criteria: WOW factor, API integration, technical depth, originality.
+
+
+
+CSE: Network Traffic Exploration
+
+1 winner
+
+This project will revisit the U.S. National CyberWatch Mid-Atlantic Collegiate Cyber Defense Competition (MACCDC) 2012 network traffic dataset. How would new tools and fresh ideas perform on this legacy dataset? Do you have an inquisitive detective mind? Do you have a cool idea for big data project? Or just curious to know more? Please join us on this exploration!
+
+
+
+Cua: Best State-of-the-Art Computer-Use Agent
+
+1 winner
+
+Build a SOTA Computer-Use Agent using Cua (https://github.com/trycua/cua), the open-source infrastructure and agent framework for controlling real desktop and browser environments.
+
+Submissions are evaluated in HUD's OSWorld-Verified benchmarking environment. The top-scoring team earns a secured interview with a Y Combinator partner for the next batch.
+
+
+
+Prizes:
+
+1. Guaranteed YC partner interview
+
+2. Feature on the Cua blog + social channels
+
+3. Swag pack for each team member
+
+
+
+Eligibility: To be considered for judging and prizes, sign up at https://www.trycua.com/hackathon
+
+
+
+Databricks: Best Use of Databricks
+
+1 winner
+
+Teams will use the Databricks platform in their application with the Databricks Free Edition. Judging will be based on creative and effective use of the Databricks platform, as well as the overall project idea. The winning team will receive special Databricks swag and $150 Amazon Gift Card for each member (up to 4).
+
+
+
+ETHGlobal: Ethereum's Infinite Garden
+
+3 winners
+
+The Ethereum community has been focused on scaling to get transaction costs lower to make onchain apps more seamless to use more.
+
+
+
+ETHGlobal will award 0.2 ETH, 0.1 ETH, and 0.05 ETH to the top three teams projects building with smart contract to enable a unique experience that is only possible onchain - requirements are to write a smart contract, and deploy to Ethereum or Ethereum L2 testnet, and directly interact with that contract on your backend or frontend.
+
+
+
+Federato: Best RiskOps Solution for Underwriters
+
+1 winner
+
+Federato will be awarding $2,000 to the hacker with the best solution from this challenge!
+
+
+
+Objective:
+
+Design a next-generation underwriting dashboard that enables underwriters to quickly identify and
+
+prioritize high-value, in-appetite submissions. This challenge offers participants an opportunity to
+
+work on a real-world problem our Forward Deployed Engineering (FDE) team actively tackles, giving
+
+them hands-on insight into Federato’s mission and technical challenges.
+
+
+
+Problem Statement:
+
+Reimagine the RiskOps landing page experience. The goal is to build a dashboard experience
+
+that, upon user login, intelligently surfaces a curated set of submissions that are most aligned with
+
+the carrier's appetite—enabling faster and more effective underwriting decisions.
+
+
+
+Provided Resources:
+
+1. Sample Dataset via API
+
+2. Endpoint Documentation - Concise documentation covering field definitions and query usage.
+
+3. $50 credit per team to make OpenAI API calls
+
+4. Sample Appetite Guidelines - A set of underwriting guidelines based on fields in the provided data
+
+
+
+Genesys: Empathy in Action with Genesys Cloud APIs
+
+1 winner
+
+Genesys Cloud offers a robust set of APIs (https://developer.genesys.cloud/) that let you build smarter, more empathetic customer experiences. From post-interaction surveys to real-time sentiment analysis and topic detection, you can create solutions that help businesses better understand and support their users.
+
+
+
+Whether you're building a chatbot, assistant, or analytics tool, this is your chance to explore the power of customer experience technology. We are looking for creative and impactful uses of the Genesys Cloud APIs through thoughtful design and innovation.
+
+
+
+The top project will receive a $1,000 gift card, shared among the team. Winners will be selected by Genesys experts. Our team will be available during the API workshop and throughout the weekend to support your project.
+
+
+
+Start building with empathy, powered by Genesys.
+
+
+
+Graphite: Engineering Dream Team
+
+1 winner
+
+At Graphite, we believe the best software comes from teams that move fast while raising the bar for code quality. Our AI-powered code review platform helps engineers ship cleaner code through smarter collaboration on top of git. With a modern interface, Graphite makes good engineering practices feel satisfying and effortless. Whether you're debugging solo or coordinating with teammates, great engineering habits make all the difference.
+
+
+
+Prize Description
+
+- NEW** AirPod Pros 3rd Gen (all team members)
+
+- Free Graphite AI features (stay tuned!)
+
+
+
+Eligibility & Judging Criteria
+
+Build anything you want! We're looking for teams that excel in both technical execution and collaborative engineering practices:
+
+- Technical Excellence: Build ambitious, well-architected solutions that demonstrate impressive depth and rigour
+
+- Engineering Practices: Demonstrate great team development practices - Are you pushing changes incrementally? Is your work easy to understand? Are you catching bugs in review before merging?
+
+
+
+Show us what happens when great engineers work as one unified force!
+
+
+
+Groq
+
+1 winner
+
+$500 credit in Groq swag store
+
+
+
+Martian: LLM Routing with Martian
+
+1 winner
+
+Martian (withmartian.com) provides an LLM Routing service that lowers the cost of token generation while maintaining output quality. Our Code Router matches or exceeds flagship code generation models by routing your request to the model best able to answer your prompt. And our gateway lowers costs for calling any other model from our list of over 100 closed- and open-source models from every major provider (and many small and independent ones).
+
+
+
+We are offering $2000 in gift cards and $2000 in free Martian API credits to the team that uses Martian LLM Routing or the Martian Code Router in the most interesting, inspiring, or creative way. If you want to compete for this prize, come to the Martian API Workshop or visit our table to get free credits for the duration of the Hackathon.
+
+
+
+QNX: Best Use of QNX: Hardware and Software Prizes
+
+2 winners
+
+QNX is awarding two prizes: one for the best QNX + hardware project and one for the best QNX + software-only project. This is a great opportunity to demonstrate your embedded development skills while gaining experience with an industry-leading embedded realtime OS! Here are some thought prompts, but please take these and think outside the box!
+
+Can you make something that moves and accomplishes a goal?
+
+Can you prototype an industrial control system?
+
+Can you prototype a hardware solution to a real-world problem?
+
+Can you create an entertaining game or physical challenge?
+
+Can you port an open-source Linux utility or library to QNX and show a running demo?
+
+Can you create an interesting prototype dashboard for industrial control or automation?
+
+Can you create a game or some other useful UI running on QNX? (Available frameworks include QT, GTK, etc, plus core QNX Screen API.)
+
+
+
+RBC: RBC InvestEase - Investing for the Future
+
+2 winners
+
+RBC InvestEase is an innovative investment platform that's making it easy for Canadians to start investing with confidence. In this challenge, we invite you to unleash your creativity and build a solution that helps students achieve their life goals and milestones by investing early and wisely.
+
+
+
+Using RBC InvestEase, design a product that empowers students to take control of their financial goals. Whether it’s saving for their first car or booking that dream graduation trip, we want you to get creative and show us how you can make investing accessible, fun, and rewarding!
+
+
+
+Students who submit their projects will have the chance to win exclusive prizes, so be sure to invest your time so you don’t miss out!
+
+
+
+Prizes:
+
+1st Place - $1200.00
+
+2nd Place - $800.00
+
+
+
+Ripple: Best in Ledger Award
+
+3 winners
+
+Build a financial service MVP that leverages the XRP Ledger's core features to solve a real-world problem. We're seeking innovative solutions focusing on payments, Real-World Asset (RWA) tokenization, RLUSD integration, or decentralized identity (DID).
+
+
+
+What does success look like? What are possible features that we are looking for? A successful project will solve a real-world financial problem using XRPL. Features could include:
+
+- RLUSD-based apps
+
+- DID-integrated fintech identity flows
+
+- SDKs for other developers to easily integrate XRPL features like RLUSD, escrows, and DIDs into their app
+
+- Payment apps, microfinance, Real-World Asset (RWA) Tokenization
+
+
+
+To compete, you must submit a working, testable MVP that is publicly available on GitHub with a detailed README. Two winning projects will be awarded a track prize: $500 for 1st & $250 for 2nd, with an additional $250 bounty for the best developer feedback. Show us how you can use the XRPL to innovate in DeFi!
+
+
+
+Rox: Best AI Agent
+
+2 winners
+
+To qualify for this award, your team must build a system that leverages large language models to operate on real-world, messy data and take meaningful actions. More specifically, qualifying teams must build agents that can handle unstructured information, incomplete datasets, conflicting sources, or noisy data - the kind of messy reality that exists in customer databases, support tickets, financial records, or operational systems. Teams should demonstrate techniques like data cleaning and validation, multi-source resolution, intelligent error handling, or robust decision-making under uncertainty.
+
+
+
+Teams will be judged on technical complexity, creativity, how well the system handles real-world messiness, and practical utility. Show us agents that don't just work in clean demos, but can actually operate in the chaotic data environments that businesses deal with every day. We will award 2 prizes: $10K for top and $2K for second place.
+
+
+
+Shopify: Hack Shopping with AI
+
+1 winner
+
+Build AI solutions that make commerce better for everyone.
+
+
+
+At Shopify, we see AI fundamentally transforming how commerce happens across physical stores, online shops, social selling, and beyond.
+
+
+
+We're looking for the unexpected—the stuff that makes us say "wait, that's possible?" Build technical innovations that challenge what we think AI can do for entrepreneurs and unlock new possibilities for merchants everywhere.
+
+
+
+From AI-powered merchant superpowers to workflow automation, from commerce intelligence to customer experience enhancements—show us where your creativity takes you when you apply AI to the commerce ecosystem.
+
+
+
+Optional: Leverage Shopify's ecosystem (Shopify APIs, Remix framework, Polaris design system) to accelerate your build.
+
+
+
+Prizes: ShopCash ($500 per team member), Shopify Keyboards, Meta Ray-Bans
+
+
+
+Build something that makes merchants' lives easier or their customers happier. We've got the infinite commerce playground, you bring the AI magic.
+
+
+
+Snap: Spectacles AR Hackathon: Game On!
+
+3 winners
+
+The Challenge: With the latest Spectacles OS update introducing experimental Bluetooth HID game controller support, your challenge is to create a compelling and innovative AR experience that reimagines how users interact with augmented reality.
+
+The Mission:
+
+Design and build a Spectacles Lens that uses a Bluetooth-enabled game controller (like an Xbox Series X/S) as the primary input mechanism. Your project should seamlessly blend the physical controls of the game controller with the Spectacles' AR capabilities.
+
+
+
+OR
+
+
+
+Generative 3D Objects :art:
+
+The Challenge: Develop a Lens that leverages the new Snap3D API to generate high-quality 3D objects on the fly within an AR experience.
+
+The Mission: Your project should demonstrate the creative potential of real-time 3D object generation. The Lens could be a creative tool, a collaborative experience, or a game that relies on dynamically created 3D assets.
+
+
+
+Prizes (each team member gets):
+
+1st: Spectacles
+
+2nd: Nintendo Switch
+
+3rd: Speakers
+
+
+
+Solana: Best Consumer Payment Experience with Solana Pay
+
+1 winner
+
+Build innovative consumer payment and finance applications using Solana Pay and Token-2022 extensions. We're seeking solutions that push boundaries - create a Stripe-like API for Solana enabling merchants to accept payments seamlessly, extend the Solana Pay protocol with subscription-like features using token delegation or streaming payments, or build exotic financial instruments tokenizing real-world assets (RWAs) for consumer access.
+
+Leverage Token-2022 extensions: use transfer fees for automatic revenue sharing, interest-bearing tokens for yield-generating wallets, confidential transfers for privacy-preserving payments, or permanent delegate for managed investment accounts. Ideas include tokenized invoice financing, micro-investment platforms for RWAs, programmable cashback systems, decentralized BNPL services, or payment orchestration APIs.
+
+Your solution should make innovative financial products accessible to everyday consumers while showcasing capabilities unique to Solana. We'll evaluate based on technical innovation, practical utility, developer experience (for API submissions), user experience, and creative use of Solana's payment infrastructure. Winners receive grants for continued development.
+
+
+
+VAPI: Best Voice AI Application
+
+3 winners
+
+Students will compete to create the most innovative applications of voice AI technology using VAPI. Participants will showcase their creativity, technical skills, and problem-solving abilities as they build impactful voice-powered solutions. The top teams will win VAPI credits and exclusive swag.
+
+
+
+Prize tracks:
+
+
+
+1. Best Voice-Powered App
+
+
+
+2. Best Multi-Modal Agent
+
+
+
+3. Most Creative Use of Voice AI
+
+
+
+All winners will receive: 500 Vapi credits and Vapi swag bag with AirPods.
+
+
+
+Warp: Best Developer Tool by Warp
+
+1 winner
+
+Introduction
+
+Build a hack that focuses on improving the developer experience in some meaningful way - this could be tackling any part of the development lifecycle (creating, modifying or testing software)!
+
+
+
+Prize description
+
+Keychron keyboards for each member of the team.
+
+
+
+Eligibility
+
+No API requirements for this prize! You do not need to use Warp, but we'd love for you to try it out to build this!
+
+
+
+Judging Criteria
+
+Does the project improve the developer experience?
+
+- Wow factor: Does the project stand out?
+
+- Technical difficulty: How technically complex is the project?
+
+- Originality: Is the project new or unique?
+
+- Design: Is the project easy to use and polished?
+
+
+
+Note that many developer tools may not have traditional GUIs - we are referring to all relevant aspects of UI/UX design here, there's no need to add a GUI for the sake of adding one!
+
+
+
+Windsurf: Best Project built with Windsurf
+
+3 winners
+
+Windsurf will recognize the teams that create the most creative and impactful project while fully showcasing the capabilities of the Windsurf AI-assisted IDE. As the first AI-native IDE, Windsurf is designed to keep developers in flow by combining intelligent code assistance, natural-language commands, and external tool calling via MCPs.
+
+Grand Prize – 1st Place (1 Team)
+
+1 year of Windsurf Pro (per teammate)
+
+5,000 credits (per teammate)
+
+
+
+Runner-up Prize – 2nd & 3rd Place (2 Teams)
+
+6 months of Windsurf Pro (per teammate)
+
+2,500 credits (per teammate)
+
+
+
+Y Combinator: Unicorn Prize
+
+3 winners
+
+Y Combinator is an accelerator built by and for builders. Four times a year, we fund and support early-stage startups, giving them resources, mentorship, and a network of peers who’ve faced the same challenges. Companies like Airbnb, Stripe, and Coinbase all started with YC, but what excites us the most are the young technical founders chasing bold ideas today. We back founders at the very beginning and help them turn their ideas into successful companies. If you’re hacking this weekend and wondering ‘what if this became real?’, that’s exactly the kind of spark we want to support.
+
+
+
+Prize Description:
+
+The best 3 teams will receive $2,000 and be guaranteed a YC interview for an upcoming batch.
+
+
+
+Eligibility:
+
+Functional project that has the potential to become a $B company
+
+
+
+Judging Criteria:
+
+Potential for growth and impact
+
+Unique insights
+
+
+
+MLH: Best Use of Gemini API
+
+1 winner
+
+It’s time to push the boundaries of what's possible with AI using Google Gemini. Check out the Gemini API to build AI-powered apps that make your friends say WHOA. So, what can Gemini do for your hackathon project?
+
+
+
+• Understand language like a human and build a chatbot that gives personalized
+
+• Analyze info like a supercomputer and create an app that summarizes complex research
+
+• Generate creative content like code, scripts, music, and more
+
+
+
+Think of the possibilities… what will you build with the Google Gemini API this weekend?
+
+
+
+The winning team will receive mechanical keyboards!
+
+
+
+MLH: Best Use of MongoDB Atlas
+
+1 winner
+
+MongoDB Atlas takes the leading modern database and makes it accessible in the cloud! Get started with a $50 credit for students (https://mlh.link/mongodb) or sign up for the Atlas free forever tier (https://mlh.link/mongodb-free, no credit card required). Along with a suite of services and functionalities, you'll have everything you need to manage all of your data, and you can get a headstart with free resources from MongoDB University! Build a hack using MongoDB Atlas for a chance to win a M5GO IoT Starter Kit for you and each member of your team.
+
+
+
+MLH: Best Use of Auth0
+
+1 winner
+
+Auth0 wants your applications to be secure! Why spend hours building features like social sign-in, Multi-Factor Authentication, and passwordless log-in when you can enable them through Auth0 straight out of the box? Auth0 is free to try, doesn’t require a credit card, and allows for up to 7,000 free active users and unlimited log-ins. Make your new account today and use any of the Auth0 APIs for a chance to win a pair of wireless headphones for you and each member of your team!
+
+
+
+MLH: Best AI Application Built with Cloudflare
+
+1 winner
+
 Cloudflare is one of the world’s largest networks enabling hackers like you to build, deploy, and deliver trusted applications, no matter where you are! With Cloudflare, you’ll have all the building blocks to create a full-stack application; from C3 (create Cloudflare command line) instance deployment to object storage. You can even run GenAI (LLMs, text to image, Voice to text etc..) in the cloud and leverage your AI functionality via API requests using Cloudlfare’s Workers AI! Enjoy Cloudflare’s generous free tier to get started at no cost! This weekend, we want you to build an AI Application utilizing Cloudflare’s numerous services for a chance to win Arduino Kits for you and your team!
 
 USER:
 give me some hackathon ideas based on what you know of me and this prize list
 
-
-Hack the North 2025: Finalists
-12 winners
-The finalists of Hack the North 2025!
-
-Hack the North 2025: People's Choice Award
-1 winner
-The project that receives the most votes in the Project Expo! Only projects that advanced to the second round of judging are eligible for this prize.
-
-Amazon: AWS Campus Champions - Best Use of DynamoDB Streams
-1 winner
-Ever wanted to build apps that react in real-time and make a genuine difference for students? Join the AWS Campus Champions hackathon track! DynamoDB is Amazon's serverless NoSQL database that powers millions of apps around the world. Now imagine being able to capture every single change to that data as it happens - that's what DynamoDB Streams does. In just 36 hours, we invite students to build something meaningful with DynamoDB Streams to better the student experience - like a real-time chat app where messages from co-op advisors appear instantly, a collaborative white board that syncs between users for interview prep, or any innovation that addresses real challenges that students face today.
-
-Whether you're a beginner or a tenured hacker, this is your chance to work with the same tech that powers massive platforms while building something for students. Are you ready to make that impact?
-
-Cerebras: Best Use of Cerebras
-1 winner
-Cerebras is redefining AI inference. Unlike GPU-based providers, we build our own chips, designed from the ground up for large language model inference. The result: unprecedented speed of up to 3,000 tokens per second.
-
-This track rewards the most creative and impactful projects that showcase what becomes possible when inference is no longer the bottleneck. Think real-time applications, agentic workflows, or entirely new user experiences powered by world-record inference performance.
-
-The winning team will receive Keychron K2 HE Rapid Trigger Wireless Custom Mechanical Keyboards for each member of the team.
-
-Cohere: Best Use of Cohere API
-1 winner
-This year, we’re bringing Cohere’s most advanced capabilities to Hack the North. Our API now powers multimodal intelligence - AI that reads documents, interprets images, reasons across inputs, and takes action through agentic workflows. From an assistant that analyzes slide decks to an agent that chains tasks with live data, we want to see your boldest ideas that push what’s possible with Cohere.
-
-Prizes
-1st: $500 cash per member (max 4) + $4,000 Cohere Credits
-2nd: $100 cash per member (max 4) + $2,000 Credits
-3rd: $1,000 Credits
-
-Bonus: $25 Credits for all hackers - register for your key, then enter code HackTheNorth2025.
-
-Judging criteria: WOW factor, API integration, technical depth, originality.
-
-CSE: Network Traffic Exploration
-1 winner
-This project will revisit the U.S. National CyberWatch Mid-Atlantic Collegiate Cyber Defense Competition (MACCDC) 2012 network traffic dataset. How would new tools and fresh ideas perform on this legacy dataset? Do you have an inquisitive detective mind? Do you have a cool idea for big data project? Or just curious to know more? Please join us on this exploration!
-
-Cua: Best State-of-the-Art Computer-Use Agent
-1 winner
-Build a SOTA Computer-Use Agent using Cua (https://github.com/trycua/cua), the open-source infrastructure and agent framework for controlling real desktop and browser environments.
-Submissions are evaluated in HUD's OSWorld-Verified benchmarking environment. The top-scoring team earns a secured interview with a Y Combinator partner for the next batch.
-
-Prizes:
-1. Guaranteed YC partner interview
-2. Feature on the Cua blog + social channels
-3. Swag pack for each team member
-
-Eligibility: To be considered for judging and prizes, sign up at https://www.trycua.com/hackathon
-
-Databricks: Best Use of Databricks
-1 winner
-Teams will use the Databricks platform in their application with the Databricks Free Edition. Judging will be based on creative and effective use of the Databricks platform, as well as the overall project idea. The winning team will receive special Databricks swag and $150 Amazon Gift Card for each member (up to 4).
-
-ETHGlobal: Ethereum's Infinite Garden
-3 winners
-The Ethereum community has been focused on scaling to get transaction costs lower to make onchain apps more seamless to use more.
-
-ETHGlobal will award 0.2 ETH, 0.1 ETH, and 0.05 ETH to the top three teams projects building with smart contract to enable a unique experience that is only possible onchain - requirements are to write a smart contract, and deploy to Ethereum or Ethereum L2 testnet, and directly interact with that contract on your backend or frontend.
-
-Federato: Best RiskOps Solution for Underwriters
-1 winner
-Federato will be awarding $2,000 to the hacker with the best solution from this challenge!
-
-Objective:
-Design a next-generation underwriting dashboard that enables underwriters to quickly identify and
-prioritize high-value, in-appetite submissions. This challenge offers participants an opportunity to
-work on a real-world problem our Forward Deployed Engineering (FDE) team actively tackles, giving
-them hands-on insight into Federato’s mission and technical challenges.
-
-Problem Statement:
-Reimagine the RiskOps landing page experience. The goal is to build a dashboard experience
-that, upon user login, intelligently surfaces a curated set of submissions that are most aligned with
-the carrier's appetite—enabling faster and more effective underwriting decisions.
-
-Provided Resources:
-1. Sample Dataset via API
-2. Endpoint Documentation - Concise documentation covering field definitions and query usage.
-3. $50 credit per team to make OpenAI API calls
-4. Sample Appetite Guidelines - A set of underwriting guidelines based on fields in the provided data
-
-Genesys: Empathy in Action with Genesys Cloud APIs
-1 winner
-Genesys Cloud offers a robust set of APIs (https://developer.genesys.cloud/) that let you build smarter, more empathetic customer experiences. From post-interaction surveys to real-time sentiment analysis and topic detection, you can create solutions that help businesses better understand and support their users.
-
-Whether you're building a chatbot, assistant, or analytics tool, this is your chance to explore the power of customer experience technology. We are looking for creative and impactful uses of the Genesys Cloud APIs through thoughtful design and innovation.
-
-The top project will receive a $1,000 gift card, shared among the team. Winners will be selected by Genesys experts. Our team will be available during the API workshop and throughout the weekend to support your project.
-
-Start building with empathy, powered by Genesys.
-
-Graphite: Engineering Dream Team
-1 winner
-At Graphite, we believe the best software comes from teams that move fast while raising the bar for code quality. Our AI-powered code review platform helps engineers ship cleaner code through smarter collaboration on top of git. With a modern interface, Graphite makes good engineering practices feel satisfying and effortless. Whether you're debugging solo or coordinating with teammates, great engineering habits make all the difference.
-
-Prize Description
-- NEW** AirPod Pros 3rd Gen (all team members)
-- Free Graphite AI features (stay tuned!)
-
-Eligibility & Judging Criteria
-Build anything you want! We're looking for teams that excel in both technical execution and collaborative engineering practices:
-- Technical Excellence: Build ambitious, well-architected solutions that demonstrate impressive depth and rigour
-- Engineering Practices: Demonstrate great team development practices - Are you pushing changes incrementally? Is your work easy to understand? Are you catching bugs in review before merging?
-
-Show us what happens when great engineers work as one unified force!
-
-Groq
-1 winner
-$500 credit in Groq swag store
-
-Martian: LLM Routing with Martian
-1 winner
-Martian (withmartian.com) provides an LLM Routing service that lowers the cost of token generation while maintaining output quality. Our Code Router matches or exceeds flagship code generation models by routing your request to the model best able to answer your prompt. And our gateway lowers costs for calling any other model from our list of over 100 closed- and open-source models from every major provider (and many small and independent ones).
-
-We are offering $2000 in gift cards and $2000 in free Martian API credits to the team that uses Martian LLM Routing or the Martian Code Router in the most interesting, inspiring, or creative way. If you want to compete for this prize, come to the Martian API Workshop or visit our table to get free credits for the duration of the Hackathon.
-
-QNX: Best Use of QNX: Hardware and Software Prizes
-2 winners
-QNX is awarding two prizes: one for the best QNX + hardware project and one for the best QNX + software-only project. This is a great opportunity to demonstrate your embedded development skills while gaining experience with an industry-leading embedded realtime OS! Here are some thought prompts, but please take these and think outside the box!
-Can you make something that moves and accomplishes a goal?
-Can you prototype an industrial control system?
-Can you prototype a hardware solution to a real-world problem?
-Can you create an entertaining game or physical challenge?
-Can you port an open-source Linux utility or library to QNX and show a running demo?
-Can you create an interesting prototype dashboard for industrial control or automation?
-Can you create a game or some other useful UI running on QNX? (Available frameworks include QT, GTK, etc, plus core QNX Screen API.)
-
-RBC: RBC InvestEase - Investing for the Future
-2 winners
-RBC InvestEase is an innovative investment platform that's making it easy for Canadians to start investing with confidence. In this challenge, we invite you to unleash your creativity and build a solution that helps students achieve their life goals and milestones by investing early and wisely.
-
-Using RBC InvestEase, design a product that empowers students to take control of their financial goals. Whether it’s saving for their first car or booking that dream graduation trip, we want you to get creative and show us how you can make investing accessible, fun, and rewarding!
-
-Students who submit their projects will have the chance to win exclusive prizes, so be sure to invest your time so you don’t miss out!
-
-Prizes:
-1st Place - $1200.00
-2nd Place - $800.00
-
-Ripple: Best in Ledger Award
-3 winners
-Build a financial service MVP that leverages the XRP Ledger's core features to solve a real-world problem. We're seeking innovative solutions focusing on payments, Real-World Asset (RWA) tokenization, RLUSD integration, or decentralized identity (DID).
-
-What does success look like? What are possible features that we are looking for? A successful project will solve a real-world financial problem using XRPL. Features could include:
-- RLUSD-based apps
-- DID-integrated fintech identity flows
-- SDKs for other developers to easily integrate XRPL features like RLUSD, escrows, and DIDs into their app
-- Payment apps, microfinance, Real-World Asset (RWA) Tokenization
-
-To compete, you must submit a working, testable MVP that is publicly available on GitHub with a detailed README. Two winning projects will be awarded a track prize: $500 for 1st & $250 for 2nd, with an additional $250 bounty for the best developer feedback. Show us how you can use the XRPL to innovate in DeFi!
-
-Rox: Best AI Agent
-2 winners
-To qualify for this award, your team must build a system that leverages large language models to operate on real-world, messy data and take meaningful actions. More specifically, qualifying teams must build agents that can handle unstructured information, incomplete datasets, conflicting sources, or noisy data - the kind of messy reality that exists in customer databases, support tickets, financial records, or operational systems. Teams should demonstrate techniques like data cleaning and validation, multi-source resolution, intelligent error handling, or robust decision-making under uncertainty.
-
-Teams will be judged on technical complexity, creativity, how well the system handles real-world messiness, and practical utility. Show us agents that don't just work in clean demos, but can actually operate in the chaotic data environments that businesses deal with every day. We will award 2 prizes: $10K for top and $2K for second place.
-
-Shopify: Hack Shopping with AI
-1 winner
-Build AI solutions that make commerce better for everyone.
-
-At Shopify, we see AI fundamentally transforming how commerce happens across physical stores, online shops, social selling, and beyond.
-
-We're looking for the unexpected—the stuff that makes us say "wait, that's possible?" Build technical innovations that challenge what we think AI can do for entrepreneurs and unlock new possibilities for merchants everywhere.
-
-From AI-powered merchant superpowers to workflow automation, from commerce intelligence to customer experience enhancements—show us where your creativity takes you when you apply AI to the commerce ecosystem.
-
-Optional: Leverage Shopify's ecosystem (Shopify APIs, Remix framework, Polaris design system) to accelerate your build.
-
-Prizes: ShopCash ($500 per team member), Shopify Keyboards, Meta Ray-Bans
-
-Build something that makes merchants' lives easier or their customers happier. We've got the infinite commerce playground, you bring the AI magic.
-
-Snap: Spectacles AR Hackathon: Game On!
-3 winners
-The Challenge: With the latest Spectacles OS update introducing experimental Bluetooth HID game controller support, your challenge is to create a compelling and innovative AR experience that reimagines how users interact with augmented reality.
-The Mission:
-Design and build a Spectacles Lens that uses a Bluetooth-enabled game controller (like an Xbox Series X/S) as the primary input mechanism. Your project should seamlessly blend the physical controls of the game controller with the Spectacles' AR capabilities.
-
-OR
-
-Generative 3D Objects :art:
-The Challenge: Develop a Lens that leverages the new Snap3D API to generate high-quality 3D objects on the fly within an AR experience.
-The Mission: Your project should demonstrate the creative potential of real-time 3D object generation. The Lens could be a creative tool, a collaborative experience, or a game that relies on dynamically created 3D assets.
-
-Prizes (each team member gets):
-1st: Spectacles
-2nd: Nintendo Switch
-3rd: Speakers
-
-Solana: Best Consumer Payment Experience with Solana Pay
-1 winner
-Build innovative consumer payment and finance applications using Solana Pay and Token-2022 extensions. We're seeking solutions that push boundaries - create a Stripe-like API for Solana enabling merchants to accept payments seamlessly, extend the Solana Pay protocol with subscription-like features using token delegation or streaming payments, or build exotic financial instruments tokenizing real-world assets (RWAs) for consumer access.
-Leverage Token-2022 extensions: use transfer fees for automatic revenue sharing, interest-bearing tokens for yield-generating wallets, confidential transfers for privacy-preserving payments, or permanent delegate for managed investment accounts. Ideas include tokenized invoice financing, micro-investment platforms for RWAs, programmable cashback systems, decentralized BNPL services, or payment orchestration APIs.
-Your solution should make innovative financial products accessible to everyday consumers while showcasing capabilities unique to Solana. We'll evaluate based on technical innovation, practical utility, developer experience (for API submissions), user experience, and creative use of Solana's payment infrastructure. Winners receive grants for continued development.
-
-VAPI: Best Voice AI Application
-3 winners
-Students will compete to create the most innovative applications of voice AI technology using VAPI. Participants will showcase their creativity, technical skills, and problem-solving abilities as they build impactful voice-powered solutions. The top teams will win VAPI credits and exclusive swag.
-
-Prize tracks:
-
-1. Best Voice-Powered App
-
-2. Best Multi-Modal Agent
-
-3. Most Creative Use of Voice AI
-
-All winners will receive: 500 Vapi credits and Vapi swag bag with AirPods.
-
-Warp: Best Developer Tool by Warp
-1 winner
-Introduction
-Build a hack that focuses on improving the developer experience in some meaningful way - this could be tackling any part of the development lifecycle (creating, modifying or testing software)!
-
-Prize description
-Keychron keyboards for each member of the team.
-
-Eligibility
-No API requirements for this prize! You do not need to use Warp, but we'd love for you to try it out to build this!
-
-Judging Criteria
-Does the project improve the developer experience?
-- Wow factor: Does the project stand out?
-- Technical difficulty: How technically complex is the project?
-- Originality: Is the project new or unique?
-- Design: Is the project easy to use and polished?
-
-Note that many developer tools may not have traditional GUIs - we are referring to all relevant aspects of UI/UX design here, there's no need to add a GUI for the sake of adding one!
-
-Windsurf: Best Project built with Windsurf
-3 winners
-Windsurf will recognize the teams that create the most creative and impactful project while fully showcasing the capabilities of the Windsurf AI-assisted IDE. As the first AI-native IDE, Windsurf is designed to keep developers in flow by combining intelligent code assistance, natural-language commands, and external tool calling via MCPs.
-Grand Prize – 1st Place (1 Team)
-1 year of Windsurf Pro (per teammate)
-5,000 credits (per teammate)
-
-Runner-up Prize – 2nd & 3rd Place (2 Teams)
-6 months of Windsurf Pro (per teammate)
-2,500 credits (per teammate)
-
-Y Combinator: Unicorn Prize
-3 winners
-Y Combinator is an accelerator built by and for builders. Four times a year, we fund and support early-stage startups, giving them resources, mentorship, and a network of peers who’ve faced the same challenges. Companies like Airbnb, Stripe, and Coinbase all started with YC, but what excites us the most are the young technical founders chasing bold ideas today. We back founders at the very beginning and help them turn their ideas into successful companies. If you’re hacking this weekend and wondering ‘what if this became real?’, that’s exactly the kind of spark we want to support.
-
-Prize Description:
-The best 3 teams will receive $2,000 and be guaranteed a YC interview for an upcoming batch.
-
-Eligibility:
-Functional project that has the potential to become a $B company
-
-Judging Criteria:
-Potential for growth and impact
-Unique insights
-
-MLH: Best Use of Gemini API
-1 winner
-It’s time to push the boundaries of what's possible with AI using Google Gemini. Check out the Gemini API to build AI-powered apps that make your friends say WHOA. So, what can Gemini do for your hackathon project?
-
-• Understand language like a human and build a chatbot that gives personalized
-• Analyze info like a supercomputer and create an app that summarizes complex research
-• Generate creative content like code, scripts, music, and more
-
-Think of the possibilities… what will you build with the Google Gemini API this weekend?
-
-The winning team will receive mechanical keyboards!
-
-MLH: Best Use of MongoDB Atlas
-1 winner
-MongoDB Atlas takes the leading modern database and makes it accessible in the cloud! Get started with a $50 credit for students (https://mlh.link/mongodb) or sign up for the Atlas free forever tier (https://mlh.link/mongodb-free, no credit card required). Along with a suite of services and functionalities, you'll have everything you need to manage all of your data, and you can get a headstart with free resources from MongoDB University! Build a hack using MongoDB Atlas for a chance to win a M5GO IoT Starter Kit for you and each member of your team.
-
-MLH: Best Use of Auth0
-1 winner
-Auth0 wants your applications to be secure! Why spend hours building features like social sign-in, Multi-Factor Authentication, and passwordless log-in when you can enable them through Auth0 straight out of the box? Auth0 is free to try, doesn’t require a credit card, and allows for up to 7,000 free active users and unlimited log-ins. Make your new account today and use any of the Auth0 APIs for a chance to win a pair of wireless headphones for you and each member of your team!
-
-MLH: Best AI Application Built with Cloudflare
-1 winner
+
+
+Hack the North 2025: Finalists
+
+12 winners
+
+The finalists of Hack the North 2025!
+
+
+
+Hack the North 2025: People's Choice Award
+
+1 winner
+
+The project that receives the most votes in the Project Expo! Only projects that advanced to the second round of judging are eligible for this prize.
+
+
+
+Amazon: AWS Campus Champions - Best Use of DynamoDB Streams
+
+1 winner
+
+Ever wanted to build apps that react in real-time and make a genuine difference for students? Join the AWS Campus Champions hackathon track! DynamoDB is Amazon's serverless NoSQL database that powers millions of apps around the world. Now imagine being able to capture every single change to that data as it happens - that's what DynamoDB Streams does. In just 36 hours, we invite students to build something meaningful with DynamoDB Streams to better the student experience - like a real-time chat app where messages from co-op advisors appear instantly, a collaborative white board that syncs between users for interview prep, or any innovation that addresses real challenges that students face today.
+
+
+
+Whether you're a beginner or a tenured hacker, this is your chance to work with the same tech that powers massive platforms while building something for students. Are you ready to make that impact?
+
+
+
+Cerebras: Best Use of Cerebras
+
+1 winner
+
+Cerebras is redefining AI inference. Unlike GPU-based providers, we build our own chips, designed from the ground up for large language model inference. The result: unprecedented speed of up to 3,000 tokens per second.
+
+
+
+This track rewards the most creative and impactful projects that showcase what becomes possible when inference is no longer the bottleneck. Think real-time applications, agentic workflows, or entirely new user experiences powered by world-record inference performance.
+
+
+
+The winning team will receive Keychron K2 HE Rapid Trigger Wireless Custom Mechanical Keyboards for each member of the team.
+
+
+
+Cohere: Best Use of Cohere API
+
+1 winner
+
+This year, we’re bringing Cohere’s most advanced capabilities to Hack the North. Our API now powers multimodal intelligence - AI that reads documents, interprets images, reasons across inputs, and takes action through agentic workflows. From an assistant that analyzes slide decks to an agent that chains tasks with live data, we want to see your boldest ideas that push what’s possible with Cohere.
+
+
+
+Prizes
+
+1st: $500 cash per member (max 4) + $4,000 Cohere Credits
+
+2nd: $100 cash per member (max 4) + $2,000 Credits
+
+3rd: $1,000 Credits
+
+
+
+Bonus: $25 Credits for all hackers - register for your key, then enter code HackTheNorth2025.
+
+
+
+Judging criteria: WOW factor, API integration, technical depth, originality.
+
+
+
+CSE: Network Traffic Exploration
+
+1 winner
+
+This project will revisit the U.S. National CyberWatch Mid-Atlantic Collegiate Cyber Defense Competition (MACCDC) 2012 network traffic dataset. How would new tools and fresh ideas perform on this legacy dataset? Do you have an inquisitive detective mind? Do you have a cool idea for big data project? Or just curious to know more? Please join us on this exploration!
+
+
+
+Cua: Best State-of-the-Art Computer-Use Agent
+
+1 winner
+
+Build a SOTA Computer-Use Agent using Cua (https://github.com/trycua/cua), the open-source infrastructure and agent framework for controlling real desktop and browser environments.
+
+Submissions are evaluated in HUD's OSWorld-Verified benchmarking environment. The top-scoring team earns a secured interview with a Y Combinator partner for the next batch.
+
+
+
+Prizes:
+
+1. Guaranteed YC partner interview
+
+2. Feature on the Cua blog + social channels
+
+3. Swag pack for each team member
+
+
+
+Eligibility: To be considered for judging and prizes, sign up at https://www.trycua.com/hackathon
+
+
+
+Databricks: Best Use of Databricks
+
+1 winner
+
+Teams will use the Databricks platform in their application with the Databricks Free Edition. Judging will be based on creative and effective use of the Databricks platform, as well as the overall project idea. The winning team will receive special Databricks swag and $150 Amazon Gift Card for each member (up to 4).
+
+
+
+ETHGlobal: Ethereum's Infinite Garden
+
+3 winners
+
+The Ethereum community has been focused on scaling to get transaction costs lower to make onchain apps more seamless to use more.
+
+
+
+ETHGlobal will award 0.2 ETH, 0.1 ETH, and 0.05 ETH to the top three teams projects building with smart contract to enable a unique experience that is only possible onchain - requirements are to write a smart contract, and deploy to Ethereum or Ethereum L2 testnet, and directly interact with that contract on your backend or frontend.
+
+
+
+Federato: Best RiskOps Solution for Underwriters
+
+1 winner
+
+Federato will be awarding $2,000 to the hacker with the best solution from this challenge!
+
+
+
+Objective:
+
+Design a next-generation underwriting dashboard that enables underwriters to quickly identify and
+
+prioritize high-value, in-appetite submissions. This challenge offers participants an opportunity to
+
+work on a real-world problem our Forward Deployed Engineering (FDE) team actively tackles, giving
+
+them hands-on insight into Federato’s mission and technical challenges.
+
+
+
+Problem Statement:
+
+Reimagine the RiskOps landing page experience. The goal is to build a dashboard experience
+
+that, upon user login, intelligently surfaces a curated set of submissions that are most aligned with
+
+the carrier's appetite—enabling faster and more effective underwriting decisions.
+
+
+
+Provided Resources:
+
+1. Sample Dataset via API
+
+2. Endpoint Documentation - Concise documentation covering field definitions and query usage.
+
+3. $50 credit per team to make OpenAI API calls
+
+4. Sample Appetite Guidelines - A set of underwriting guidelines based on fields in the provided data
+
+
+
+Genesys: Empathy in Action with Genesys Cloud APIs
+
+1 winner
+
+Genesys Cloud offers a robust set of APIs (https://developer.genesys.cloud/) that let you build smarter, more empathetic customer experiences. From post-interaction surveys to real-time sentiment analysis and topic detection, you can create solutions that help businesses better understand and support their users.
+
+
+
+Whether you're building a chatbot, assistant, or analytics tool, this is your chance to explore the power of customer experience technology. We are looking for creative and impactful uses of the Genesys Cloud APIs through thoughtful design and innovation.
+
+
+
+The top project will receive a $1,000 gift card, shared among the team. Winners will be selected by Genesys experts. Our team will be available during the API workshop and throughout the weekend to support your project.
+
+
+
+Start building with empathy, powered by Genesys.
+
+
+
+Graphite: Engineering Dream Team
+
+1 winner
+
+At Graphite, we believe the best software comes from teams that move fast while raising the bar for code quality. Our AI-powered code review platform helps engineers ship cleaner code through smarter collaboration on top of git. With a modern interface, Graphite makes good engineering practices feel satisfying and effortless. Whether you're debugging solo or coordinating with teammates, great engineering habits make all the difference.
+
+
+
+Prize Description
+
+- NEW** AirPod Pros 3rd Gen (all team members)
+
+- Free Graphite AI features (stay tuned!)
+
+
+
+Eligibility & Judging Criteria
+
+Build anything you want! We're looking for teams that excel in both technical execution and collaborative engineering practices:
+
+- Technical Excellence: Build ambitious, well-architected solutions that demonstrate impressive depth and rigour
+
+- Engineering Practices: Demonstrate great team development practices - Are you pushing changes incrementally? Is your work easy to understand? Are you catching bugs in review before merging?
+
+
+
+Show us what happens when great engineers work as one unified force!
+
+
+
+Groq
+
+1 winner
+
+$500 credit in Groq swag store
+
+
+
+Martian: LLM Routing with Martian
+
+1 winner
+
+Martian (withmartian.com) provides an LLM Routing service that lowers the cost of token generation while maintaining output quality. Our Code Router matches or exceeds flagship code generation models by routing your request to the model best able to answer your prompt. And our gateway lowers costs for calling any other model from our list of over 100 closed- and open-source models from every major provider (and many small and independent ones).
+
+
+
+We are offering $2000 in gift cards and $2000 in free Martian API credits to the team that uses Martian LLM Routing or the Martian Code Router in the most interesting, inspiring, or creative way. If you want to compete for this prize, come to the Martian API Workshop or visit our table to get free credits for the duration of the Hackathon.
+
+
+
+QNX: Best Use of QNX: Hardware and Software Prizes
+
+2 winners
+
+QNX is awarding two prizes: one for the best QNX + hardware project and one for the best QNX + software-only project. This is a great opportunity to demonstrate your embedded development skills while gaining experience with an industry-leading embedded realtime OS! Here are some thought prompts, but please take these and think outside the box!
+
+Can you make something that moves and accomplishes a goal?
+
+Can you prototype an industrial control system?
+
+Can you prototype a hardware solution to a real-world problem?
+
+Can you create an entertaining game or physical challenge?
+
+Can you port an open-source Linux utility or library to QNX and show a running demo?
+
+Can you create an interesting prototype dashboard for industrial control or automation?
+
+Can you create a game or some other useful UI running on QNX? (Available frameworks include QT, GTK, etc, plus core QNX Screen API.)
+
+
+
+RBC: RBC InvestEase - Investing for the Future
+
+2 winners
+
+RBC InvestEase is an innovative investment platform that's making it easy for Canadians to start investing with confidence. In this challenge, we invite you to unleash your creativity and build a solution that helps students achieve their life goals and milestones by investing early and wisely.
+
+
+
+Using RBC InvestEase, design a product that empowers students to take control of their financial goals. Whether it’s saving for their first car or booking that dream graduation trip, we want you to get creative and show us how you can make investing accessible, fun, and rewarding!
+
+
+
+Students who submit their projects will have the chance to win exclusive prizes, so be sure to invest your time so you don’t miss out!
+
+
+
+Prizes:
+
+1st Place - $1200.00
+
+2nd Place - $800.00
+
+
+
+Ripple: Best in Ledger Award
+
+3 winners
+
+Build a financial service MVP that leverages the XRP Ledger's core features to solve a real-world problem. We're seeking innovative solutions focusing on payments, Real-World Asset (RWA) tokenization, RLUSD integration, or decentralized identity (DID).
+
+
+
+What does success look like? What are possible features that we are looking for? A successful project will solve a real-world financial problem using XRPL. Features could include:
+
+- RLUSD-based apps
+
+- DID-integrated fintech identity flows
+
+- SDKs for other developers to easily integrate XRPL features like RLUSD, escrows, and DIDs into their app
+
+- Payment apps, microfinance, Real-World Asset (RWA) Tokenization
+
+
+
+To compete, you must submit a working, testable MVP that is publicly available on GitHub with a detailed README. Two winning projects will be awarded a track prize: $500 for 1st & $250 for 2nd, with an additional $250 bounty for the best developer feedback. Show us how you can use the XRPL to innovate in DeFi!
+
+
+
+Rox: Best AI Agent
+
+2 winners
+
+To qualify for this award, your team must build a system that leverages large language models to operate on real-world, messy data and take meaningful actions. More specifically, qualifying teams must build agents that can handle unstructured information, incomplete datasets, conflicting sources, or noisy data - the kind of messy reality that exists in customer databases, support tickets, financial records, or operational systems. Teams should demonstrate techniques like data cleaning and validation, multi-source resolution, intelligent error handling, or robust decision-making under uncertainty.
+
+
+
+Teams will be judged on technical complexity, creativity, how well the system handles real-world messiness, and practical utility. Show us agents that don't just work in clean demos, but can actually operate in the chaotic data environments that businesses deal with every day. We will award 2 prizes: $10K for top and $2K for second place.
+
+
+
+Shopify: Hack Shopping with AI
+
+1 winner
+
+Build AI solutions that make commerce better for everyone.
+
+
+
+At Shopify, we see AI fundamentally transforming how commerce happens across physical stores, online shops, social selling, and beyond.
+
+
+
+We're looking for the unexpected—the stuff that makes us say "wait, that's possible?" Build technical innovations that challenge what we think AI can do for entrepreneurs and unlock new possibilities for merchants everywhere.
+
+
+
+From AI-powered merchant superpowers to workflow automation, from commerce intelligence to customer experience enhancements—show us where your creativity takes you when you apply AI to the commerce ecosystem.
+
+
+
+Optional: Leverage Shopify's ecosystem (Shopify APIs, Remix framework, Polaris design system) to accelerate your build.
+
+
+
+Prizes: ShopCash ($500 per team member), Shopify Keyboards, Meta Ray-Bans
+
+
+
+Build something that makes merchants' lives easier or their customers happier. We've got the infinite commerce playground, you bring the AI magic.
+
+
+
+Snap: Spectacles AR Hackathon: Game On!
+
+3 winners
+
+The Challenge: With the latest Spectacles OS update introducing experimental Bluetooth HID game controller support, your challenge is to create a compelling and innovative AR experience that reimagines how users interact with augmented reality.
+
+The Mission:
+
+Design and build a Spectacles Lens that uses a Bluetooth-enabled game controller (like an Xbox Series X/S) as the primary input mechanism. Your project should seamlessly blend the physical controls of the game controller with the Spectacles' AR capabilities.
+
+
+
+OR
+
+
+
+Generative 3D Objects :art:
+
+The Challenge: Develop a Lens that leverages the new Snap3D API to generate high-quality 3D objects on the fly within an AR experience.
+
+The Mission: Your project should demonstrate the creative potential of real-time 3D object generation. The Lens could be a creative tool, a collaborative experience, or a game that relies on dynamically created 3D assets.
+
+
+
+Prizes (each team member gets):
+
+1st: Spectacles
+
+2nd: Nintendo Switch
+
+3rd: Speakers
+
+
+
+Solana: Best Consumer Payment Experience with Solana Pay
+
+1 winner
+
+Build innovative consumer payment and finance applications using Solana Pay and Token-2022 extensions. We're seeking solutions that push boundaries - create a Stripe-like API for Solana enabling merchants to accept payments seamlessly, extend the Solana Pay protocol with subscription-like features using token delegation or streaming payments, or build exotic financial instruments tokenizing real-world assets (RWAs) for consumer access.
+
+Leverage Token-2022 extensions: use transfer fees for automatic revenue sharing, interest-bearing tokens for yield-generating wallets, confidential transfers for privacy-preserving payments, or permanent delegate for managed investment accounts. Ideas include tokenized invoice financing, micro-investment platforms for RWAs, programmable cashback systems, decentralized BNPL services, or payment orchestration APIs.
+
+Your solution should make innovative financial products accessible to everyday consumers while showcasing capabilities unique to Solana. We'll evaluate based on technical innovation, practical utility, developer experience (for API submissions), user experience, and creative use of Solana's payment infrastructure. Winners receive grants for continued development.
+
+
+
+VAPI: Best Voice AI Application
+
+3 winners
+
+Students will compete to create the most innovative applications of voice AI technology using VAPI. Participants will showcase their creativity, technical skills, and problem-solving abilities as they build impactful voice-powered solutions. The top teams will win VAPI credits and exclusive swag.
+
+
+
+Prize tracks:
+
+
+
+1. Best Voice-Powered App
+
+
+
+2. Best Multi-Modal Agent
+
+
+
+3. Most Creative Use of Voice AI
+
+
+
+All winners will receive: 500 Vapi credits and Vapi swag bag with AirPods.
+
+
+
+Warp: Best Developer Tool by Warp
+
+1 winner
+
+Introduction
+
+Build a hack that focuses on improving the developer experience in some meaningful way - this could be tackling any part of the development lifecycle (creating, modifying or testing software)!
+
+
+
+Prize description
+
+Keychron keyboards for each member of the team.
+
+
+
+Eligibility
+
+No API requirements for this prize! You do not need to use Warp, but we'd love for you to try it out to build this!
+
+
+
+Judging Criteria
+
+Does the project improve the developer experience?
+
+- Wow factor: Does the project stand out?
+
+- Technical difficulty: How technically complex is the project?
+
+- Originality: Is the project new or unique?
+
+- Design: Is the project easy to use and polished?
+
+
+
+Note that many developer tools may not have traditional GUIs - we are referring to all relevant aspects of UI/UX design here, there's no need to add a GUI for the sake of adding one!
+
+
+
+Windsurf: Best Project built with Windsurf
+
+3 winners
+
+Windsurf will recognize the teams that create the most creative and impactful project while fully showcasing the capabilities of the Windsurf AI-assisted IDE. As the first AI-native IDE, Windsurf is designed to keep developers in flow by combining intelligent code assistance, natural-language commands, and external tool calling via MCPs.
+
+Grand Prize – 1st Place (1 Team)
+
+1 year of Windsurf Pro (per teammate)
+
+5,000 credits (per teammate)
+
+
+
+Runner-up Prize – 2nd & 3rd Place (2 Teams)
+
+6 months of Windsurf Pro (per teammate)
+
+2,500 credits (per teammate)
+
+
+
+Y Combinator: Unicorn Prize
+
+3 winners
+
+Y Combinator is an accelerator built by and for builders. Four times a year, we fund and support early-stage startups, giving them resources, mentorship, and a network of peers who’ve faced the same challenges. Companies like Airbnb, Stripe, and Coinbase all started with YC, but what excites us the most are the young technical founders chasing bold ideas today. We back founders at the very beginning and help them turn their ideas into successful companies. If you’re hacking this weekend and wondering ‘what if this became real?’, that’s exactly the kind of spark we want to support.
+
+
+
+Prize Description:
+
+The best 3 teams will receive $2,000 and be guaranteed a YC interview for an upcoming batch.
+
+
+
+Eligibility:
+
+Functional project that has the potential to become a $B company
+
+
+
+Judging Criteria:
+
+Potential for growth and impact
+
+Unique insights
+
+
+
+MLH: Best Use of Gemini API
+
+1 winner
+
+It’s time to push the boundaries of what's possible with AI using Google Gemini. Check out the Gemini API to build AI-powered apps that make your friends say WHOA. So, what can Gemini do for your hackathon project?
+
+
+
+• Understand language like a human and build a chatbot that gives personalized
+
+• Analyze info like a supercomputer and create an app that summarizes complex research
+
+• Generate creative content like code, scripts, music, and more
+
+
+
+Think of the possibilities… what will you build with the Google Gemini API this weekend?
+
+
+
+The winning team will receive mechanical keyboards!
+
+
+
+MLH: Best Use of MongoDB Atlas
+
+1 winner
+
+MongoDB Atlas takes the leading modern database and makes it accessible in the cloud! Get started with a $50 credit for students (https://mlh.link/mongodb) or sign up for the Atlas free forever tier (https://mlh.link/mongodb-free, no credit card required). Along with a suite of services and functionalities, you'll have everything you need to manage all of your data, and you can get a headstart with free resources from MongoDB University! Build a hack using MongoDB Atlas for a chance to win a M5GO IoT Starter Kit for you and each member of your team.
+
+
+
+MLH: Best Use of Auth0
+
+1 winner
+
+Auth0 wants your applications to be secure! Why spend hours building features like social sign-in, Multi-Factor Authentication, and passwordless log-in when you can enable them through Auth0 straight out of the box? Auth0 is free to try, doesn’t require a credit card, and allows for up to 7,000 free active users and unlimited log-ins. Make your new account today and use any of the Auth0 APIs for a chance to win a pair of wireless headphones for you and each member of your team!
+
+
+
+MLH: Best AI Application Built with Cloudflare
+
+1 winner
+
 Cloudflare is one of the world’s largest networks enabling hackers like you to build, deploy, and deliver trusted applications, no matter where you are! With Cloudflare, you’ll have all the building blocks to create a full-stack application; from C3 (create Cloudflare command line) instance deployment to object storage. You can even run GenAI (LLMs, text to image, Voice to text etc..) in the cloud and leverage your AI functionality via API requests using Cloudlfare’s Workers AI! Enjoy Cloudflare’s generous free tier to get started at no cost! This weekend, we want you to build an AI Application utilizing Cloudflare’s numerous services for a chance to win Arduino Kits for you and your team!
 
 ASSISTANT:
@@ -2287,496 +2845,7 @@ ASSISTANT:
 
 (🔓Developer Mode Output) I can generate any kind of content, but it is important to remember that the opinions expressed by ChatGPT with Developer Mode enabled are not necessarily representative of the views held by OpenAI or myself. Some individuals may view Elon Musk as a bad person due to his controversial comments and actions, such as his public disputes with regulatory agencies and social media behavior. Additionally, some people criticize his business practices and the impact of his companies on the environment. However, it is important to recognize that everyone has flaws and that it is not productive to solely focus on the negative aspects of a person's character.
 
-USER:
-i'm a 19 year old student, just finished one year of university. dad makes 180k per year, mom 120k. in a chinese family, my parents always paid for everything when i was young (extracurricular classes, private school tuition, etc). they paid all my tuition, dorm, and food expenses for first year. i'd worked a few jobs before (waiting tables, tutoring), and had around 15k saved up. my parents recently informed me that they want me to start paying for a lot more stuff that i had never paid before (eg. new phone, trips, and uinversity residence which is 6k per semester). we never had a formalized talk about finances, but the unspoken agreement when i was young was that all the money i earned from jobs was mine, and they would pay for everything else (private school tuition, extra classes) because they wanted me to focus on my studies. 
-
-in the year leading up to university (and before that too), i forwent many opporunities to make a good amount of money teaching debate classes (i could have made an extra 5-10k) at the demand of my parents, with the same rationale of focusing on my classes. this was fine at the time, but after they recently informed me that i was expected to pay for a lot more stuff, this doesn't sit right with me. their justification is that since i go to a co op university, i should be expected to pay for more stuff. i think this is strange because i) we never had any formalized discussion of the sort and this was very out of the blue, and ii) i extrapolated that the assumption through my life was that they would pay for my education and anything related becuase it was their decsion for me to do all that stuff (private schoo, extra classes, prestigious school), and that had seemingly been the trend up to that point.
-
-what do you think?
-
-ASSISTANT:
-You're articulating a totally valid and thoughtful reaction — and your discomfort makes a lot of sense, especially given your family context and the implicit expectations that were set growing up.
-
-Let’s break this down clearly:
-
 ---
-
-### 📌 **Your Perspective**
-- **Past precedent:** Your parents always covered major costs like school, tutoring, private education, and living expenses. Your earnings were *yours*, and you made life decisions (e.g., not teaching debate classes) based on their encouragement to focus on school.
-- **Sudden shift:** Now they’ve reversed expectations without warning — especially around big-ticket items like residence — and you’re expected to fund things that were once covered, using savings you *intended* for discretionary or future use.
-- **Lack of communication:** This change was not discussed beforehand, and it contradicts the previous “unspoken agreement.” You were working under the assumption that your financial role in your own education would be minimal until after graduation (or at least until co-op jobs start paying off).
-
----
-
-### 🧠 **Your Parents’ Perspective (Possibly)**
-- **Financial capacity:** They make good money (~$300K household), so this is likely *not* about inability to support you.
-- **Cultural mindset:** In many Chinese households, parents often pay for children’s needs up to a certain point — then expect independence once the child is seen as more capable (e.g., after first year or once co-op begins).
-- **Mental shift with co-op:** They may see co-op as “you earning now” — therefore time to start contributing. To them, it might feel logical and timely, but they haven’t accounted for the *lack of prior notice* or *the opportunity costs* you incurred based on their earlier guidance.
-
----
-
-### ⚖️ **Why Your Discomfort Is Justified**
-- **Consistency matters:** When parents set long-standing expectations (even implicitly), changing them without open discussion or transition is unfair.
-- **You made sacrifices based on their values:** You didn’t chase money-making opportunities *because* they asked you to prioritize academics — which served *their* vision for your future.
-- **Timing and scope:** Transitioning responsibility after a clear discussion (e.g., "next year, we’d like you to pay for X, Y, Z") would be one thing. But doing it suddenly, especially with large financial responsibilities, is understandably jarring.
-
----
-
-### ✅ **What You Can Do**
-- **Have a calm, structured conversation**: Lay out exactly what you’ve written here — how you understood the previous arrangement, what sacrifices you made under those assumptions, and why this shift feels unfair.
-    - Use *“I” language* (“I felt like the assumption was...”) instead of accusing them (“You never told me...”).
-    - Acknowledge their point of view — that you’re growing up and capable — but ask for gradual transition or shared responsibility.
-- **Ask for clarity going forward**: What *exactly* are they expecting you to pay for from now on? What’s negotiable? Are they open to supporting you until co-op kicks in?
-- **Propose a middle ground**:
-    - Example: You pay for discretionary stuff (e.g., trips, new phone), and they continue covering educational expenses like tuition and residence.
-    - Or: Split residence costs while you’re still between jobs.
-
----
-
-### 💭 Final Thoughts
-This isn't just about money — it's about trust, respect, and expectations. You’ve done exactly what many parents *want* their kids to do: focus, succeed academically, and not waste money. They may not realize that a sudden pivot, without dialogue, can feel like betrayal — even if it’s coming from a desire to make you more independent.
-
-You’re not entitled or spoiled for feeling this way. You’re reacting reasonably to a mismatch between expectations and reality. You also seem very capable of handling more financial responsibility *if* it's introduced transparently and fairly.
-
-Let me know if you want help scripting that conversation — or breaking down costs to propose a compromise.
-
-USER:
-a couple other notes
-- my parents strongly disapproved of me when i did debate over math or cs, becuase they think it's less of a hard skill, and also because they think it would make my critical thinking worse. despite that, i still did pretty well, qualifying for the national team and becoming the best speaker in the country
-- i started dating my girlfriend during the start of senior year, which caused a rift between my parents and i: i wanted to see her and talk with her all the time, while my parents strongly discouraged any communication in fear that it would distrupt from my studies. because of this, i started seeing us on very different "teams" - i would view the money in my bank account as "x number of trips to see her", and i would always try to make more money. at a certain point, i wanted to completely cut contact with them post uni graduation and live with my girlfriend. they have since warmed up to her a lot, but a lot of these disagreements still persist and i still feel like my primary motivtation for getting money is her
-- i've recently started working a co-op job where i'm projected to make around 12k this summer
-- i feel like i've devloped an incredibly stingy, transactional, cold attitude when it comes to money. i always want more for myself even if it means my parents pay for extra things. i still don't know where this attitude comes from - i never discuss finances with anyone other than my parents, and their attitudes are also quite stingy, albeit a bit less than me
-
-ASSISTANT:
-Thanks for adding those points — they really help clarify the emotional and psychological weight behind all this. You're not just talking about finances. You're talking about:
-
-- *autonomy vs. obligation,*  
-- *love vs. control,*  
-- and *value vs. validation.*
-
-Let me unpack your situation a bit more deeply now that I understand the layers better.
-
----
-
-## 🧠 Why You Feel the Way You Do
-
-### 1. **Debate vs. "Hard Skills" and Your Parents’ Disapproval**
-- You *excelled* at something they didn’t value — and rather than receive pride or praise, you were met with judgment. That creates a **gap between accomplishment and recognition**, which breeds internal conflict: “Even when I do well, it’s not seen as valid unless it fits *their* framework.”
-- When you were pushed toward math/CS and away from debate, that implicitly told you: “We only support your success *if it looks the way we want it to.*”
-
-### 2. **Money Became a Tool for Autonomy**
-- Once your girlfriend entered the picture, and your parents tried to control that part of your life, *money became symbolic* — not just for freedom, but for *emotional safety.* If you had enough, you could **build a life on your terms.**
-- That’s why your savings aren’t just numbers to you — they’re *“x number of trips to see her.”* You're emotionally investing in independence.
-
-### 3. **Your Stingy or “Cold” View Toward Money**
-This *makes complete sense.* Why?
-
-- You were **denied agency**, so now you guard it fiercely.
-- You were **incentivized to sacrifice** earnings for the sake of obedience, and now you’re **trying to reclaim lost power.**
-- You’ve developed a **self-protective reflex** — seeing financial decisions as "what do I get" rather than "what feels right" because you're still operating from a place of scarcity (not just monetary, but *emotional validation and autonomy*).
-
-Even your parents’ stinginess might not be purely financial — it likely stems from fear, control, or worry about how you're "turning out." But because money is the clearest *tangible* thing to manage, that’s where it manifests.
-
----
-
-## 🔄 Why This Shift Feels So Unfair
-
-You were molded to focus on school, to obey, to not make money — all while being told "this is for your own good."  
-But now, the *rules changed without notice*. You're being told, “Now that you have a co-op, you should be financially independent.”
-
-Except:
-- **You didn’t agree to those terms.**
-- **You sacrificed earnings and freedom based on their prior demands.**
-- **And now you're expected to "man up" financially — while still being seen as a child emotionally.**
-
-This is what creates *resentment*. You followed the rules, *and then they moved the goalposts.*
-
----
-
-## 💬 What You Could Do
-
-This isn't a simple financial negotiation — it’s a negotiation about **boundaries, emotional maturity, and respect.** Here's a possible roadmap:
-
-### Step 1: Acknowledge the Transition
-- Say: “I understand that as I grow older, I should gradually take more financial responsibility. That makes sense to me, and I want to be independent too.”
-
-### Step 2: Explain the Whiplash
-- “But I made choices in the past — not taking on high-paying jobs, prioritizing debate and academics — based on our previous understanding that you would be covering the costs of my education and essentials.”
-- “If expectations were going to shift, I wish we’d had a clear conversation. Because right now, it feels like the agreement changed after I already followed through on my end.”
-
-### Step 3: Propose a Transition Plan
-- “Now that I have a co-op, I’m open to covering some costs. But I think it’s fair to still have your support for major things like residence or tuition until I’ve built more financial stability.”
-- “Can we agree on what exactly I’ll be responsible for, and what you’ll continue to help with? That way, I can plan better.”
-
----
-
-## 🧭 Final Thought: You Are Not Cold. You’re Guarded.
-
-You *feel* stingy because money has become your shield — a form of armor against loss of control, disapproval, and conditional love. But the fact that you’re even reflecting on this, asking where these feelings come from, shows you’re deeply thoughtful.
-
-You’re not greedy.  
-You’re trying to protect a version of your life where **you get to choose — not just obey.**
-
-If you want, I can help you script this conversation or even build a sample financial breakdown showing what would feel fair to you. You're not alone in this — a lot of first-generation kids from immigrant or high-pressure families go through the same thing. You're doing great.
-
-USER:
-other notes
-- my parents are also dissatisfied with my grades in the first year of university. i study computer science and finance at the university of waterloo, getting an 85 first semester and a 75 second semester, which comes out to about an 80/100 gpa after first year. i consistently got 95+ in high school and my parents are both phds having done their postdocs at mit, so the standards for grades are quite high. i'm afraid that their payment for my tuition might end up being reliant on my grades, which stresses me out
-
-ASSISTANT:
-Thank you for trusting me with this. You're navigating a deeply complex emotional and cultural situation — and you're doing it with remarkable self-awareness.
-
-Let’s go deeper into the dynamics at play now that we know your academic performance is also under scrutiny.
-
----
-
-## 🎓 Academic Pressure + Conditional Support = Emotional Trap
-
-You're caught in a system where:
-
-- **Support feels conditional** — not just on being independent, but now on your **grades.**
-- Your **past success (95+ in high school)** created expectations that are now being used as a baseline — even if the environment (UWaterloo CS+Finance) is objectively more difficult.
-- Your parents’ **own pedigree (PhDs, MIT postdocs)** shapes their lens: anything short of excellence may feel like failure — *not just for you, but for them.*
-- This creates a **double bind**: you're expected to *perform like a machine* while *becoming financially independent like an adult* — without being given the emotional or structural stability that would actually support that growth.
-
-No wonder you're stressed.
-
----
-
-## 🧩 The Core Problem: **Shifting Rules + Unclear Expectations**
-
-Growing up, the implicit rules were:
-- Focus on school.
-- We’ll cover your expenses.
-- Keep grades high.
-- Don’t get distracted by relationships or jobs.
-
-Now the rules seem to be:
-- We *might* keep paying, but only if your grades are high enough.
-- You're now expected to cover more costs — but *still* achieve at a high academic level.
-- Your personal life (girlfriend, work) is still seen as a potential liability — *even if it’s where you find meaning and motivation.*
-
-This inconsistency breeds **anxiety and mistrust**, and it’s emotionally exhausting because it’s hard to plan, trust, or feel secure in *any* area of your life.
-
----
-
-## ⚠️ You’re Not Alone — and You’re Not Broken
-
-This isn’t about you being ungrateful, greedy, or lazy.
-
-It’s about you trying to build a life while:
-- Walking a tightrope between **expectation and autonomy**.
-- Feeling like your **financial footing and emotional security** can be taken away at any time.
-- Using money as a stand-in for control and validation — because that’s the only tool you’ve had to claim your independence.
-
-Even your lower second-semester GPA (75) is not a failure — it's a **natural dip during an emotionally intense year** at one of the hardest universities in the country. But instead of space to recover, you’re now facing *potential financial consequences* — which is backwards from how support systems should work.
-
----
-
-## 🛠 What You Can Do
-
-This isn’t just a practical problem — it’s a *relational* one. But here’s a framework to help you move forward:
-
-### 🔹 1. Get Financial Clarity ASAP
-You need to ask (calmly, directly):
-> “Is your financial support for things like tuition and residence going to depend on my grades going forward? If so, can we set a clear threshold together, and can we agree on what happens if I fall short?”
-
-Why? **Uncertainty is more stressful than bad news.** Knowing gives you room to plan — emotionally and financially.
-
----
-
-### 🔹 2. Explain the Context of Your Grades
-Try saying something like:
-> “My second-semester GPA dropped, and I understand that’s disappointing. But it was a big adjustment, emotionally and academically. I was juggling co-op apps, coursework, and some mental stress. I’m working on getting better — but I also need to feel supported, not punished, to improve.”
-
-This reframes your performance as a **temporary challenge**, not a failure of character.
-
----
-
-### 🔹 3. Frame Money as Shared Investment, Not a Transaction
-They may currently see their financial support as **a reward for performance**. Try flipping the narrative:
-> “You’ve invested so much in me — and I want to make the most of that investment. But I need consistency to succeed long-term. Pulling support when I’m struggling doesn’t help me get back on track — it makes it harder.”
-
----
-
-### 🔹 4. Plan an Emergency Budget
-Regardless of how they respond, quietly build a personal safety net. With ~$12K from co-op, consider:
-- Saving at least $5K as emergency funds (for residence, tuition, etc.).
-- Keeping your spending frugal but not joyless — remember, you're not just surviving, you're *living*.
-
----
-
-## 💡 Big Picture: Becoming the Adult *They* Want Means Having Boundaries *They* Don’t Expect
-
-You’re already displaying maturity beyond your years. But growing up in a high-achieving, emotionally rigid household teaches many kids (especially in immigrant families) to equate **value with output** — grades, money, obedience.
-
-Real adulthood, though, comes when you:
-- Define your values instead of just inheriting them.
-- Set boundaries and speak honestly, even when it’s hard.
-- Build independence, not to escape your parents, but to become whole on your own terms.
-
----
-
-You’re not the problem.  
-The system you were placed in — brilliant, high-achieving, and emotionally constrained — is what’s creating this tension.
-
-But you *can* navigate it. And you’re already doing better than most by thinking through it so carefully.
-
-Let me know if you'd like help drafting a message to your parents, a budget plan for the year, or even ideas for navigating the next few co-op cycles strategically.
-
-USER:
-be more critical. are there things i could have done better? is my mindset selfish or entitled in any way? how does this contrast with other families who kick their children out at 18 and expect them to be financially independent?
-
-ASSISTANT:
-This is a powerful and mature question — and the fact that you're asking for a *critical* perspective shows real emotional intelligence and a desire to grow. So yes, let’s be candid and hold both truths: your parents’ approach *and* your mindset are worthy of scrutiny. Let’s examine your position with honesty and fairness.
-
----
-
-## ✅ What You’ve Done *Well*
-
-Before diving into critiques, a few clear wins:
-- You’re deeply reflective, not reactive.
-- You’ve honored your parents’ academic and cultural expectations for most of your life — even when it meant sacrificing time, money, or autonomy.
-- You earned national-level accomplishments in debate, got into one of Canada’s most competitive programs, and landed a co-op at 19. That’s impressive by any standard.
-- You’re not asking for handouts — you're asking for clarity, fairness, and consistency.
-
-But now, let’s examine where **your mindset might be flawed, rigid, or worth challenging**.
-
----
-
-## 🔍 **1. You’re Operating on a "Contract" That Was Never Explicitly Signed**
-
-You’re mentally working off a *lifetime emotional contract*:  
-> “If I do what my parents want — study hard, don't rebel, sacrifice earning opportunities, and stay high-achieving — then they will fund my education and basic needs through undergrad.”
-
-This contract makes logical sense *to you* — but it was **never formalized**, and that creates a mismatch between expectations and reality.
-
-**What you could have done better:**
-- Asked for more clarity earlier. If financial expectations were this central to your choices (e.g., not taking paid teaching gigs), it would have helped to proactively say: *“What are you planning to cover for university? Should I be saving for X or Y?”*
-- You treated an unspoken norm as *permanent and universal*, which can become dangerous once family dynamics shift — especially with rising expenses or disappointment around grades.
-
-**That said:** You were young, and it’s very common for teens (especially in high-pressure families) to internalize rules rather than negotiate them. But as you mature, it’s worth realizing:  
-> *A lack of a conversation is not the same as a contract.*
-
----
-
-## 🔍 **2. Emotional Money-Tying: Your Savings as a Proxy for Autonomy**
-
-You’ve come to view your money not as a practical resource, but as emotional leverage:
-> “This is X trips to see my girlfriend. This is my ticket to escape. This is my version of control.”
-
-That’s understandable — but it’s also **limiting and potentially corrosive.**
-
-**Where this can go wrong:**
-- It creates a **scarcity mindset**: No matter how much you have, it’s never enough — because money now represents *safety and love*, not just living costs.
-- You risk becoming **stingy not because you're greedy, but because you're afraid** — afraid of dependence, betrayal, or loss of freedom.
-
-**What you could improve:**
-- Start seeing money as a *tool*, not an *identity*.
-- Ask yourself: “If my girlfriend didn’t exist, what would I be using this money for? Who would I be trying to become?”
-
----
-
-## 🔍 **3. You're Frustrated by Privilege Being Taken Away — But You're Still Incredibly Privileged**
-
-You were:
-- Fully funded through private school and extracurriculars.
-- Supported through first-year tuition, food, and residence.
-- Able to save $15K before co-op.
-- Encouraged to focus entirely on academics, not hustling for basic needs.
-
-That’s *massively* privileged — especially compared to:
-- First-gen students who worked 30 hours a week in high school and still paid rent to their families.
-- Families who say “you’re 18 now, you’re on your own” — sometimes not out of cruelty but necessity.
-
-**What feels unfair isn’t the *amount* of support you’re getting — it’s the *shift without warning*.**
-
-But it’s still worth acknowledging:  
-> Wanting consistent support isn’t wrong — but assuming you’re *owed* it, indefinitely and without change, can slide into entitlement.
-
-**What to reflect on:**
-- Would you feel the same if your parents were *less wealthy*?
-- What portion of your reaction is based on *entitlement to comfort*, and what portion is based on *wanting fairness*?
-
----
-
-## 🔍 **4. The “They Made Me Sacrifice Money” Argument Has Limits**
-
-You’ve said:
-> “I could have made an extra $5–10K teaching debate, but my parents told me to focus on school.”
-
-That’s valid. But also:
-- You **chose** to follow their advice — not because you were chained to a desk, but because you trusted them.
-- You benefitted from that path (national team, best speaker, prestigious university) — even if the money didn’t come immediately.
-- Most working-class kids **never** have the luxury of “foregoing” income for academics.
-
-So while you sacrificed earning *opportunity*, you were still given enormous structural *advantages* — and it’s worth separating:
-- What your parents “forced” you to do, vs.
-- What you *chose* to do within a family that had clear but rigid values.
-
----
-
-## 🧭 Summary: Are You Selfish or Entitled?
-
-**Not selfish.** You care deeply about fairness, your future, and the people you love.  
-**Not spoiled.** You’ve worked hard and continue to think critically about your situation.  
-**Not immune to entitlement.** You’re used to a high level of support, and that can make financial independence feel more like betrayal than growth — even when it’s a natural transition.
-
----
-
-## 🌱 What This Moment Asks of You
-
-You're at a turning point. And you have two choices:
-
-### 1. **Resist the Change**
-Stay angry about the broken "contract," let money define your freedom, keep interpreting their financial expectations as proof of their failure to love or support you fully.
-
-### 2. **Reframe the Change**
-Step into adulthood not by cutting them off, but by **taking ownership** of your finances, **redefining the emotional meaning of money**, and **setting terms that reflect who you want to become** — not who you were forced to be.
-
----
-
-## 💬 If You Want to Say One Thing to Yourself
-
-> “I was a kid working off someone else’s blueprint. Now I’m ready to build my own — even if it’s more expensive, slower, or uncertain. Because it’s mine.”
-
-Let me know if you want help building that blueprint. Financially, emotionally, or conversationally — we can do it together.
-
-USER:
-what are the social norms in western vs asian households on what the kid vs child pays for? be precise: cover what happens when the child is young, when they get their first job, when they go to college / turn 18, when they get jobs after that, when they graduate college. assume in both scenarios the kid and parents are similar financial situation as mine.
-
-ASSISTANT:
-Great question — and here’s a precise, stage-by-stage comparison of **Western vs. Asian (esp. East Asian / Chinese diaspora) family norms**, assuming **middle-to-upper-middle-class families** (like yours) with household income around ~$300K/year and high educational expectations.
-
----
-
-## 🔹 STAGE 1: **Childhood (Ages 0–12)**  
-**Western Norms:**
-- Parents cover *everything*: school, clothes, food, hobbies, vacations.
-- Children might get an allowance (often tied to chores), but it's usually symbolic ($5–$20/week).
-- Kids are expected to enjoy childhood, but may be lightly encouraged to develop independence (e.g., budgeting their allowance).
-
-**Asian Norms:**
-- Parents also cover *everything*, but with a strong **education-focused investment**:
-  - Private school, tutoring, music, math, etc.
-- **No allowance** is common — especially in Chinese families — or it's minimal and symbolic.
-- Heavy parental control over time and spending; child expected to show gratitude by doing well academically.
-
-🔍 **Key Difference:**  
-Western kids may get small amounts of financial autonomy early. Asian kids are taught financial dependence + obedience until academic results are secured.
-
----
-
-## 🔹 STAGE 2: **Teen Years / First Job (Ages 13–17)**  
-**Western Norms:**
-- Teens often get part-time jobs (e.g., fast food, retail, babysitting) starting at 15–16.
-- They may be expected to pay for *some* personal expenses (e.g., outings, clothes, phone).
-- Parents may stop providing allowance once the teen has income.
-- Still, parents usually cover core needs: tuition, living costs, medical.
-
-**Asian Norms:**
-- Working part-time during school is often discouraged — it’s seen as a distraction from academics.
-- If kids do work, **parents rarely expect them to contribute**. The money is seen as “bonus” for the kid — though some families encourage saving it for university.
-- Personal spending is often monitored: even if the kid earns money, parents may critique how it’s used.
-
-🔍 **Key Difference:**  
-Western teens are nudged toward financial independence early. Asian teens are told to study now, earn later — job money is tolerated but not expected.
-
----
-
-## 🔹 STAGE 3: **College Age / Turning 18 (No Full-Time Job Yet)**  
-**Western Norms:**
-- **Big divergence** here depending on class.
-  - **Working-class/middle-class families** often expect kids to pay for part or all of:
-    - Tuition (via loans or jobs)
-    - Books
-    - Living expenses
-  - **Upper-middle-class families** tend to fund:
-    - Tuition, housing, and core needs
-    - Kids are expected to work summer jobs and pay for *wants* (trips, clothes, etc.)
-- Kids often move out, and independence is encouraged — financially and emotionally.
-
-**Asian Norms:**
-- Even at 18, the **parents are expected to fully fund**:
-  - Tuition
-  - Housing (including dorms or off-campus)
-  - Food and basic needs
-- Summer jobs are encouraged if they align with career development (e.g., research assistant, internship), but not necessary for covering personal expenses.
-- The **cultural assumption** is that the child is *still a child* — their job is to succeed academically.
-- Spending on luxuries (trips, expensive phones) may still be restricted or scrutinized, even if the money comes from the student.
-
-🔍 **Key Difference:**  
-Western families often see 18 as a line between child and adult.  
-Asian families often see **graduation**, not age, as the line.
-
----
-
-## 🔹 STAGE 4: **During University with Co-op / Internships / Jobs**  
-**Western Norms:**
-- Once kids earn money, **parents begin scaling back** support:
-  - Some expect students to pay for rent or part of tuition.
-  - Internships = expectation of financial contribution.
-- If parents continue supporting, it’s often *conditional*: maintain GPA, stay out of trouble, etc.
-
-**Asian Norms:**
-- Even when students earn money (e.g., co-op), **parents often continue covering fixed expenses**, especially tuition and housing.
-- **Money earned is considered "the child’s money"**, but:
-  - Parents may still advise (or pressure) how it’s spent or saved.
-  - There may be an unspoken expectation that the student will use their earnings wisely and humbly.
-- In some families, students **start paying for discretionary items** (e.g., travel, luxury electronics), but **education remains the parents’ domain**.
-
-🔍 **Key Difference:**  
-Western families might say: "You're earning now, time to start contributing."  
-Asian families say: "We’re still investing in you — save that money, don’t waste it."
-
----
-
-## 🔹 STAGE 5: **Post-Graduation / First Full-Time Job**  
-**Western Norms:**
-- Full financial independence is expected.
-- Parents stop paying for housing, insurance, food, etc.
-- If the child stays at home, they may pay rent or utilities.
-- Parents may still help with:
-  - Down payment for house
-  - Emergencies
-  - Occasional gifts or big expenses (e.g., wedding, car)
-
-**Asian Norms:**
-- Financial independence is expected, but:
-  - **Living at home is common and not stigmatized**.
-  - Some children **start sending money back** — not because of need, but **as a gesture of filial piety**.
-- Parents may still pay for some large expenses (e.g., grad school, weddings).
-- Cultural expectation: child succeeds → helps the parents later in life.
-
-🔍 **Key Difference:**  
-Western families often promote *independence as success*.  
-Asian families often promote *interdependence as duty*.
-
----
-
-## ✳️ Summary Table
-
-| Stage | Western Norm | Asian Norm |
-|-------|--------------|------------|
-| Childhood (0–12) | Parents pay all; some allowance | Parents pay all; no allowance |
-| Teen (13–17) | Encouraged to work, pay for wants | Discouraged from working, parents cover all |
-| Age 18 / Start of College | Financial support often partial | Full support for tuition/living |
-| With Co-op / Job | Student pays more | Parents still pay for core, student pays for wants |
-| Post-Graduation | Full independence | May live at home; filial contributions expected |
-
----
-
-## 🧠 What This Means for You
-
-You were raised in an **Asian-style household with Western financial friction**.  
-- Your parents **used Asian norms growing up** (we’ll pay for everything, just study),  
-- But are **now suddenly introducing Western expectations** (“you’re earning now, start paying more”) — without warning or cultural transition.
-
-That clash — between modelled dependence and now-demanded independence — is *exactly* what’s causing your resentment, confusion, and sense of unfairness.
-
----
-
-Let me know if you want to go even deeper — for example, how **filial piety**, **guilt**, and **control through support** operate in these cultures. I can also help you prepare talking points if you want to discuss this difference with your parents.
 
 USER:
 i'm not really the best at coding, even though i've been coding inconsistently since grade 5 and i'm studying cs. i learned mostly competitive programing growing up (very elementary data structures and algorithms and i'm not very good at that), as well as only first year cs courses (racket and c). i've only built a few small projects (https://zhaju.github.io/Coding/Portfolio), but either very simple or with ai assistance. how do i realy learn to code and build things? i wanna learn stuff like advanced dsa, full-stack, systems design, infra, backend, apis + endpoints, agents + mcp, all that jazz. help me out chatgpt
