@@ -26,11 +26,17 @@ export const Composer = ({
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea
+  // Auto-resize textarea and sync button height
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      
+      // Sync button height with textarea
+      const sendButton = textareaRef.current.parentElement?.nextElementSibling as HTMLButtonElement;
+      if (sendButton) {
+        sendButton.style.height = `${textareaRef.current.scrollHeight}px`;
+      }
     }
   }, [message]);
 
@@ -86,7 +92,7 @@ export const Composer = ({
       )}
 
       {/* Message Input */}
-      <div className="flex items-end space-x-3">
+      <div className="flex items-start space-x-3">
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
@@ -106,7 +112,7 @@ export const Composer = ({
         <button
           onClick={handleSend}
           disabled={!message.trim() || disabled}
-          className={`p-3 rounded-lg transition-colors ${
+          className={`p-3 rounded-lg transition-colors flex items-center justify-center ${
             disabled || !message.trim()
               ? 'bg-[var(--disabled-bg)] text-[var(--disabled-text)] cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800'
