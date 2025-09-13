@@ -162,8 +162,7 @@ function App() {
   const handleMemoryToggle = (memoryId: string) => {
     setMemories(prev => prev.map(memory => {
       if (memory.id === memoryId) {
-        // If this memory is currently selected, unselect it
-        // If it's not selected, select it and unselect all others
+        // Toggle only the selected memory, leave others unchanged
         const newSelected = !memory.selected;
         return {
           ...memory,
@@ -171,12 +170,8 @@ function App() {
           blocks: memory.blocks.map(block => ({ ...block, selected: newSelected }))
         };
       } else {
-        // Unselect all other memories
-        return {
-          ...memory,
-          selected: false,
-          blocks: memory.blocks.map(block => ({ ...block, selected: false }))
-        };
+        // Leave other memories as they are
+        return memory;
       }
     }));
     
@@ -191,11 +186,8 @@ function App() {
             blocks: memory.blocks.map(block => ({ ...block, selected: newSelected }))
           };
         } else {
-          return {
-            ...memory,
-            selected: false,
-            blocks: memory.blocks.map(block => ({ ...block, selected: false }))
-          };
+          // Leave other memories as they are
+          return memory;
         }
       }));
     }
