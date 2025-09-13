@@ -10,7 +10,7 @@ from chat_memory_updater import updated_memory_with_messages
 async def load_initial_chats(groq_model):
     raw_chats = extract_conversations("data_init/conversations.json")
     ret = {}
-    for chat_messages in raw_chats[:1]:
+    for chat_messages in raw_chats:
         chat_id = str(uuid.uuid4())
         memories = await updated_memory_with_messages(Memory(), chat_messages, groq_model)
         print(memories.to_llm_str())        

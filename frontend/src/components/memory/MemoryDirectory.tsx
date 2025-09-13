@@ -214,7 +214,7 @@ export const MemoryDirectory = ({
                             ? 'text-[var(--text-muted)]' 
                             : 'text-[var(--text-secondary)]'
                         }`}>
-                          {block.description}
+                          {block.description.length > 52 ? `${block.description.substring(0, 50)}...` : block.description}
                         </p>
                       </div>
                     </div>

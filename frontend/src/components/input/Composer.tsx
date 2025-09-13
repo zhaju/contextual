@@ -26,16 +26,18 @@ export const Composer = ({
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea and sync button height
+  // Auto-resize textarea with fixed button height
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
       
-      // Sync button height with textarea
+      // Set fixed button height to match max textarea height (128px = max-h-32)
       const sendButton = textareaRef.current.parentElement?.nextElementSibling as HTMLButtonElement;
       if (sendButton) {
-        sendButton.style.height = `${textareaRef.current.scrollHeight}px`;
+        sendButton.style.height = '44px'; // Fixed height matching min-h-[44px]
+        sendButton.style.minHeight = '44px';
+        sendButton.style.maxHeight = '128px'; // Match max-h-32 of textarea
       }
     }
   }, [message]);
@@ -101,7 +103,7 @@ export const Composer = ({
             onKeyDown={handleKeyDown}
             placeholder={disabled ? "Please select and submit context first..." : "Type your message... (Enter to send, Shift+Enter for new line)"}
             disabled={disabled}
-            className={`w-full resize-none rounded-lg border p-3 pr-12 min-h-[44px] max-h-32 ${
+            className={`w-full resize-none rounded-lg border p-3 pr-12 min-h-[44px] max-h-32 overflow-y-auto no-scrollbar ${
               disabled 
                 ? 'border-[var(--disabled-border)] bg-[var(--disabled-bg)] text-[var(--disabled-text)] cursor-not-allowed'
                 : 'border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -112,7 +114,7 @@ export const Composer = ({
         <button
           onClick={handleSend}
           disabled={!message.trim() || disabled}
-          className={`p-3 rounded-lg transition-colors flex items-center justify-center ${
+          className={`p-3 rounded-lg transition-colors flex items-center justify-center min-h-[44px] max-h-32 w-12 ${
             disabled || !message.trim()
               ? 'bg-[var(--disabled-bg)] text-[var(--disabled-text)] cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800'
