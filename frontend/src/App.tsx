@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppShell } from './components';
 import { 
-  chats, 
   topics, 
-  messages, 
   mockMemories
 } from './mockData';
-import type { Memory } from './types';
+import { chatController } from './controllers';
+import { convertBackendChatToFrontend, convertBackendMessageToFrontend, extractMemoryBlocksFromChat, convertBackendChatToRelevantChat } from './utils';
+import type { Memory, Chat, Message, RelevantChat } from './types';
 
 /**
  * Main App Component - Contextual Chat Frontend
@@ -28,11 +28,36 @@ import type { Memory } from './types';
  * 4. Add proper error handling and loading states
  */
 function App() {
-  const [currentMessages, setCurrentMessages] = useState(messages);
+  const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [memories, setMemories] = useState<Memory[]>(mockMemories);
-  const [allChats, setAllChats] = useState(chats);
+  const [allChats, setAllChats] = useState<Chat[]>([]);
+  const [relevantChats, setRelevantChats] = useState<RelevantChat[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load chats from backend on component mount
+  useEffect(() => {
+    const loadChats = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const backendChats = await chatController.getChats();
+        const frontendChats = backendChats.map(convertBackendChatToFrontend);
+        setAllChats(frontendChats);
+      } catch (err) {
+        console.error('Failed to load chats:', err);
+        setError('Failed to load chats. Please check if the backend is running.');
+        // Fallback to empty array
+        setAllChats([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadChats();
+  }, []);
 
   // Function to get memories for a specific chat
   const getMemoriesForChat = (chatId: string) => {
@@ -68,42 +93,42 @@ function App() {
     return memories.filter(memory => chat.filteredMemories!.includes(memory.id));
   };
 
-  // MVP Version 1: Filter memories based on message content for context recommendation
-  // This simulates the backend LLM analysis that finds relevant memories
-  // TODO: Replace with actual API call to backend for memory recommendation
-  const filterMemoriesByMessage = (message: string) => {
-    const searchTerms = message.toLowerCase().split(' ').filter(term => term.length > 2);
-    
-    // Simple scoring based on keyword matches (simulates LLM analysis)
-    const scoredMemories = memories.map(memory => {
-      let score = 0;
-      const memoryText = `${memory.title} ${memory.blocks.map(b => `${b.topic} ${b.description}`).join(' ')}`.toLowerCase();
-      
-      searchTerms.forEach(term => {
-        if (memoryText.includes(term)) {
-          score += 1;
-          // Boost score for topic matches (important for context injection)
-          if (memory.blocks.some(block => block.topic.toLowerCase().includes(term))) {
-            score += 2;
-          }
-        }
-      });
-      
-      return { memory, score };
-    });
-    
-    // Sort by score and take top 3 (matches PRD requirement for 3 recommendations)
-    return scoredMemories
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
-      .map(item => item.memory);
-  };
 
   // Event handlers - TODO: Replace with real API calls to backend
   
-  // MVP Version 1: Chat selection with memory context loading
-  const handleChatSelect = (chatId: string) => {
+  // Chat selection with memory context loading from backend
+  const handleChatSelect = async (chatId: string) => {
     console.log('Chat selected:', chatId);
+    
+    // Debug print current memory for the selected chat
+    const currentChat = allChats.find(c => c.id === chatId);
+    if (currentChat) {
+      const chatMemories = getMemoriesForChat(chatId);
+      console.log('Current memory for chat', chatId, ':', {
+        chat: {
+          id: currentChat.id,
+          title: currentChat.title,
+          memoryIds: currentChat.memoryIds
+        },
+        memories: chatMemories.map(memory => ({
+          id: memory.id,
+          title: memory.title,
+          selected: memory.selected,
+          isLocked: memory.isLocked,
+          isExpanded: memory.isExpanded,
+          chatReferences: memory.chatReferences,
+          blocks: memory.blocks.map(block => ({
+            id: block.id,
+            topic: block.topic,
+            description: block.description,
+            importance: block.importance,
+            selected: block.selected,
+            chatReferences: block.chatReferences
+          }))
+        }))
+      });
+    }
+    
     setSelectedChatId(chatId);
     
     // Reset memory selections when switching chats (prevents context bleeding)
@@ -114,40 +139,38 @@ function App() {
       blocks: memory.blocks.map(block => ({ ...block, selected: false }))
     })));
     
-    // TODO: Load actual chat history from backend API
-    // For now, use mock data based on chat selection
-    if (chatId === 'c1') {
-      setCurrentMessages(messages);
-    } else if (chatId === 'c2') {
-      setCurrentMessages([
-        { id: 'm1', role: 'assistant', text: '**Welcome to Skew-normal priors chat!**\n\nThis is a mock conversation about Bayesian statistics.' },
-        { id: 'm2', role: 'user', text: 'Can you explain skew-normal priors?' },
-        { id: 'm3', role: 'assistant', text: 'Skew-normal priors are a flexible family of distributions that can model asymmetric data. They extend the normal distribution by adding a shape parameter that controls skewness.' }
-      ]);
-    } else {
-      const chat = allChats.find(c => c.id === chatId);
-      if (chat?.isNewChat) {
-        // For new chats, load the messages that were already there
-        setCurrentMessages(chat.firstMessageSent ? [
-          { id: 'm1', role: 'user', text: 'First message' } // This would be the actual first message
-        ] : []);
-      } else {
-        setCurrentMessages([
-          { id: 'm1', role: 'assistant', text: `**Welcome to ${chat?.title || 'this chat'}!**\n\nThis is a mock conversation.` }
-        ]);
+    try {
+      // Load chat data from backend
+      const backendChat = await chatController.getChat(chatId);
+      
+      // Convert backend messages to frontend format
+      const frontendMessages = backendChat.chat_history.map((msg: any, index: number) => 
+        convertBackendMessageToFrontend(msg, `msg-${chatId}-${index}`)
+      );
+      
+      setCurrentMessages(frontendMessages);
+      
+      // Extract memory blocks from the chat's current memory
+      const chatMemories = extractMemoryBlocksFromChat(backendChat);
+      if (chatMemories.length > 0) {
+        setMemories(prev => [...prev, ...chatMemories]);
       }
+      
+    } catch (error) {
+      console.error('Failed to load chat:', error);
+      setError('Failed to load chat. Please try again.');
+      setCurrentMessages([]);
     }
   };
 
-  // MVP Version 1: New chat creation with context recommendation flow
+  // New chat creation with context recommendation flow
   const handleNewChat = () => {
     console.log('New chat created');
     
-    // TODO: Call backend API to create new chat and get context recommendations
-    // For now, create mock new chat
-    const newChatId = `c${Date.now()}`;
-    const newChat = {
-      id: newChatId,
+    // Create a temporary new chat state for context selection
+    const tempChatId = `temp-${Date.now()}`;
+    const tempChat = {
+      id: tempChatId,
       title: 'New Chat',
       last: '',
       updatedAt: 'Now',
@@ -160,8 +183,8 @@ function App() {
       filteredMemories: []
     };
     
-    setAllChats(prev => [newChat, ...prev]);
-    setSelectedChatId(newChatId);
+    setAllChats(prev => [tempChat, ...prev]);
+    setSelectedChatId(tempChatId);
     setCurrentMessages([]);
     // Reset memory selections for clean context selection
     setMemories(prev => prev.map(memory => ({
@@ -172,36 +195,56 @@ function App() {
     })));
   };
 
-  // MVP Version 1: Message sending with context recommendation and SSE streaming
-  const handleSendMessage = (message: string) => {
+  // Message sending with context recommendation and SSE streaming
+  const handleSendMessage = async (message: string) => {
     console.log('Message sent:', message);
     
     // First message in new chat triggers context recommendation flow
     if (isNewChat() && currentMessages.length === 0) {
-      // TODO: Call backend API to analyze message and get context recommendations
-      // For now, use local memory filtering
-      const filtered = filterMemoriesByMessage(message);
-      const filteredMemoryIds = filtered.map(m => m.id);
-      
-      // Update the chat state with recommended memories
-      setAllChats(prev => prev.map(chat => 
-        chat.id === selectedChatId 
-          ? { 
-              ...chat, 
-              firstMessageSent: true,
-              filteredMemories: filteredMemoryIds
-            }
-          : chat
-      ));
-      
-      console.log('Filtered memories based on message:', filtered);
-      // Store the message temporarily but don't add to chat yet (wait for context selection)
-      setCurrentMessages([{
-        id: `msg-${Date.now()}`,
-        role: 'user' as const,
-        text: message
-      }]);
-      return; // Don't proceed with assistant response until context is submitted
+      try {
+        // Call backend API to create new chat and get context recommendations
+        const contextResponse = await chatController.createNewChat({ message });
+        
+        // Convert relevant chats to frontend format
+        const relevantChatsList = contextResponse.relevant_chats.map(convertBackendChatToRelevantChat);
+        setRelevantChats(relevantChatsList);
+        
+        // Update the chat state with the actual chat ID from backend
+        const actualChatId = contextResponse.relevant_chats[0]?.id || selectedChatId;
+        if (actualChatId) {
+          setAllChats(prev => prev.map(chat => 
+            chat.id === selectedChatId 
+              ? { 
+                  ...chat, 
+                  id: actualChatId,
+                  firstMessageSent: true,
+                  filteredMemories: contextResponse.relevant_chats.map((c: any) => c.id)
+                }
+              : chat
+          ));
+        }
+        
+        // Store the user message
+        const userMessage = {
+          id: `msg-${Date.now()}`,
+          role: 'user' as const,
+          text: message
+        };
+        setCurrentMessages([userMessage]);
+        
+        // Extract memory blocks from relevant chats for context selection
+        const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
+        if (relevantMemories.length > 0) {
+          setMemories(prev => [...prev, ...relevantMemories]);
+        }
+        
+        console.log('Context recommendations received:', contextResponse);
+        return; // Don't proceed with assistant response until context is submitted
+      } catch (error) {
+        console.error('Failed to create new chat:', error);
+        setError('Failed to create new chat. Please try again.');
+        return;
+      }
     }
     
     // For subsequent messages or after context is submitted, proceed normally
@@ -214,17 +257,46 @@ function App() {
     setCurrentMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
     
-    // TODO: Replace with actual SSE streaming from backend API
-    // This should call /api/chats/{chat_id}/send and stream the response
-    setTimeout(() => {
-      const assistantMessage = {
-        id: `msg-${Date.now() + 1}`,
-        role: 'assistant' as const,
-        text: `I received your message: "${message}". This is a mock response. In a real implementation, this would come from your AI assistant API.`
-      };
-      setCurrentMessages(prev => [...prev, assistantMessage]);
+    try {
+      // Send message to backend and get SSE response
+      const stream = await chatController.sendMessage({
+        chat_id: selectedChatId!,
+        message: message
+      });
+      
+      // Parse SSE stream
+      let assistantResponse = '';
+      await chatController.parseSSEStream(
+        stream,
+        (data: any) => {
+          if (data.content) {
+            assistantResponse += data.content;
+            // Update the assistant message in real-time
+            setCurrentMessages(prev => {
+              const lastMessage = prev[prev.length - 1];
+              if (lastMessage && lastMessage.role === 'assistant') {
+                return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
+              } else {
+                return [...prev, { id: `msg-${Date.now() + 1}`, role: 'assistant', text: assistantResponse }];
+              }
+            });
+          }
+        },
+        () => {
+          // Stream complete
+          setIsTyping(false);
+        },
+        (error: any) => {
+          console.error('SSE stream error:', error);
+          setIsTyping(false);
+          setError('Failed to get response. Please try again.');
+        }
+      );
+    } catch (error) {
+      console.error('Failed to send message:', error);
       setIsTyping(false);
-    }, 2000);
+      setError('Failed to send message. Please try again.');
+    }
   };
 
   // Memory handling functions
@@ -291,52 +363,74 @@ function App() {
     ));
   };
 
-  // MVP Version 1: Context submission after user selection
-  const handleSubmitContext = () => {
+  // Context submission after user selection
+  const handleSubmitContext = async () => {
     console.log('Context submitted');
     
-    // Get selected memory IDs for context injection
-    const selectedMemoryIds = memories
+    // Get selected memory descriptions for context injection
+    const selectedContexts = memories
       .filter(memory => memory.selected || memory.blocks.some(block => block.selected))
-      .map(memory => memory.id);
+      .flatMap(memory => [
+        memory.title,
+        ...memory.blocks.filter(block => block.selected).map(block => `${block.topic}: ${block.description}`)
+      ]);
     
-    // TODO: Call backend API to set context for the chat
-    // This should call /api/chats/{chat_id}/set_context with selected memories
-    
-    // Update the current chat to include the selected memories and mark context as submitted
-    if (selectedChatId) {
-      setAllChats(prev => prev.map(chat => 
-        chat.id === selectedChatId 
-          ? { 
-              ...chat, 
-              memoryIds: [...new Set([...chat.memoryIds, ...selectedMemoryIds])],
-              contextSubmitted: true,
-              isNewChat: false // No longer a new chat after context is submitted
-            }
-          : chat
-      ));
+    if (selectedContexts.length === 0) {
+      setError('Please select at least one context item before submitting.');
+      return;
     }
     
-    // Lock all selected memories to prevent further changes
-    setMemories(prev => prev.map(memory => ({
-      ...memory,
-      isLocked: memory.selected || memory.blocks.some(block => block.selected)
-    })));
-    
-    // Now send the first message and get assistant response with injected context
-    const firstMessage = currentMessages[0];
-    if (firstMessage) {
-      setIsTyping(true);
-      // TODO: Call backend API with SSE streaming for response generation
-      setTimeout(() => {
-        const assistantMessage = {
-          id: `msg-${Date.now() + 1}`,
-          role: 'assistant' as const,
-          text: `I received your message: "${firstMessage.text}". This is a mock response. In a real implementation, this would come from your AI assistant API.`
-        };
-        setCurrentMessages(prev => [...prev, assistantMessage]);
-        setIsTyping(false);
-      }, 2000);
+    try {
+      // Call backend API to set context for the chat
+      const stream = await chatController.setChatContext({
+        chat_id: selectedChatId!,
+        required_context: selectedContexts
+      });
+      
+      // Update the current chat to mark context as submitted
+      if (selectedChatId) {
+        setAllChats(prev => prev.map(chat => 
+          chat.id === selectedChatId 
+            ? { 
+                ...chat, 
+                contextSubmitted: true,
+                isNewChat: false // No longer a new chat after context is submitted
+              }
+            : chat
+        ));
+      }
+      
+      // Lock all selected memories to prevent further changes
+      setMemories(prev => prev.map(memory => ({
+        ...memory,
+        isLocked: memory.selected || memory.blocks.some(block => block.selected)
+      })));
+      
+      // Parse SSE stream for context confirmation
+      let contextResponse = '';
+      await chatController.parseSSEStream(
+        stream,
+        (data: any) => {
+          if (data.content) {
+            contextResponse += data.content;
+          }
+        },
+        () => {
+          // Context set successfully, now send the first message
+          const firstMessage = currentMessages[0];
+          if (firstMessage) {
+            // Trigger the message sending flow with the first message
+            handleSendMessage(firstMessage.text);
+          }
+        },
+        (error: any) => {
+          console.error('Context setting error:', error);
+          setError('Failed to set context. Please try again.');
+        }
+      );
+    } catch (error) {
+      console.error('Failed to set context:', error);
+      setError('Failed to set context. Please try again.');
     }
   };
 
@@ -349,13 +443,13 @@ function App() {
 
   const handleChatPin = (chatId: string) => {
     console.log('Chat pinned:', chatId);
-    const chat = chats.find(c => c.id === chatId);
+    const chat = allChats.find((c: any) => c.id === chatId);
     alert(`Chat pinned: ${chat?.title || 'Unknown'}. In a real app, this would pin the chat.`);
   };
 
   const handleChatPreview = (chatId: string) => {
     console.log('Chat preview:', chatId);
-    const chat = chats.find(c => c.id === chatId);
+    const chat = allChats.find((c: any) => c.id === chatId);
     alert(`Chat preview: ${chat?.title || 'Unknown'}. In a real app, this would show a preview modal.`);
   };
 
@@ -379,12 +473,43 @@ function App() {
     return memories;
   };
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading chats...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="text-red-500 text-xl mb-4">⚠️</div>
+          <p className="text-red-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <AppShell
       chats={allChats}
       topics={topics}
       messages={currentMessages}
       memories={getDisplayMemories()}
+      relevantChats={relevantChats}
       selectedChatId={selectedChatId}
       isTyping={isTyping}
       isNewChat={isNewChat()}

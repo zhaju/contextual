@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from contextlib import asynccontextmanager
@@ -21,7 +22,7 @@ claude_caller: Optional[ClaudeCaller] = None
 memory_updater: Optional[ChatMemoryUpdater] = None
 
 # In-memory storage (replace with database in production)
-chats_db: Dict[str, Chat] = None
+chats_db: Optional[Dict[str, Chat]] = None
 
 """
 chat_db format:
@@ -47,7 +48,7 @@ chat_db format:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Manage application lifespan - startup and shutdown events"""
-    global groq_caller, claude_caller, memory_updater
+    global groq_caller, claude_caller, memory_updater, chats_db
     
     # Startup
     try:
@@ -64,6 +65,9 @@ async def lifespan(app: FastAPI):
         print(f"❌ Failed to initialize ClaudeCaller: {e}")
         claude_caller = None
     
+    # Initialize chats_db as empty dict first
+    chats_db = {}
+    
     try:
         memory_updater = ChatMemoryUpdater(chat_db=chats_db)
         print("✅ ChatMemoryUpdater initialized successfully")
@@ -72,16 +76,32 @@ async def lifespan(app: FastAPI):
         memory_updater = None
     
     # Load initial chats
-    chats_db = await load_initial_chats(groq_caller)
+    if groq_caller is not None:
+        initial_chats = await load_initial_chats(groq_caller)
+        chats_db.update(initial_chats)
+        print(f"✅ Loaded {len(chats_db)} initial chats")
+    else:
+        print("⚠️ Skipping initial chat loading - GroqCaller not available")
+    
     yield
     
     # Shutdown
     groq_caller = None
     claude_caller = None
     memory_updater = None
+    chats_db = None
     print("🔄 API callers cleaned up")
 
 app = FastAPI(title="Contextual Chat API", version="1.0.0", lifespan=lifespan)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],  # React dev server ports
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/", response_model=RootResponse)
 async def root():
@@ -92,6 +112,8 @@ async def list_chats():
     """
     Get list of all chats
     """
+    if chats_db is None:
+        return []
     return list(chats_db.values())
 
 @app.get("/chats/{chat_id}", response_model=Chat)
@@ -99,7 +121,7 @@ async def get_chat(chat_id: str):
     """
     Get a specific chat by ID
     """
-    if chat_id not in chats_db:
+    if chats_db is None or chat_id not in chats_db:
         raise HTTPException(status_code=404, detail="Chat not found")
     return chats_db[chat_id]
 
@@ -109,7 +131,7 @@ async def send_message(request: SendMessageToChatRequest):
     """
     Send a message to a chat and get SSE response from GPT
     """
-    if request.chat_id not in chats_db:
+    if chats_db is None or request.chat_id not in chats_db:
         raise HTTPException(status_code=404, detail="Chat not found")
     
     # Add user message to chat history
@@ -185,6 +207,10 @@ async def new_chat(request: SendMessageRequest):
     """
     Create a new chat with first message and context prompt
     """
+    global chats_db
+    if chats_db is None:
+        chats_db = {}
+    
     chat_id = str(uuid.uuid4())
     
     # Create initial memory with context from other chats
@@ -205,7 +231,7 @@ async def new_chat(request: SendMessageRequest):
     chat_history = [
         ChatMessage(
             role="user",
-            content=request.first_message,
+            content=request.message,  # Changed from request.first_message to request.message
             timestamp=datetime.now()
         )
     ]
@@ -214,7 +240,7 @@ async def new_chat(request: SendMessageRequest):
     new_chat = Chat(
         id=chat_id,
         current_memory=initial_memory,
-        title=request.first_message[:50] + "..." if len(request.first_message) > 50 else request.first_message,
+        title=request.message[:50] + "..." if len(request.message) > 50 else request.message,  # Changed from request.first_message to request.message
         chat_history=chat_history
     )
     
@@ -230,7 +256,7 @@ async def new_chat_context_set(request: SetChatContextRequest):
     """
     Set context for a chat and get SSE response from GPT
     """
-    if request.chat_id not in chats_db:
+    if chats_db is None or request.chat_id not in chats_db:
         raise HTTPException(status_code=404, detail="Chat not found")
     
     # Update chat memory with required context
