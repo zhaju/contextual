@@ -106,21 +106,30 @@ export const MemoryDirectory = ({
               onClick={() => !memory.isLocked && handleMemoryExpand(memory.id)}
             >
               <div className="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  checked={memory.selected}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    handleMemoryToggle(memory.id);
-                  }}
-                  disabled={!allowInteraction || memory.isLocked}
-                  className={`w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 
-                    text-blue-600 focus:ring-blue-500 focus:ring-2 transition-all duration-200 ${
-                    !allowInteraction || memory.isLocked 
-                      ? 'opacity-50 cursor-not-allowed' 
-                      : 'cursor-pointer hover:border-blue-400 hover:scale-110'
-                  }`}
-                />
+                <label className="relative w-5 h-5 flex items-center justify-center cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={memory.selected}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      handleMemoryToggle(memory.id);
+                    }}
+                    disabled={!allowInteraction || memory.isLocked}
+                    className="absolute w-5 h-5 opacity-0 cursor-pointer z-10"
+                    tabIndex={0}
+                  />
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200
+                      ${memory.selected ? 'bg-blue-600 border-blue-600' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'}
+                      ${!allowInteraction || memory.isLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-blue-400 hover:scale-110'}`}
+                  >
+                    {memory.selected && (
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </span>
+                </label>
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <span className={`font-medium ${
@@ -193,18 +202,27 @@ export const MemoryDirectory = ({
                           : 'hover:bg-gray-100 dark:hover:bg-gray-600'
                       }`}
                     >
-                      <input
-                        type="checkbox"
-                        checked={block.selected}
-                        onChange={() => handleBlockToggle(memory.id, block.id)}
-                        disabled={!allowInteraction || memory.isLocked}
-                        className={`w-4 h-4 rounded border-2 border-gray-300 dark:border-gray-600 
-                          text-blue-600 focus:ring-blue-500 focus:ring-2 mt-0.5 transition-all duration-200 ${
-                          !allowInteraction || memory.isLocked 
-                            ? 'opacity-50 cursor-not-allowed' 
-                            : 'cursor-pointer hover:border-blue-400 hover:scale-110'
-                        }`}
-                      />
+                      <label className="relative w-5 h-5 flex items-center justify-center cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={block.selected}
+                          onChange={() => handleBlockToggle(memory.id, block.id)}
+                          disabled={!allowInteraction || memory.isLocked}
+                          className="absolute w-5 h-5 opacity-0 cursor-pointer z-10"
+                          tabIndex={0}
+                        />
+                        <span
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200
+                            ${block.selected ? 'bg-blue-600 border-blue-600' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'}
+                            ${!allowInteraction || memory.isLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-blue-400 hover:scale-110'}`}
+                        >
+                          {block.selected && (
+                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </span>
+                      </label>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <span className={`text-sm font-medium ${
