@@ -3,6 +3,8 @@ Context selection module for the Contextual Chat API
 Contains functions for selecting relevant chats based on queries
 """
 from typing import List
+
+from pydantic import BaseModel, Field
 from custom_types import Chat, ChatSelectionResponse
 from groq_caller import GroqCaller
 from prompts import get_context_retrieval_prompt
@@ -24,13 +26,22 @@ async def get_selected_chats(chats: List[Chat], query: str, groq_caller: GroqCal
     # Generate the prompt for context retrieval
     messages = get_context_retrieval_prompt(chats, query, groq_caller, num_chats)
     
+    def make_chat_selection_schema(num_chats: int):
+        namespace = {"__annotations__": {}}
+        for i in range(1, num_chats + 1):
+            field_name = f"chat_selection_{i}"
+            namespace["__annotations__"][field_name] = int
+            namespace[field_name] = Field(..., description=f"The {i}-th most relevant chat for the user query")
+        return type("ChatSchema", (BaseModel,), namespace)
+    CHAT_SELECTION_TYPE = make_chat_selection_schema(num_chats)
     # Call Groq API to get the selected chat indices with structured output
-    response = await groq_caller.call_groq_single(messages, response_format=ChatSelectionResponse)
+    response = await groq_caller.call_groq_single(messages, response_format=CHAT_SELECTION_TYPE)
+
     
     # Handle the structured response
     try:
-        if isinstance(response, ChatSelectionResponse):
-            selected_indices = response.selected_indices
+        if isinstance(response, CHAT_SELECTION_TYPE):
+            selected_indices = response.model_dump().values()
         else:
             # Fallback if response format parsing failed
             print(f"Failed to parse structured response: {response}")
@@ -44,7 +55,9 @@ async def get_selected_chats(chats: List[Chat], query: str, groq_caller: GroqCal
         # Validate indices and convert 1-indexed to 0-indexed
         selected_chats = []
         for idx in selected_indices:
-            if 1 <= idx <= len(chats):
+            if idx == 0:
+                continue
+            elif 1 <= idx <= len(chats):
                 selected_chats.append(chats[idx - 1])  # Convert to 0-indexed
             else:
                 print(f"Warning: Invalid index {idx} (out of range 1-{len(chats)})")

@@ -187,10 +187,9 @@ INSTRUCTIONS:
 1. Analyze the query to understand what kind of information is being asked for.
 2. Review each chat's memory summary and topics.
 3. Select UP TO {num_chats} chats that could be relevant (even if uncertain).
-4. Return the 1-indexed positions of selected chats in the selected_indices array.
-5. If no chats seem relevant at all, return an empty selected_indices array.
-
-You must respond with a JSON object containing a "selected_indices" array of integers."""
+4. Return the 1-indexed positions of selected chats 
+5. If no chats seem relevant at all, use index 0 to indicate no selection.
+"""
 
     # System prompt for ordered list of chats
     chat_list = ""
@@ -212,9 +211,9 @@ You must respond with a JSON object containing a "selected_indices" array of int
     user_message = f"""QUERY:
 {query}
 
-IMPORTANT: Only select chats that are HIGHLY relevant to this specific query. If no chats are directly relevant, return an empty selected_indices array. Better to have no context than irrelevant context.
+IMPORTANT: Only select chats that are HIGHLY relevant to this specific query. If no chats are directly relevant, use index 0
 
-Select up to {num_chats} highly relevant chats (or fewer if none meet the strict relevance criteria). Return a JSON object with the selected_indices array."""
+Select up to {num_chats} highly relevant chats (or fewer if none meet the strict relevance criteria). Return a JSON object."""
 
     return [
         {"role": "system", "content": system_instructions},
