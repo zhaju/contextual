@@ -15,7 +15,7 @@ from prompts import get_response_generation_prompt
 from groq_caller import GroqCaller
 from claude_caller import ClaudeCaller
 from data_init.load_initial_chats import load_initial_chats
-from chat_memory_updater import ChatMemoryUpdater
+from chat_memory_updater import ChatMemoryUpdater, consolidate_chats_into_memory
 from title_creator import create_chat_title
 from select_context import get_selected_chats
 
@@ -26,6 +26,90 @@ memory_updater: Optional[ChatMemoryUpdater] = None
 
 # In-memory storage (replace with database in production)
 chats_db: Optional[Dict[str, Chat]] = None
+
+
+async def generate_chat_response(chat_id: str) -> StreamingResponse:
+    """
+    Generate a streaming chat response using Claude and update memory.
+    
+    Args:
+        chat_id: ID of the chat to generate response for
+        
+    Returns:
+        StreamingResponse: SSE response with generated content
+    """
+    if chats_db is None or chat_id not in chats_db:
+        raise HTTPException(status_code=404, detail="Chat not found")
+    
+    chat = chats_db[chat_id]
+    
+    # Get memory as string for context
+    memory_str = chat.current_memory.to_llm_str()
+    
+    # Get last 6 chat messages (truncated)
+    recent_messages = chat.chat_history[-6:] if len(chat.chat_history) > 6 else chat.chat_history
+    
+    # Get the last user message (should be the most recent)
+    user_message = None
+    for msg in reversed(chat.chat_history):
+        if msg.role == "user":
+            user_message = msg
+            break
+    
+    if user_message is None:
+        raise HTTPException(status_code=400, detail="No user message found in chat history")
+    
+    # Create the system message and messages list
+    system_message, messages = get_response_generation_prompt(
+        memory_str, 
+        recent_messages, 
+        user_message.content
+    )
+    
+    async def generate_response():
+        if claude_caller is None:
+            # Fallback if Claude is not available
+            error_response = "Claude API is not available. Please check your configuration."
+            yield f"data: {json.dumps({'content': error_response})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
+            return
+        
+        # Use Claude to generate the response
+        response_text = ""
+        try:
+            async for chunk in claude_caller.call_claude(messages=messages, system=system_message):
+                response_text += chunk
+                yield f"data: {json.dumps({'content': chunk})}\n\n"
+            
+            # Add assistant response to chat history
+            assistant_message = ChatMessage(
+                role="assistant",
+                content=response_text,
+                timestamp=datetime.now()
+            )
+            chats_db[chat_id].chat_history.append(assistant_message)
+            
+            # Update memory with the new messages (user + assistant)
+            if memory_updater is not None:
+                try:
+                    messages_to_update = [user_message, assistant_message]
+                    await memory_updater.update_memory(chat_id, messages_to_update)
+                except Exception as e:
+                    print(f"⚠️ Failed to update memory for chat {chat_id}: {e}")
+            
+            yield f"data: {json.dumps({'done': True})}\n\n"
+            
+        except Exception as e:
+            # Handle errors gracefully
+            error_response = f"Error generating response: {str(e)}"
+            yield f"data: {json.dumps({'content': error_response})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
+    
+    return StreamingResponse(
+        generate_response(),
+        media_type="text/plain",
+        headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
+    )
 
 """
 chat_db format:
@@ -148,63 +232,8 @@ async def send_message(request: SendMessageToChatRequest):
     )
     chats_db[request.chat_id].chat_history.append(user_message)
     
-    # Prepare context for the prompt
-    chat = chats_db[request.chat_id]
-    
-    # Get memory as string
-    memory_str = chat.current_memory.to_llm_str()
-    
-    # Get last 6 chat messages (truncated)
-    recent_messages = chat.chat_history[-6:] if len(chat.chat_history) > 6 else chat.chat_history
-    
-    # Create the system message and messages list
-    system_message, messages = get_response_generation_prompt(memory_str, recent_messages, request.message)
-    
-    async def generate_response():
-        if claude_caller is None:
-            # Fallback if Claude is not available
-            error_response = "Claude API is not available. Please check your configuration."
-            yield f"data: {json.dumps({'content': error_response})}\n\n"
-            yield f"data: {json.dumps({'done': True})}\n\n"
-            return
-        
-        # Use Claude to generate the response
-        response_text = ""
-        try:
-            async for chunk in claude_caller.call_claude(messages=messages, system=system_message):
-                response_text += chunk
-                yield f"data: {json.dumps({'content': chunk})}\n\n"
-            
-            # Add assistant response to chat history
-            assistant_message = ChatMessage(
-                role="assistant",
-                content=response_text,
-                timestamp=datetime.now()
-            )
-            chats_db[request.chat_id].chat_history.append(assistant_message)
-            
-            # Update memory with the new messages (user + assistant)
-            if memory_updater is not None:
-                try:
-                    # Get the last two messages (user + assistant) for memory update
-                    messages_to_update = [user_message, assistant_message]
-                    await memory_updater.update_memory(request.chat_id, messages_to_update)
-                except Exception as e:
-                    print(f"⚠️ Failed to update memory for chat {request.chat_id}: {e}")
-            
-            yield f"data: {json.dumps({'done': True})}\n\n"
-            
-        except Exception as e:
-            # Handle errors gracefully
-            error_response = f"Error generating response: {str(e)}"
-            yield f"data: {json.dumps({'content': error_response})}\n\n"
-            yield f"data: {json.dumps({'done': True})}\n\n"
-    
-    return StreamingResponse(
-        generate_response(),
-        media_type="text/plain",
-        headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
-    )
+    # Use the extracted response generation function
+    return await generate_chat_response(request.chat_id)
 
 
 
@@ -270,7 +299,7 @@ async def new_chat(request: SendMessageRequest):
     # Store chat
     chats_db[chat_id] = new_chat
     
-    return ContextResponse(relevant_chats=relevant_chats)
+    return ContextResponse(relevant_chats=relevant_chats, chat_id=chat_id)
 
 
 
@@ -282,35 +311,21 @@ async def new_chat_context_set(request: SetChatContextRequest):
     if chats_db is None or request.chat_id not in chats_db:
         raise HTTPException(status_code=404, detail="Chat not found")
     
-    # Update chat memory with required context
-    context_summary = f"Required context: {', '.join(request.required_context)}"
-    context_blocks = [
-        Block(
-            topic=f"context_{i}",
-            description=context
-        ) for i, context in enumerate(request.required_context)
-    ]
+    if groq_caller is None:
+        raise HTTPException(status_code=503, detail="GroqCaller not available")
     
-    chats_db[request.chat_id].current_memory = Memory(
-        summary_string=context_summary,
-        blocks=context_blocks
+    # Consolidate the provided chats into memory using AI
+    consolidated_memory = await consolidate_chats_into_memory(
+        chats=request.required_context,
+        user_query="Setting context for chat",
+        groq_caller=groq_caller
     )
     
-    # Placeholder SSE response for context setting
-    async def generate_context_response():
-        response_text = f"Context set successfully with {len(request.required_context)} items"
-        chunks = [response_text[i:i+10] for i in range(0, len(response_text), 10)]
-        
-        for chunk in chunks:
-            yield f"data: {json.dumps({'content': chunk})}\n\n"
-        
-        yield f"data: {json.dumps({'done': True})}\n\n"
+    # Update chat memory with consolidated context
+    chats_db[request.chat_id].current_memory = consolidated_memory
     
-    return StreamingResponse(
-        generate_context_response(),
-        media_type="text/plain",
-        headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
-    )
+    # Use the extracted response generation function
+    return await generate_chat_response(request.chat_id)
 
 if __name__ == "__main__":
     import uvicorn

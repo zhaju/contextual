@@ -6,7 +6,7 @@ import asyncio
 from typing import Dict, List, Optional, Any
 from custom_types import Chat, ChatMessage, Memory, Block
 from groq_caller import GroqCaller
-from prompts import get_memory_summarization_prompt
+from prompts import get_memory_summarization_prompt, get_chat_consolidation_prompt
 
 
 async def updated_memory_with_messages(memory: Memory, messages: List[ChatMessage], groq_caller: GroqCaller) -> Memory:
@@ -54,6 +54,56 @@ async def updated_memory_with_messages(memory: Memory, messages: List[ChatMessag
         print(f"❌ Failed to update memory: {e}")
         # Return original memory if update fails
         return memory
+
+
+async def consolidate_chats_into_memory(chats: List[Chat], user_query: str, groq_caller: GroqCaller) -> Memory:
+    """
+    Consolidate multiple chats into a comprehensive Memory object using AI analysis.
+    
+    Args:
+        chats: List of Chat objects to consolidate
+        user_query: The user query that these chats are relevant to
+        groq_caller: GroqCaller instance for generating consolidated memory
+        
+    Returns:
+        Memory: Consolidated Memory object with information from all chats
+    """
+    try:
+        if not chats:
+            # Return empty memory if no chats provided
+            return Memory(summary_string="", blocks=[])
+        
+        # Create consolidation prompt messages
+        consolidation_messages = get_chat_consolidation_prompt(chats, user_query)
+        
+        # Use Groq to consolidate the chats into structured memory
+        consolidated_memory = await groq_caller.call_groq_single(
+            messages=consolidation_messages,
+            model="openai/gpt-oss-20b",
+            response_format=Memory
+        )
+        
+        # Check if we got a parsed Memory object or an error string
+        if isinstance(consolidated_memory, Memory):
+            print(f"✅ Successfully consolidated {len(chats)} chats into memory")
+            return consolidated_memory
+        else:
+            print(f"⚠️ Failed to parse consolidated Memory response: {consolidated_memory}")
+            # Fallback: create a simple memory from the error response
+            return Memory(
+                summary_string=f"Consolidation of {len(chats)} chats failed",
+                blocks=[
+                    Block(
+                        topic="consolidation_error",
+                        description=str(consolidated_memory)
+                    )
+                ]
+            )
+        
+    except Exception as e:
+        print(f"❌ Failed to consolidate chats into memory: {e}")
+        # Return empty memory if consolidation fails
+        return Memory(summary_string="", blocks=[])
 
 
 class ChatMemoryUpdater:

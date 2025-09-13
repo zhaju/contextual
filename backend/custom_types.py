@@ -62,6 +62,7 @@ class SendMessageToChatRequest(SendMessageRequest):
 # ContextResponse returns a list of relevant contexts to the chat
 class ContextResponse(BaseModel):
     relevant_chats: List[Chat]
+    chat_id: str
 
 # StreamedChatResponse is the response for streaming a chat response
 class StreamedChatResponse(BaseModel):
@@ -71,7 +72,7 @@ class StreamedChatResponse(BaseModel):
 
 class SetChatContextRequest(BaseModel):
     chat_id: str
-    required_context: List[str] # List of chat IDs for now #TODO
+    required_context: List[Chat]
 
 # Response model for chat selection
 class ChatSelectionResponse(BaseModel):

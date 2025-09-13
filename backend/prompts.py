@@ -92,6 +92,70 @@ Please provide a structured memory summary.
     ]
 
 
+def get_chat_consolidation_prompt(chats: List[Chat], user_query: str) -> List[Dict[str, str]]:
+    """
+    Generate a list of messages for consolidating multiple chats into a comprehensive memory
+    
+    Args:
+        chats: List of Chat objects to consolidate
+        user_query: The user query that these chats are relevant to
+        
+    Returns:
+        List[Dict[str, str]]: List of message dictionaries for Groq API
+    """
+    system_overview = """
+You are a memory consolidation assistant designed to analyze multiple chat conversations and create a comprehensive, well-organized memory structure. Your task is to extract the most valuable information from these conversations and organize it into a coherent memory that captures key insights, topics, and context.
+
+INSTRUCTIONS:
+1. Analyze all provided chat conversations thoroughly
+2. Identify the main topics, themes, and insights across all chats
+3. Extract key information, facts, and personal insights
+4. Create a comprehensive summary that captures the essence of all conversations (at most 20 words)
+5. Organize information into specific, well-defined memory blocks
+6. Focus on information that would be most useful for future conversations
+7. Ensure personal ideas and insights are prioritized over generic factual information
+8. Use at most 6 memory blocks to organize the information effectively
+9. Make descriptions concise but comprehensive
+10. Remove redundancy and merge related topics when appropriate
+"""
+    
+    # Convert chats to string format
+    chats_summary = ""
+    for i, chat in enumerate(chats, 1):
+        chat_title = chat.title
+        chat_memory = chat.current_memory.to_llm_str()
+        
+        # Get recent chat history (last 4 messages to keep it manageable)
+        recent_messages = chat.chat_history[-4:] if len(chat.chat_history) > 4 else chat.chat_history
+        chat_history_str = "\n".join([
+            f"{msg.role.upper()}: {msg.content}"
+            for msg in recent_messages
+        ])
+        
+        chats_summary += f"""
+CHAT {i}: {chat_title}
+Memory: {chat_memory}
+"""
+    
+    system_context = f"""CHATS TO CONSOLIDATE:
+{chats_summary}
+
+Consolidate information from all chats into a coherent, well-organized memory structure.
+"""
+    
+    user_message = f"""USER QUERY CONTEXT:
+{user_query}
+
+Please create a comprehensive memory that consolidates the most relevant information from all the provided chats, organized in a way that would be most helpful for addressing this query and similar future conversations.
+"""
+    
+    return [
+        {"role": "system", "content": system_overview},
+        {"role": "system", "content": system_context},
+        {"role": "user", "content": user_message}
+    ]
+
+
 def get_context_retrieval_prompt(chats: List[Chat], query: str, groq_caller, num_chats: int) -> List[Dict[str, str]]:
     """
     Generate a list of messages for selecting relevant chats based on a query
