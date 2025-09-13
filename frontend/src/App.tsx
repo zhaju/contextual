@@ -99,6 +99,8 @@ function App() {
   // Chat selection with memory context loading from backend
   const handleChatSelect = async (chatId: string) => {
     console.log('Chat selected:', chatId);
+    console.log("!" + chatId + "!");
+    if (chatId === "") return;
     
     // Debug print current memory for the selected chat
     const currentChat = allChats.find(c => c.id === chatId);
@@ -167,24 +169,7 @@ function App() {
   const handleNewChat = () => {
     console.log('New chat created');
     
-    // Create a temporary new chat state for context selection
-    const tempChatId = `temp-${Date.now()}`;
-    const tempChat = {
-      id: tempChatId,
-      title: 'New Chat',
-      last: '',
-      updatedAt: 'Now',
-      topicId: 't1', // Default topic
-      starred: false,
-      memoryIds: [], // Start with no memories (will be populated after context selection)
-      isNewChat: true,
-      contextSubmitted: false,
-      firstMessageSent: false,
-      filteredMemories: []
-    };
-    
-    setAllChats(prev => [tempChat, ...prev]);
-    setSelectedChatId(tempChatId);
+    setSelectedChatId("");
     setCurrentMessages([]);
     // Reset memory selections for clean context selection
     setMemories(prev => prev.map(memory => ({
@@ -200,7 +185,7 @@ function App() {
     console.log('Message sent:', message);
     
     // First message in new chat triggers context recommendation flow
-    if (isNewChat() && currentMessages.length === 0) {
+    if (selectedChatId === "") {
       try {
         // Call backend API to create new chat and get context recommendations
         const contextResponse = await chatController.createNewChat({ message });
@@ -209,20 +194,27 @@ function App() {
         const relevantChatsList = contextResponse.relevant_chats.map(convertBackendChatToRelevantChat);
         setRelevantChats(relevantChatsList);
         
-        // Update the chat state with the actual chat ID from backend
-        const actualChatId = contextResponse.relevant_chats[0]?.id || selectedChatId;
-        if (actualChatId) {
-          setAllChats(prev => prev.map(chat => 
-            chat.id === selectedChatId 
-              ? { 
-                  ...chat, 
-                  id: actualChatId,
-                  firstMessageSent: true,
-                  filteredMemories: contextResponse.relevant_chats.map((c: any) => c.id)
-                }
-              : chat
-          ));
-        }
+         // Create a new chat object with the actual chat ID from backend
+         const actualChatId = contextResponse.relevant_chats[0]?.id;
+         if (actualChatId) {
+           const newChat: Chat = {
+             id: actualChatId,
+             title: contextResponse.relevant_chats[0]?.title || "New Chat",
+             last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
+             updatedAt: "Now",
+             topicId: "t1",
+             starred: false,
+             memoryIds: [],
+             isNewChat: true,
+             contextSubmitted: false,
+             firstMessageSent: true,
+             filteredMemories: contextResponse.relevant_chats.map((c: any) => c.id)
+           };
+           
+           // Add the new chat to the beginning of the array
+           setAllChats(prev => [newChat, ...prev]);
+           setSelectedChatId(actualChatId);
+         }
         
         // Store the user message
         const userMessage = {
@@ -235,10 +227,10 @@ function App() {
         // Extract memory blocks from relevant chats for context selection
         const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
         if (relevantMemories.length > 0) {
-          setMemories(prev => [...prev, ...relevantMemories]);
+          setMemories(relevantMemories);
         }
-        
         console.log('Context recommendations received:', contextResponse);
+        console.log("relevantMemories:", relevantMemories);
         return; // Don't proceed with assistant response until context is submitted
       } catch (error) {
         console.error('Failed to create new chat:', error);

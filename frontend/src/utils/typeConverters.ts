@@ -88,7 +88,7 @@ export function extractMemoryBlocksFromChat(backendChat: BackendChat): Memory[] 
 export function convertBackendChatToRelevantChat(backendChat: BackendChat): RelevantChat {
   const lastMessage = backendChat.chat_history[backendChat.chat_history.length - 1];
   const snippet = lastMessage ? lastMessage.content.substring(0, 100) + '...' : 'No messages';
-  
+  console.log('Converting backend chat to relevant chat:', backendChat);
   return {
     chatId: backendChat.id,
     title: backendChat.title,
