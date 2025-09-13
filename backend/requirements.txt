@@ -3,3 +3,5 @@ openai
 langchain
 fastapi
 sentence-transformers
+uvicorn
+pydantic
