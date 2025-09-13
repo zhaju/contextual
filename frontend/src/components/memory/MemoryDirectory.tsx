@@ -21,6 +21,7 @@ export const MemoryDirectory = ({
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
+  onSkipContext,
   isNewChat,
   contextSubmitted,
   firstMessageSent,
@@ -226,26 +227,44 @@ export const MemoryDirectory = ({
         )}
       </div>
 
-      {/* Submit Button - Only show when active */}
+      {/* Action Buttons - Only show when active */}
       {showActiveSelection && (
-        <button
-          onClick={onSubmitContext}
-          disabled={!hasSelectedBlocks || isSubmittingContext}
-          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-            hasSelectedBlocks && !isSubmittingContext
-              ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg dark:bg-blue-700 dark:hover:bg-blue-800'
-              : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)] cursor-not-allowed'
-          }`}
-        >
-          {isSubmittingContext ? (
-            <div className="flex items-center justify-center space-x-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              <span>Setting Context...</span>
-            </div>
-          ) : (
-            'Submit Context'
+        <div className="space-y-3">
+          {/* Submit Context Button */}
+          <button
+            onClick={onSubmitContext}
+            disabled={!hasSelectedBlocks || isSubmittingContext}
+            className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+              hasSelectedBlocks && !isSubmittingContext
+                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg dark:bg-blue-700 dark:hover:bg-blue-800'
+                : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)] cursor-not-allowed'
+            }`}
+          >
+            {isSubmittingContext ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <span>Setting Context...</span>
+              </div>
+            ) : (
+              'Submit Context'
+            )}
+          </button>
+          
+          {/* Skip Context Button */}
+          {onSkipContext && (
+            <button
+              onClick={onSkipContext}
+              disabled={isSubmittingContext}
+              className={`w-full py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
+                !isSubmittingContext
+                  ? 'bg-[var(--bg-primary)] hover:bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--text-muted)]'
+                  : 'bg-[var(--bg-tertiary)] text-[var(--text-muted)] cursor-not-allowed border border-[var(--border-color)]'
+              }`}
+            >
+              Skip Context
+            </button>
           )}
-        </button>
+        </div>
       )}
     </div>
   );

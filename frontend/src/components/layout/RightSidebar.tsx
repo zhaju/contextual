@@ -9,6 +9,7 @@ interface RightSidebarProps {
   onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
+  onSkipContext?: () => void;
   onChatPin: (chatId: string) => void;
   onChatPreview: (chatId: string) => void;
   onChatExclude: (chatId: string) => void;
@@ -41,6 +42,7 @@ export const RightSidebar = ({
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
+  onSkipContext,
   onChatPin,
   onChatPreview,
   onChatExclude,
@@ -69,6 +71,7 @@ export const RightSidebar = ({
           onBlockToggle={onBlockToggle}
           onMemoryExpand={onMemoryExpand}
           onSubmitContext={onSubmitContext}
+          onSkipContext={onSkipContext}
           isNewChat={isNewChat}
           contextSubmitted={contextSubmitted}
           firstMessageSent={firstMessageSent}
