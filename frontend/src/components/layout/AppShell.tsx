@@ -19,7 +19,6 @@ interface AppShellProps {
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
   onSendMessage: (message: string) => void;
-  onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockId: string) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
@@ -54,7 +53,6 @@ export const AppShell = ({
   onChatSelect,
   onNewChat,
   onSendMessage,
-  onMemoryToggle,
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
@@ -123,14 +121,12 @@ export const AppShell = ({
         {/* Right Sidebar - Always visible, greyed out when not in new chat */}
         <RightSidebar
           memories={memories}
-          onMemoryToggle={onMemoryToggle}
           onBlockToggle={onBlockToggle}
           onMemoryExpand={onMemoryExpand}
           onSubmitContext={onSubmitContext}
           isNewChat={isNewChat}
           contextSubmitted={contextSubmitted}
           firstMessageSent={firstMessageSent}
-          onChatSelect={onChatSelect}
         />
       </div>
     </div>

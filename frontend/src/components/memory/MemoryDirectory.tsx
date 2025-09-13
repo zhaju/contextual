@@ -17,19 +17,13 @@ import type { MemoryDirectoryProps } from '../../types';
  */
 export const MemoryDirectory = ({
   memories,
-  onMemoryToggle,
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
   isNewChat,
   contextSubmitted,
-  firstMessageSent,
-  onChatSelect
+  firstMessageSent
 }: MemoryDirectoryProps) => {
-  const handleMemoryToggle = (memoryId: string) => {
-    if (memories.find(m => m.id === memoryId)?.isLocked) return;
-    onMemoryToggle(memoryId);
-  };
 
   const handleBlockToggle = (memoryId: string, blockId: string) => {
     if (memories.find(m => m.id === memoryId)?.isLocked) return;
@@ -106,21 +100,44 @@ export const MemoryDirectory = ({
               onClick={() => !memory.isLocked && handleMemoryExpand(memory.id)}
             >
               <div className="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  checked={memory.selected}
-                  onChange={(e) => {
+                <button
+                  type="button"
+                  onClick={(e) => {
                     e.stopPropagation();
-                    handleMemoryToggle(memory.id);
+                    // If memory is selected, unselect all blocks; if not selected, select all blocks
+                    if (memory.selected) {
+                      // Unselect all blocks
+                      memory.blocks.forEach(block => {
+                        if (block.selected) {
+                          handleBlockToggle(memory.id, block.id);
+                        }
+                      });
+                    } else {
+                      // Select all blocks
+                      memory.blocks.forEach(block => {
+                        if (!block.selected) {
+                          handleBlockToggle(memory.id, block.id);
+                        }
+                      });
+                    }
                   }}
                   disabled={!allowInteraction || memory.isLocked}
-                  className={`w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 
-                    text-blue-600 focus:ring-blue-500 focus:ring-2 transition-all duration-200 ${
+                  className={`w-5 h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                    memory.selected
+                      ? 'bg-blue-600 border-blue-600 text-white'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                  } ${
                     !allowInteraction || memory.isLocked 
                       ? 'opacity-50 cursor-not-allowed' 
-                      : 'cursor-pointer hover:border-blue-400 hover:scale-110'
+                      : 'cursor-pointer hover:scale-110'
                   }`}
-                />
+                >
+                  {memory.selected && (
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </button>
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <span className={`font-medium ${
@@ -133,30 +150,6 @@ export const MemoryDirectory = ({
                     <span className="text-xs text-gray-500 dark:text-gray-400">
                       ({memory.blocks.filter(block => block.selected).length}/{memory.blocks.length} blocks)
                     </span>
-                  </div>
-                  {/* Chat References */}
-                  <div className="flex items-center space-x-1 mt-1">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">From:</span>
-                    {memory.chatReferences.map((chatId, index) => (
-                      <button
-                        key={chatId}
-                        className={`text-xs hover:underline ${
-                          isDisabled 
-                            ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed' 
-                            : 'text-blue-600 dark:text-blue-400 cursor-pointer'
-                        }`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!isDisabled) {
-                            onChatSelect(chatId);
-                          }
-                        }}
-                        disabled={isDisabled}
-                      >
-                        Chat {chatId.replace('c', '')}
-                        {index < memory.chatReferences.length - 1 && ', '}
-                      </button>
-                    ))}
                   </div>
                 </div>
               </div>
@@ -193,18 +186,26 @@ export const MemoryDirectory = ({
                           : 'hover:bg-gray-100 dark:hover:bg-gray-600'
                       }`}
                     >
-                      <input
-                        type="checkbox"
-                        checked={block.selected}
-                        onChange={() => handleBlockToggle(memory.id, block.id)}
+                      <button
+                        type="button"
+                        onClick={() => handleBlockToggle(memory.id, block.id)}
                         disabled={!allowInteraction || memory.isLocked}
-                        className={`w-4 h-4 rounded border-2 border-gray-300 dark:border-gray-600 
-                          text-blue-600 focus:ring-blue-500 focus:ring-2 mt-0.5 transition-all duration-200 ${
+                        className={`w-4 h-4 rounded-full border-2 transition-all duration-200 flex items-center justify-center mt-0.5 ${
+                          block.selected
+                            ? 'bg-blue-600 border-blue-600 text-white'
+                            : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                        } ${
                           !allowInteraction || memory.isLocked 
                             ? 'opacity-50 cursor-not-allowed' 
-                            : 'cursor-pointer hover:border-blue-400 hover:scale-110'
+                            : 'cursor-pointer hover:scale-110'
                         }`}
-                      />
+                      >
+                        {block.selected && (
+                          <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </button>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <span className={`text-sm font-medium ${

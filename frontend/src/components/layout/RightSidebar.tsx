@@ -3,14 +3,12 @@ import type { Memory } from '../../types';
 
 interface RightSidebarProps {
   memories: Memory[];
-  onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockId: string) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
   isNewChat: boolean;
   contextSubmitted: boolean;
   firstMessageSent: boolean;
-  onChatSelect: (chatId: string) => void;
 }
 
 /**
@@ -31,14 +29,12 @@ interface RightSidebarProps {
  */
 export const RightSidebar = ({
   memories,
-  onMemoryToggle,
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
   isNewChat,
   contextSubmitted,
   firstMessageSent,
-  onChatSelect,
 }: RightSidebarProps) => {
   return (
     <div className="w-80 bg-gray-50 dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 
@@ -46,14 +42,12 @@ export const RightSidebar = ({
       <div className="flex-1 overflow-y-auto min-h-0">
         <MemoryDirectory
           memories={memories}
-          onMemoryToggle={onMemoryToggle}
           onBlockToggle={onBlockToggle}
           onMemoryExpand={onMemoryExpand}
           onSubmitContext={onSubmitContext}
           isNewChat={isNewChat}
           contextSubmitted={contextSubmitted}
           firstMessageSent={firstMessageSent}
-          onChatSelect={onChatSelect}
         />
       </div>
     </div>

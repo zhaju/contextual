@@ -14,6 +14,11 @@ export interface Chat {
   updatedAt: string;
   topicId: string;
   starred: boolean;
+  memoryIds: string[]; // Array of memory IDs associated with this chat
+  isNewChat?: boolean; // Whether this is a new chat in context selection mode
+  contextSubmitted?: boolean; // Whether context has been submitted for this chat
+  firstMessageSent?: boolean; // Whether first message has been sent for this chat
+  filteredMemories?: string[]; // Array of filtered memory IDs for this chat
 }
 
 export interface Message {
@@ -109,12 +114,10 @@ export interface PinnedContextProps {
 
 export interface MemoryDirectoryProps {
   memories: Memory[];
-  onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockId: string) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
   isNewChat: boolean;
   contextSubmitted: boolean;
   firstMessageSent: boolean;
-  onChatSelect: (chatId: string) => void;
 }
