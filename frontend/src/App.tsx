@@ -471,6 +471,7 @@ function App() {
     
     setIsSubmittingContext(true);
     setError(null);
+    toggleRightSidebar();
     
     try {
       // Get the relevant chats that correspond to the selected memories
