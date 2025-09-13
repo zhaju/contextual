@@ -2,29 +2,23 @@
 Prompts for the Contextual Chat API
 Contains all the prompts used for different operations
 """
+from typing import List, Dict, Any
+from custom_types import ChatMessage
 
-def get_response_generation_prompt(memory_str: str, chat_history_str: str, user_message: str) -> str:
+def get_response_generation_prompt(memory_str: str, chat_history_messages: List[ChatMessage], user_message: str) -> tuple[str, List[Dict[str, str]]]:
     """
-    Generate a prompt for creating a response given memory and chat history
+    Generate a system message and list of messages for creating a response given memory and chat history
     
     Args:
         memory_str: String representation of current memory
-        chat_history_str: String representation of last 6 chat messages (truncated)
+        chat_history_messages: List of recent chat messages (last 6, truncated)
         user_message: The current user message
         
     Returns:
-        str: The complete prompt for response generation
+        tuple: (system_message, list of message dictionaries for Claude API)
     """
-    return f"""You are a helpful AI assistant with access to contextual memory and chat history.
-
-CURRENT MEMORY:
-{memory_str}
-
-RECENT CHAT HISTORY (last 6 messages, truncated):
-{chat_history_str}
-
-CURRENT USER MESSAGE:
-{user_message}
+    # System message with memory and instructions
+    system_message = f"""You are a helpful AI assistant with access to contextual memory and chat history.
 
 INSTRUCTIONS:
 1. Use the memory and chat history to provide a contextual and relevant response
@@ -33,7 +27,25 @@ INSTRUCTIONS:
 4. Maintain conversation continuity
 5. Be helpful, accurate, and engaging
 
+CURRENT MEMORY:
+{memory_str}
+
 Please provide a thoughtful response that takes into account the context and memory provided."""
+
+    # Build the message list: chat history + current user message
+    messages = []
+    
+    # Add each chat history message as a separate message
+    for msg in chat_history_messages:
+        messages.append({
+            "role": msg.role,
+            "content": msg.content[:200] + "..." if len(msg.content) > 200 else msg.content
+        })
+    
+    # Add the current user message
+    messages.append({"role": "user", "content": user_message})
+    
+    return system_message, messages
 
 def get_memory_summarization_prompt(chat_history: str) -> str:
     """

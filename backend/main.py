@@ -7,8 +7,14 @@ import uuid
 from datetime import datetime
 from custom_types import RootResponse, Chat, SendMessageRequest, SendMessageToChatRequest, ChatMessage, Memory, Block, ContextResponse, StreamedChatResponse, SetChatContextRequest
 from prompts import get_response_generation_prompt
+from groq_caller import GroqCaller
+from claude_caller import ClaudeCaller
 
 app = FastAPI(title="Contextual Chat API", version="1.0.0")
+
+# Global callers - initialized in startup event
+groq_caller: Optional[GroqCaller] = None
+claude_caller: Optional[ClaudeCaller] = None
 
 # In-memory storage (replace with database in production)
 chats_db: Dict[str, Chat] = {
@@ -27,6 +33,33 @@ chats_db: Dict[str, Chat] = {
         ]
     )
 }
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize the API callers on startup"""
+    global groq_caller, claude_caller
+    
+    try:
+        groq_caller = GroqCaller()
+        print("✅ GroqCaller initialized successfully")
+    except Exception as e:
+        print(f"❌ Failed to initialize GroqCaller: {e}")
+        groq_caller = None
+    
+    try:
+        claude_caller = ClaudeCaller()
+        print("✅ ClaudeCaller initialized successfully")
+    except Exception as e:
+        print(f"❌ Failed to initialize ClaudeCaller: {e}")
+        claude_caller = None
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cleanup on shutdown"""
+    global groq_caller, claude_caller
+    groq_caller = None
+    claude_caller = None
+    print("🔄 API callers cleaned up")
 
 
 @app.get("/", response_model=RootResponse)
@@ -75,33 +108,40 @@ async def send_message(request: SendMessageToChatRequest):
     
     # Get last 6 chat messages (truncated)
     recent_messages = chat.chat_history[-6:] if len(chat.chat_history) > 6 else chat.chat_history
-    chat_history_str = "\n".join([
-        f"{msg.role.upper()}: {msg.content[:200]}{'...' if len(msg.content) > 200 else ''}"
-        for msg in recent_messages
-    ])
     
-    # Create the prompt
-    prompt = get_response_generation_prompt(memory_str, chat_history_str, request.message)
+    # Create the system message and messages list
+    system_message, messages = get_response_generation_prompt(memory_str, recent_messages, request.message)
     
-    # TODO: Replace with actual Claude model call
-    # For now, using placeholder response
     async def generate_response():
-        # Placeholder response - will be replaced with actual Claude call
-        response_text = f"Contextual response to: {request.message}\n\nMemory: {memory_str[:100]}...\n\nChat History: {chat_history_str[:100]}..."
-        chunks = [response_text[i:i+10] for i in range(0, len(response_text), 10)]
+        if claude_caller is None:
+            # Fallback if Claude is not available
+            error_response = "Claude API is not available. Please check your configuration."
+            yield f"data: {json.dumps({'content': error_response})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
+            return
         
-        for chunk in chunks:
-            yield f"data: {json.dumps({'content': chunk})}\n\n"
-        
-        # Add assistant response to chat history
-        assistant_message = ChatMessage(
-            role="assistant",
-            content=response_text,
-            timestamp=datetime.now()
-        )
-        chats_db[request.chat_id].chat_history.append(assistant_message)
-        
-        yield f"data: {json.dumps({'done': True})}\n\n"
+        # Use Claude to generate the response
+        response_text = ""
+        try:
+            async for chunk in claude_caller.call_claude(messages=messages, system=system_message):
+                response_text += chunk
+                yield f"data: {json.dumps({'content': chunk})}\n\n"
+            
+            # Add assistant response to chat history
+            assistant_message = ChatMessage(
+                role="assistant",
+                content=response_text,
+                timestamp=datetime.now()
+            )
+            chats_db[request.chat_id].chat_history.append(assistant_message)
+            
+            yield f"data: {json.dumps({'done': True})}\n\n"
+            
+        except Exception as e:
+            # Handle errors gracefully
+            error_response = f"Error generating response: {str(e)}"
+            yield f"data: {json.dumps({'content': error_response})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
     
     return StreamingResponse(
         generate_response(),
