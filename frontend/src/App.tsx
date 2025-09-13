@@ -129,6 +129,9 @@ function App() {
     }
     
     setSelectedChatId(chatId);
+    
+    // Auto-close memory directory when selecting existing chat (not new chat)
+    setIsRightSidebarOpen(false);
 
     try {
       // Load chat data from backend
@@ -161,6 +164,9 @@ function App() {
     setSelectedChatId("");
     setCurrentMessages([]);
     setMemories([]);
+    
+    // Auto-close memory directory when creating new chat (will auto-open when first message sent)
+    setIsRightSidebarOpen(false);
   };
 
   // Message sending with context recommendation and SSE streaming
@@ -243,9 +249,12 @@ function App() {
           ));
         }
         
-        // If no relevant memories, skip context selection and proceed directly
+        // If no relevant memories, automatically set context with empty context
         if (relevantMemories.length === 0) {
-          console.log('No relevant memories found, proceeding directly with message');
+          console.log('No relevant memories found, setting context with empty context');
+          
+          // Auto-open memory directory for new chat (even with no context)
+          setIsRightSidebarOpen(true);
           
           // Update chat to mark context as submitted and no longer new
           if (actualChatId) {
@@ -260,17 +269,20 @@ function App() {
             ));
           }
           
-          // Proceed with sending the message to get assistant response
+          // Set typing indicator since backend will generate response
           setIsTyping(true);
           
           try {
-            // Send message to backend and get SSE response
-            const stream = await chatController.sendMessage({
+            // Call set_context with empty context to get assistant response
+            const request = {
               chat_id: actualChatId,
-              message: message
-            });
+              required_context: [] // Empty context
+            };
+            console.log('Setting context with empty context:', request);
             
-            // Parse SSE stream
+            const stream = await chatController.setChatContext(request);
+            
+            // Parse SSE stream for assistant response
             let assistantResponse = '';
             await chatController.parseSSEStream(
               stream,
@@ -299,15 +311,16 @@ function App() {
               }
             );
           } catch (error) {
-            console.error('Failed to send message:', error);
+            console.error('Failed to set context:', error);
             setIsTyping(false);
-            setError('Failed to send message. Please try again.');
+            setError('Failed to set context. Please try again.');
           }
           
           return; // Exit early since we handled the message
         }
         
-        toggleRightSidebar();
+        // Auto-open memory directory for new chat with context
+        setIsRightSidebarOpen(true);
         console.log('Context recommendations received:', contextResponse);
         console.log("relevantMemories:", relevantMemories);
         return; // Don't proceed with assistant response until context is submitted
@@ -440,6 +453,86 @@ function App() {
     ));
   };
 
+  // Skip context and proceed with empty context
+  const handleSkipContext = async () => {
+    if (isSubmittingContext) {
+      console.log('Context submission already in progress, ignoring skip request');
+      return;
+    }
+    
+    console.log('Context skipped - proceeding with empty context');
+    
+    if (!selectedChatId) {
+      setError('No chat selected. Please try again.');
+      return;
+    }
+    
+    setIsSubmittingContext(true);
+    setError(null);
+    // Auto-close memory directory when context is skipped (chat no longer new)
+    setIsRightSidebarOpen(false);
+    
+    try {
+      // Call set_context with empty context
+      const request = {
+        chat_id: selectedChatId,
+        required_context: [] // Empty context
+      };
+      console.log('Skipping context with empty context:', request);
+      
+      const stream = await chatController.setChatContext(request);
+      
+      // Set typing indicator since backend will generate response
+      setIsTyping(true);
+      
+      // Update the current chat to mark context as submitted
+      setAllChats(prev => prev.map(chat => 
+        chat.id === selectedChatId 
+          ? { 
+              ...chat, 
+              contextSubmitted: true,
+              isNewChat: false // No longer a new chat after context is submitted
+            }
+          : chat
+      ));
+      
+      // Parse SSE stream for assistant response
+      let assistantResponse = '';
+      await chatController.parseSSEStream(
+        stream,
+        (data: any) => {
+          if (data.content) {
+            assistantResponse += data.content;
+            // Update the assistant message in real-time
+            setCurrentMessages(prev => {
+              const lastMessage = prev[prev.length - 1];
+              if (lastMessage && lastMessage.role === 'assistant') {
+                return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
+              } else {
+                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', text: assistantResponse }];
+              }
+            });
+          }
+        },
+        () => {
+          // Context skipped and assistant response received successfully
+          setIsSubmittingContext(false);
+          setIsTyping(false);
+        },
+        (error: any) => {
+          console.error('Context skip error:', error);
+          setError('Failed to skip context. Please try again.');
+          setIsSubmittingContext(false);
+          setIsTyping(false);
+        }
+      );
+    } catch (error) {
+      console.error('Failed to skip context:', error);
+      setError('Failed to skip context. Please try again.');
+      setIsSubmittingContext(false);
+    }
+  };
+
   // Context submission after user selection
   const handleSubmitContext = async () => {
     if (isSubmittingContext) {
@@ -471,7 +564,8 @@ function App() {
     
     setIsSubmittingContext(true);
     setError(null);
-    toggleRightSidebar();
+    // Auto-close memory directory when context is submitted (chat no longer new)
+    setIsRightSidebarOpen(false);
     
     try {
       // Get the relevant chats that correspond to the selected memories
@@ -689,6 +783,7 @@ function App() {
       onBlockToggle={handleBlockToggle}
       onMemoryExpand={handleMemoryExpand}
       onSubmitContext={handleSubmitContext}
+      onSkipContext={handleSkipContext}
       onTopicSelect={handleTopicSelect}
       onChatPin={handleChatPin}
       onChatPreview={handleChatPreview}

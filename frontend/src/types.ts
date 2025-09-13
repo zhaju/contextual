@@ -116,6 +116,7 @@ export interface MemoryDirectoryProps {
   onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
+  onSkipContext?: () => void;
   isNewChat: boolean;
   contextSubmitted: boolean;
   firstMessageSent: boolean;
