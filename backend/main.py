@@ -5,36 +5,13 @@ from typing import List, Optional, Dict, Any
 import json
 import uuid
 from datetime import datetime
+from types import RootResponse, Chat, SendMessageRequest, SendMessageToChatRequest, ChatMessage, Memory, Block, ContextResponse, StreamedChatResponse, SetChatContextRequest
 
 app = FastAPI(title="Contextual Chat API", version="1.0.0")
-
-# Core Pydantic Models
-class Block(BaseModel):
-    topic: str
-    description: str
-
-class Memory(BaseModel):
-    summary_string: str
-    blocks: List[Block]
-
-class ChatHistory(BaseModel):
-    role: str  # "user" or "assistant"
-    content: str
-    timestamp: datetime
-
-class Chat(BaseModel):
-    id: str
-    current_memory: Memory
-    title: str
-    chat_history: List[ChatHistory]
 
 # In-memory storage (replace with database in production)
 chats_db: Dict[str, Chat] = {}
 
-# Root endpoint models
-class RootResponse(BaseModel):
-    message: str
-    version: str
 
 @app.get("/", response_model=RootResponse)
 async def root():
@@ -56,17 +33,10 @@ async def get_chat(chat_id: str):
         raise HTTPException(status_code=404, detail="Chat not found")
     return chats_db[chat_id]
 
-# Send message endpoint models
-class SendMessageRequest(BaseModel):
-    chat_id: str
-    message: str
 
-class SSEChunk(BaseModel):
-    content: Optional[str] = None
-    done: Optional[bool] = None
 
-@app.post("/chats/{chat_id}/send")
-async def send_message(request: SendMessageRequest):
+@app.post("/chats/{chat_id}/send", response_model=StreamedChatResponse)
+async def send_message(request: SendMessageToChatRequest):
     """
     Send a message to a chat and get SSE response from GPT
     """
@@ -74,7 +44,7 @@ async def send_message(request: SendMessageRequest):
         raise HTTPException(status_code=404, detail="Chat not found")
     
     # Add user message to chat history
-    user_message = ChatHistory(
+    user_message = ChatMessage(
         role="user",
         content=request.message,
         timestamp=datetime.now()
@@ -91,7 +61,7 @@ async def send_message(request: SendMessageRequest):
             yield f"data: {json.dumps({'content': chunk})}\n\n"
         
         # Add assistant response to chat history
-        assistant_message = ChatHistory(
+        assistant_message = ChatMessage(
             role="assistant",
             content=response_text,
             timestamp=datetime.now()
@@ -106,16 +76,10 @@ async def send_message(request: SendMessageRequest):
         headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
     )
 
-# New chat endpoint models
-class NewChatRequest(BaseModel):
-    first_message: str
 
-class NewChatResponse(BaseModel):
-    chat_id: str
-    chat: Chat
 
-@app.post("/chats/new", response_model=NewChatResponse)
-async def new_chat(request: NewChatRequest):
+@app.post("/chats/new", response_model=ContextResponse)
+async def new_chat(request: SendMessageRequest):
     """
     Create a new chat with first message and context prompt
     """
@@ -137,7 +101,7 @@ async def new_chat(request: NewChatRequest):
     
     # Create chat history with first message
     chat_history = [
-        ChatHistory(
+        ChatMessage(
             role="user",
             content=request.first_message,
             timestamp=datetime.now()
@@ -155,15 +119,12 @@ async def new_chat(request: NewChatRequest):
     # Store chat
     chats_db[chat_id] = new_chat
     
-    return NewChatResponse(chat_id=chat_id, chat=new_chat)
+    return ContextResponse(context_summary=context_prompt, relevant_chats=[new_chat])
 
-# New chat context endpoint models
-class NewChatContextRequest(BaseModel):
-    required_context: List[str]  # List of chat IDs and memory topics
-    chat_id: str
 
-@app.post("/chats/{chat_id}/context")
-async def new_chat_context_set(request: NewChatContextRequest):
+
+@app.post("/chats/{chat_id}/set_context")
+async def new_chat_context_set(request: SetChatContextRequest):
     """
     Set context for a chat and get SSE response from GPT
     """
