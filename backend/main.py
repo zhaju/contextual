@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
+from contextlib import asynccontextmanager
 import json
 import uuid
 from datetime import datetime
@@ -10,11 +11,38 @@ from prompts import get_response_generation_prompt
 from groq_caller import GroqCaller
 from claude_caller import ClaudeCaller
 
-app = FastAPI(title="Contextual Chat API", version="1.0.0")
-
-# Global callers - initialized in startup event
+# Global callers - initialized in lifespan
 groq_caller: Optional[GroqCaller] = None
 claude_caller: Optional[ClaudeCaller] = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifespan - startup and shutdown events"""
+    global groq_caller, claude_caller
+    
+    # Startup
+    try:
+        groq_caller = GroqCaller()
+        print("✅ GroqCaller initialized successfully")
+    except Exception as e:
+        print(f"❌ Failed to initialize GroqCaller: {e}")
+        groq_caller = None
+    
+    try:
+        claude_caller = ClaudeCaller()
+        print("✅ ClaudeCaller initialized successfully")
+    except Exception as e:
+        print(f"❌ Failed to initialize ClaudeCaller: {e}")
+        claude_caller = None
+    
+    yield
+    
+    # Shutdown
+    groq_caller = None
+    claude_caller = None
+    print("🔄 API callers cleaned up")
+
+app = FastAPI(title="Contextual Chat API", version="1.0.0", lifespan=lifespan)
 
 # In-memory storage (replace with database in production)
 chats_db: Dict[str, Chat] = {
@@ -33,34 +61,6 @@ chats_db: Dict[str, Chat] = {
         ]
     )
 }
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize the API callers on startup"""
-    global groq_caller, claude_caller
-    
-    try:
-        groq_caller = GroqCaller()
-        print("✅ GroqCaller initialized successfully")
-    except Exception as e:
-        print(f"❌ Failed to initialize GroqCaller: {e}")
-        groq_caller = None
-    
-    try:
-        claude_caller = ClaudeCaller()
-        print("✅ ClaudeCaller initialized successfully")
-    except Exception as e:
-        print(f"❌ Failed to initialize ClaudeCaller: {e}")
-        claude_caller = None
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
-    global groq_caller, claude_caller
-    groq_caller = None
-    claude_caller = None
-    print("🔄 API callers cleaned up")
-
 
 @app.get("/", response_model=RootResponse)
 async def root():
