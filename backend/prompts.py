@@ -120,25 +120,38 @@ INSTRUCTIONS:
 Please identify and summarize the most relevant context for this query."""
 
 
-def get_chat_title_generation_prompt(first_message: str) -> str:
+def get_chat_title_generation_prompt(messages: List[ChatMessage]) -> tuple[str, str]:
     """
-    Generate a prompt for creating a chat title from the first message
+    Generate system and user prompts for creating a chat title from messages
     
     Args:
-        first_message: The first message in the chat
+        messages: List of ChatMessage objects from the chat
         
     Returns:
-        str: The prompt for title generation
+        tuple: (system_prompt, user_prompt) for title generation
     """
-    return f"""Create a concise, descriptive title for a chat that starts with this message:
-
-FIRST MESSAGE:
-{first_message}
+    system_prompt = """You are a helpful assistant that creates concise, descriptive titles for chat conversations.
 
 INSTRUCTIONS:
-1. Create a title that captures the main topic or intent
+1. Create a title that captures the main topic or intent of the conversation
 2. Keep it under 50 characters
 3. Make it clear and descriptive
 4. Avoid generic titles like "New Chat" or "Conversation"
+5. Focus on the primary subject matter or question being discussed
+6. Use title case formatting
 
 Please provide a good title for this chat."""
+    
+    # Format the messages for the user prompt
+    message_text = ""
+    for msg in messages:
+        role = "User" if msg.role == "user" else "Assistant"
+        message_text += f"{role}: {msg.content}\n"
+    
+    user_prompt = f"""Create a title for a chat with the following messages:
+
+{message_text.strip()}
+
+Please provide a concise, descriptive title."""
+    
+    return system_prompt, user_prompt

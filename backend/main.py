@@ -11,6 +11,7 @@ from prompts import get_response_generation_prompt
 from groq_caller import GroqCaller
 from claude_caller import ClaudeCaller
 from chat_memory_updater import ChatMemoryUpdater
+from title_creator import create_chat_title
 
 # Global callers - initialized in lifespan
 groq_caller: Optional[GroqCaller] = None
@@ -195,16 +196,19 @@ async def new_chat(request: SendMessageRequest):
     chat_history = [
         ChatMessage(
             role="user",
-            content=request.first_message,
+            content=request.message,
             timestamp=datetime.now()
         )
     ]
+    
+    # Generate title using AI
+    title = await create_chat_title(chat_history, groq_caller)
     
     # Create new chat
     new_chat = Chat(
         id=chat_id,
         current_memory=initial_memory,
-        title=request.first_message[:50] + "..." if len(request.first_message) > 50 else request.first_message,
+        title=title,
         chat_history=chat_history
     )
     
