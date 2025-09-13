@@ -59,9 +59,8 @@ class SendMessageToChatRequest(SendMessageRequest):
 
 # Define response schemas
 
-# ContextResponse returns a list of relevant contexts to the chat (frontend can ignore extra data)
+# ContextResponse returns a list of relevant contexts to the chat
 class ContextResponse(BaseModel):
-    context_summary: str
     relevant_chats: List[Chat]
 
 # StreamedChatResponse is the response for streaming a chat response

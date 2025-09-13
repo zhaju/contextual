@@ -17,6 +17,7 @@ from claude_caller import ClaudeCaller
 from data_init.load_initial_chats import load_initial_chats
 from chat_memory_updater import ChatMemoryUpdater
 from title_creator import create_chat_title
+from select_context import get_selected_chats
 
 # Global callers - initialized in lifespan
 groq_caller: Optional[GroqCaller] = None
@@ -218,18 +219,22 @@ async def new_chat(request: SendMessageRequest):
     
     chat_id = str(uuid.uuid4())
     
-    # Create initial memory with context from other chats
-    recent_chat_ids = list(chats_db.keys())[-5:]  # Limit to 5 recent chats
-    context_prompt = "Context from previous chats: " + ", ".join(recent_chat_ids)
+    # Get relevant chats using AI-powered selection
+    relevant_chats = []
     
+    if groq_caller is not None and len(chats_db) > 0:
+        try:
+            # Convert chats_db to list for selection
+            all_chats = list(chats_db.values())
+            # Select up to 3 most relevant chats
+            relevant_chats = await get_selected_chats(all_chats, request.message, groq_caller, 3)
+        except Exception as e:
+            print(f"⚠️ Failed to select relevant chats: {e}")
+    
+    # Create initial memory as completely empty
     initial_memory = Memory(
-        summary_string=f"New chat started with context: {context_prompt}",
-        blocks=[
-            Block(
-                topic="initial_context",
-                description=context_prompt
-            )
-        ]
+        summary_string="",
+        blocks=[]
     )
     
     # Create chat history with first message
@@ -255,7 +260,7 @@ async def new_chat(request: SendMessageRequest):
     # Store chat
     chats_db[chat_id] = new_chat
     
-    return ContextResponse(context_summary=context_prompt, relevant_chats=[new_chat])
+    return ContextResponse(relevant_chats=relevant_chats)
 
 
 

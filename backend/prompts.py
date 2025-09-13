@@ -3,7 +3,7 @@ Prompts for the Contextual Chat API
 Contains all the prompts used for different operations
 """
 from typing import List, Dict, Any
-from custom_types import ChatMessage
+from custom_types import ChatMessage, Chat
 
 def get_response_generation_prompt(memory_str: str, chat_history_messages: List[ChatMessage], user_message: str) -> tuple[str, List[Dict[str, str]]]:
     """
@@ -92,32 +92,58 @@ Please provide a structured memory summary.
     ]
 
 
-def get_context_retrieval_prompt(query: str, available_chats: str) -> str:
+def get_context_retrieval_prompt(chats: List[Chat], query: str, groq_caller, num_chats: int) -> List[Dict[str, str]]:
     """
-    Generate a prompt for retrieving relevant context from available chats
+    Generate a list of messages for selecting relevant chats based on a query
     
     Args:
+        chats: List of Chat objects to select from
         query: The query or topic to find context for
-        available_chats: String representation of available chats
+        groq_caller: GroqCaller instance for making API calls
+        num_chats: Number of chats to select
         
     Returns:
-        str: The prompt for context retrieval
+        List[Dict[str, str]]: List of message dictionaries for Groq API
     """
-    return f"""You need to find relevant context for the following query from the available chats.
-
-QUERY:
-{query}
-
-AVAILABLE CHATS:
-{available_chats}
+    # System prompt for instructions
+    system_instructions = f"""You are a context selection assistant. Your task is to analyze a query and select the most relevant chats from a provided list.
 
 INSTRUCTIONS:
-1. Identify which chats contain relevant information for the query
-2. Rank them by relevance
-3. Extract the most pertinent information
-4. Provide a summary of relevant context
+1. Analyze the query to understand what information is needed
+2. Review each chat's memory summary and topics
+3. Select the {num_chats} most relevant chats that would provide the best context
+4. Return ONLY a list of integers representing the 1-indexed positions of the selected chats
+5. Do not include any explanation or additional text, just the numbers separated by commas
 
-Please identify and summarize the most relevant context for this query."""
+Example output format: 1, 3, 5"""
+
+    # System prompt for ordered list of chats
+    chat_list = ""
+    for i, chat in enumerate(chats, 1):
+        chat_list += f"{i}. Chat ID: {chat.id}\n"
+        chat_list += f"   Title: {chat.title}\n"
+        chat_list += f"   Memory Summary: {chat.current_memory.summary_string}\n"
+        chat_list += f"   Memory Blocks:\n"
+        for block in chat.current_memory.blocks:
+            chat_list += f"     - Topic: {block.topic}\n"
+            # don't include description
+            # chat_list += f"       Description: {block.description[:100]}\n"
+        chat_list += "\n"
+    
+    system_chat_list = f"""AVAILABLE CHATS:
+{chat_list.strip()}"""
+
+    # User prompt with the query
+    user_message = f"""QUERY:
+{query}
+
+Please select the {num_chats} most relevant chats for this query. Return only the numbers separated by commas."""
+
+    return [
+        {"role": "system", "content": system_instructions},
+        {"role": "system", "content": system_chat_list},
+        {"role": "user", "content": user_message}
+    ]
 
 
 def get_chat_title_generation_prompt(messages: List[ChatMessage]) -> tuple[str, str]:

@@ -23,7 +23,6 @@ export interface BackendChatMessage {
 }
 
 export interface ContextResponse {
-  context_summary: string;
   relevant_chats: BackendChat[];
 }
 
