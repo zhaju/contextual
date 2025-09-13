@@ -85,9 +85,11 @@ export const AppShell = ({
       {/* Header */}
   <header className="h-16 bg-[var(--bg-primary)] border-b border-[var(--border-color)] flex items-center justify-between px-6 flex-shrink-0 z-10">
         <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold text-[var(--text-primary)]">
-            Contextual Chat
-          </h1>
+          <img 
+            src="/contextual.png" 
+            alt="Contextual" 
+            className="h-12 w-auto"
+          />
         </div>
         <div className="flex items-center space-x-4">
           <button
