@@ -14,3 +14,4 @@ export { SuggestedTopics } from './SuggestedTopics';
 export { RelevantChats } from './RelevantChats';
 export { PinnedContext } from './PinnedContext';
 export { IntegrationNotes } from './IntegrationNotes';
+export { MemoryDirectory } from './MemoryDirectory';

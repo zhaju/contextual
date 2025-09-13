@@ -33,6 +33,25 @@ export interface PinnedContext {
   label: string;
 }
 
+export interface MemoryBlock {
+  id: string;
+  topic: string;
+  description: string;
+  importance: number; // 1-5 scale for # importance
+  selected: boolean;
+  chatReferences: string[]; // Array of chat IDs that reference this block
+}
+
+export interface Memory {
+  id: string;
+  title: string;
+  blocks: MemoryBlock[];
+  selected: boolean;
+  isLocked: boolean; // true when context is submitted
+  isExpanded: boolean; // for collapsible UI
+  chatReferences: string[]; // Array of chat IDs that reference this memory
+}
+
 // Component prop types
 export interface ThemeToggleProps {
   isDark: boolean;
@@ -67,6 +86,8 @@ export interface ComposerProps {
   contextPills: PinnedContext[];
   onContextRemove: (id: string) => void;
   onSend: (message: string) => void;
+  disabled?: boolean;
+  disabledMessage?: string;
 }
 
 export interface SuggestedTopicsProps {
@@ -84,4 +105,16 @@ export interface RelevantChatsProps {
 export interface PinnedContextProps {
   pinned: PinnedContext[];
   onRemove: (id: string) => void;
+}
+
+export interface MemoryDirectoryProps {
+  memories: Memory[];
+  onMemoryToggle: (memoryId: string) => void;
+  onBlockToggle: (memoryId: string, blockId: string) => void;
+  onMemoryExpand: (memoryId: string) => void;
+  onSubmitContext: () => void;
+  isNewChat: boolean;
+  contextSubmitted: boolean;
+  firstMessageSent: boolean;
+  onChatSelect: (chatId: string) => void;
 }

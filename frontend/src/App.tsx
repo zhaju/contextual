@@ -4,10 +4,9 @@ import {
   chats, 
   topics, 
   messages, 
-  suggestedTopics, 
-  relevantChats, 
-  pinnedContext 
+  mockMemories
 } from './mockData';
+import type { Memory } from './types';
 
 /**
  * Main App Component
@@ -26,13 +25,52 @@ function App() {
   const [currentMessages, setCurrentMessages] = useState(messages);
   const [isTyping, setIsTyping] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-  const [currentPinnedContext, setCurrentPinnedContext] = useState(pinnedContext);
-  const [currentRelevantChats, setCurrentRelevantChats] = useState(relevantChats);
+  const [memories, setMemories] = useState<Memory[]>(mockMemories);
+  const [isNewChat, setIsNewChat] = useState(false);
+  const [contextSubmitted, setContextSubmitted] = useState(false);
+  const [firstMessageSent, setFirstMessageSent] = useState(false);
+  const [filteredMemories, setFilteredMemories] = useState<Memory[]>([]);
+  const [allChats, setAllChats] = useState(chats);
+
+  // Function to filter memories based on message content (mock search)
+  const filterMemoriesByMessage = (message: string) => {
+    const searchTerms = message.toLowerCase().split(' ').filter(term => term.length > 2);
+    
+    // Simple scoring based on keyword matches
+    const scoredMemories = memories.map(memory => {
+      let score = 0;
+      const memoryText = `${memory.title} ${memory.blocks.map(b => `${b.topic} ${b.description}`).join(' ')}`.toLowerCase();
+      
+      searchTerms.forEach(term => {
+        if (memoryText.includes(term)) {
+          score += 1;
+          // Boost score for topic matches
+          if (memory.blocks.some(block => block.topic.toLowerCase().includes(term))) {
+            score += 2;
+          }
+        }
+      });
+      
+      return { memory, score };
+    });
+    
+    // Sort by score and take top 3
+    return scoredMemories
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3)
+      .map(item => item.memory);
+  };
 
   // Event handlers - replace with real API calls
   const handleChatSelect = (chatId: string) => {
     console.log('Chat selected:', chatId);
     setSelectedChatId(chatId);
+    
+    // Reset new chat states when switching to existing chat
+    setIsNewChat(false);
+    setContextSubmitted(false);
+    setFirstMessageSent(false);
+    setFilteredMemories([]);
     
     // Load different messages based on chat selection
     if (chatId === 'c1') {
@@ -45,21 +83,60 @@ function App() {
       ]);
     } else {
       setCurrentMessages([
-        { id: 'm1', role: 'assistant', text: `**Welcome to ${chats.find(c => c.id === chatId)?.title || 'this chat'}!**\n\nThis is a mock conversation.` }
+        { id: 'm1', role: 'assistant', text: `**Welcome to ${allChats.find(c => c.id === chatId)?.title || 'this chat'}!**\n\nThis is a mock conversation.` }
       ]);
     }
   };
 
   const handleNewChat = () => {
     console.log('New chat created');
-    setSelectedChatId(null);
+    
+    // Create new chat
+    const newChatId = `c${Date.now()}`;
+    const newChat = {
+      id: newChatId,
+      title: 'New Chat',
+      last: '',
+      updatedAt: 'Now',
+      topicId: 't1', // Default topic
+      starred: false
+    };
+    
+    setAllChats(prev => [newChat, ...prev]);
+    setSelectedChatId(newChatId);
     setCurrentMessages([]);
+    setIsNewChat(true);
+    setContextSubmitted(false);
+    setFirstMessageSent(false);
+    setFilteredMemories([]);
+    // Reset memory selections
+    setMemories(prev => prev.map(memory => ({
+      ...memory,
+      selected: false,
+      isLocked: false,
+      blocks: memory.blocks.map(block => ({ ...block, selected: false }))
+    })));
   };
 
   const handleSendMessage = (message: string) => {
     console.log('Message sent:', message);
     
-    // Add user message to state
+    // If this is the first message in a new chat, don't add to messages yet
+    if (isNewChat && currentMessages.length === 0) {
+      setFirstMessageSent(true);
+      const filtered = filterMemoriesByMessage(message);
+      setFilteredMemories(filtered);
+      console.log('Filtered memories based on message:', filtered);
+      // Store the message temporarily but don't add to chat yet
+      setCurrentMessages([{
+        id: `msg-${Date.now()}`,
+        role: 'user' as const,
+        text: message
+      }]);
+      return; // Don't proceed with assistant response
+    }
+    
+    // For subsequent messages or after context is submitted, proceed normally
     const userMessage = {
       id: `msg-${Date.now()}`,
       role: 'user' as const,
@@ -81,6 +158,130 @@ function App() {
     }, 2000);
   };
 
+  // Memory handling functions
+  const handleMemoryToggle = (memoryId: string) => {
+    setMemories(prev => prev.map(memory => {
+      if (memory.id === memoryId) {
+        // If this memory is currently selected, unselect it
+        // If it's not selected, select it and unselect all others
+        const newSelected = !memory.selected;
+        return {
+          ...memory,
+          selected: newSelected,
+          blocks: memory.blocks.map(block => ({ ...block, selected: newSelected }))
+        };
+      } else {
+        // Unselect all other memories
+        return {
+          ...memory,
+          selected: false,
+          blocks: memory.blocks.map(block => ({ ...block, selected: false }))
+        };
+      }
+    }));
+    
+    // Also update filtered memories if they exist
+    if (filteredMemories.length > 0) {
+      setFilteredMemories(prev => prev.map(memory => {
+        if (memory.id === memoryId) {
+          const newSelected = !memory.selected;
+          return {
+            ...memory,
+            selected: newSelected,
+            blocks: memory.blocks.map(block => ({ ...block, selected: newSelected }))
+          };
+        } else {
+          return {
+            ...memory,
+            selected: false,
+            blocks: memory.blocks.map(block => ({ ...block, selected: false }))
+          };
+        }
+      }));
+    }
+  };
+
+  const handleBlockToggle = (memoryId: string, blockId: string) => {
+    setMemories(prev => prev.map(memory => {
+      if (memory.id === memoryId) {
+        const updatedBlocks = memory.blocks.map(block => 
+          block.id === blockId ? { ...block, selected: !block.selected } : block
+        );
+        const someBlocksSelected = updatedBlocks.some(block => block.selected);
+        
+        return {
+          ...memory,
+          selected: someBlocksSelected, // Memory is selected if any blocks are selected
+          blocks: updatedBlocks
+        };
+      }
+      return memory;
+    }));
+    
+    // Also update filtered memories if they exist
+    if (filteredMemories.length > 0) {
+      setFilteredMemories(prev => prev.map(memory => {
+        if (memory.id === memoryId) {
+          const updatedBlocks = memory.blocks.map(block => 
+            block.id === blockId ? { ...block, selected: !block.selected } : block
+          );
+          const someBlocksSelected = updatedBlocks.some(block => block.selected);
+          
+          return {
+            ...memory,
+            selected: someBlocksSelected, // Memory is selected if any blocks are selected
+            blocks: updatedBlocks
+          };
+        }
+        return memory;
+      }));
+    }
+  };
+
+  const handleMemoryExpand = (memoryId: string) => {
+    setMemories(prev => prev.map(memory => 
+      memory.id === memoryId 
+        ? { ...memory, isExpanded: !memory.isExpanded }
+        : memory
+    ));
+    
+    // Also update filtered memories if they exist
+    if (filteredMemories.length > 0) {
+      setFilteredMemories(prev => prev.map(memory => 
+        memory.id === memoryId 
+          ? { ...memory, isExpanded: !memory.isExpanded }
+          : memory
+      ));
+    }
+  };
+
+  const handleSubmitContext = () => {
+    console.log('Context submitted');
+    setContextSubmitted(true);
+    setIsNewChat(false);
+    // Lock all selected memories
+    setMemories(prev => prev.map(memory => ({
+      ...memory,
+      isLocked: memory.selected || memory.blocks.some(block => block.selected)
+    })));
+    
+    // Now send the first message and get assistant response
+    const firstMessage = currentMessages[0];
+    if (firstMessage) {
+      setIsTyping(true);
+      setTimeout(() => {
+        const assistantMessage = {
+          id: `msg-${Date.now() + 1}`,
+          role: 'assistant' as const,
+          text: `I received your message: "${firstMessage.text}". This is a mock response. In a real implementation, this would come from your AI assistant API.`
+        };
+        setCurrentMessages(prev => [...prev, assistantMessage]);
+        setIsTyping(false);
+      }, 2000);
+    }
+  };
+
+  // Legacy handlers for compatibility (can be removed later)
   const handleTopicSelect = (topicId: string) => {
     console.log('Topic selected:', topicId);
     const topic = topics.find(t => t.id === topicId);
@@ -101,28 +302,31 @@ function App() {
 
   const handleChatExclude = (chatId: string) => {
     console.log('Chat excluded:', chatId);
-    setCurrentRelevantChats(prev => prev.filter(chat => chat.chatId !== chatId));
     alert(`Chat excluded from suggestions. In a real app, this would update the backend.`);
   };
 
   const handleContextRemove = (id: string) => {
     console.log('Context removed:', id);
-    setCurrentPinnedContext(prev => prev.filter(context => context.id !== id));
   };
 
   return (
     <AppShell
-      chats={chats}
+      chats={allChats}
       topics={topics}
       messages={currentMessages}
-      suggestedTopics={suggestedTopics}
-      relevantChats={currentRelevantChats}
-      pinnedContext={currentPinnedContext}
+      memories={firstMessageSent ? filteredMemories : memories}
       selectedChatId={selectedChatId}
       isTyping={isTyping}
+      isNewChat={isNewChat}
+      contextSubmitted={contextSubmitted}
+      firstMessageSent={firstMessageSent}
       onChatSelect={handleChatSelect}
       onNewChat={handleNewChat}
       onSendMessage={handleSendMessage}
+      onMemoryToggle={handleMemoryToggle}
+      onBlockToggle={handleBlockToggle}
+      onMemoryExpand={handleMemoryExpand}
+      onSubmitContext={handleSubmitContext}
       onTopicSelect={handleTopicSelect}
       onChatPin={handleChatPin}
       onChatPreview={handleChatPreview}

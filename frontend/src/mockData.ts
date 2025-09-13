@@ -1,7 +1,7 @@
 // Mock data for the Chat UI template
 // Replace these with real API calls when integrating with backend
 
-import type { Topic, Chat, Message, RelevantChat, PinnedContext } from './types';
+import type { Topic, Chat, Message, RelevantChat, PinnedContext, Memory } from './types';
 
 export const topics: Topic[] = [
   { id: 't1', name: 'Regression', color: '#5b9bd5' },
@@ -140,4 +140,127 @@ export const pinnedContext: PinnedContext[] = [
   { id: 'p2', label: 'Diagnostic checks list' },
   { id: 'p3', label: 'Robust standard errors' },
   { id: 'p4', label: 'Regression diagnostics' },
+];
+
+export const mockMemories: Memory[] = [
+  {
+    id: 'mem1',
+    title: 'Regression Analysis',
+    isLocked: false,
+    selected: false,
+    isExpanded: false,
+    chatReferences: ['c1'],
+    blocks: [
+      {
+        id: 'block1',
+        topic: 'OLS Assumptions',
+        description: 'Linearity, independence, homoscedasticity, normality, no multicollinearity',
+        importance: 5,
+        selected: false,
+        chatReferences: ['c1']
+      },
+      {
+        id: 'block2',
+        topic: 'Diagnostic Checks',
+        description: 'Residual analysis, Breusch-Pagan test, VIF for multicollinearity',
+        importance: 4,
+        selected: false,
+        chatReferences: ['c1']
+      },
+      {
+        id: 'block3',
+        topic: 'Robust Standard Errors',
+        description: 'Huber-White standard errors for heteroscedasticity-consistent inference',
+        importance: 3,
+        selected: false,
+        chatReferences: ['c1']
+      }
+    ]
+  },
+  {
+    id: 'mem2',
+    title: 'Bayesian Statistics',
+    isLocked: false,
+    selected: false,
+    isExpanded: false,
+    chatReferences: ['c2', 'c5'],
+    blocks: [
+      {
+        id: 'block4',
+        topic: 'Skew-Normal Priors',
+        description: 'Zero-inflation modeling with Bayesian approach and MCMC sampling',
+        importance: 4,
+        selected: false,
+        chatReferences: ['c2']
+      },
+      {
+        id: 'block5',
+        topic: 'Prior Selection',
+        description: 'Conjugate priors, informative vs non-informative priors',
+        importance: 3,
+        selected: false,
+        chatReferences: ['c5']
+      },
+      {
+        id: 'block6',
+        topic: 'MCMC Methods',
+        description: 'Metropolis-Hastings, Gibbs sampling, convergence diagnostics',
+        importance: 4,
+        selected: false,
+        chatReferences: ['c5']
+      }
+    ]
+  },
+  {
+    id: 'mem3',
+    title: 'Machine Learning',
+    isLocked: false,
+    selected: false,
+    isExpanded: false,
+    chatReferences: ['c4'],
+    blocks: [
+      {
+        id: 'block7',
+        topic: 'Neural Networks',
+        description: 'Backpropagation, gradient descent, activation functions',
+        importance: 5,
+        selected: false,
+        chatReferences: ['c4']
+      },
+      {
+        id: 'block8',
+        topic: 'Optimization',
+        description: 'Adam optimizer, learning rate scheduling, regularization',
+        importance: 4,
+        selected: false,
+        chatReferences: ['c4']
+      }
+    ]
+  },
+  {
+    id: 'mem4',
+    title: 'Networking',
+    isLocked: false,
+    selected: false,
+    isExpanded: false,
+    chatReferences: ['c3'],
+    blocks: [
+      {
+        id: 'block9',
+        topic: 'TCP vs UDP',
+        description: 'Reliability vs speed tradeoffs, connection-oriented vs connectionless',
+        importance: 3,
+        selected: false,
+        chatReferences: ['c3']
+      },
+      {
+        id: 'block10',
+        topic: 'Throughput Optimization',
+        description: 'Congestion control, window scaling, buffer management',
+        importance: 2,
+        selected: false,
+        chatReferences: ['c3']
+      }
+    ]
+  }
 ];

@@ -4,20 +4,25 @@ import { ChatView } from './ChatView';
 import { Composer } from './Composer';
 import { RightSidebar } from './RightSidebar';
 import { ThemeToggle } from './ThemeToggle';
-import type { Chat, Topic, Message, RelevantChat, PinnedContext as PinnedContextType } from '../types';
+import type { Chat, Topic, Message, Memory } from '../types';
 
 interface AppShellProps {
   chats: Chat[];
   topics: Topic[];
   messages: Message[];
-  suggestedTopics: Topic[];
-  relevantChats: RelevantChat[];
-  pinnedContext: PinnedContextType[];
+  memories: Memory[];
   selectedChatId?: string | null;
   isTyping?: boolean;
+  isNewChat?: boolean;
+  contextSubmitted?: boolean;
+  firstMessageSent?: boolean;
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
   onSendMessage: (message: string) => void;
+  onMemoryToggle: (memoryId: string) => void;
+  onBlockToggle: (memoryId: string, blockId: string) => void;
+  onMemoryExpand: (memoryId: string) => void;
+  onSubmitContext: () => void;
   onTopicSelect: (topicId: string) => void;
   onChatPin: (chatId: string) => void;
   onChatPreview: (chatId: string) => void;
@@ -40,18 +45,23 @@ export const AppShell = ({
   chats,
   topics,
   messages,
-  suggestedTopics,
-  relevantChats,
-  pinnedContext,
+  memories,
   selectedChatId,
   isTyping = false,
+  isNewChat = false,
+  contextSubmitted = false,
+  firstMessageSent = false,
   onChatSelect,
   onNewChat,
   onSendMessage,
-  onTopicSelect,
-  onChatPin,
-  onChatPreview,
-  onChatExclude,
+  onMemoryToggle,
+  onBlockToggle,
+  onMemoryExpand,
+  onSubmitContext,
+  onTopicSelect: _onTopicSelect,
+  onChatPin: _onChatPin,
+  onChatPreview: _onChatPreview,
+  onChatExclude: _onChatExclude,
   onContextRemove,
 }: AppShellProps) => {
   const [isDark, setIsDark] = useState(false);
@@ -102,22 +112,25 @@ export const AppShell = ({
             isTyping={isTyping}
           />
           <Composer
-            contextPills={pinnedContext}
+            contextPills={[]}
             onContextRemove={onContextRemove}
             onSend={onSendMessage}
+            disabled={isNewChat && firstMessageSent && !contextSubmitted}
+            disabledMessage="Please select and submit your context before sending more messages"
           />
         </div>
 
-        {/* Right Sidebar */}
+        {/* Right Sidebar - Always visible, greyed out when not in new chat */}
         <RightSidebar
-          suggestedTopics={suggestedTopics}
-          relevantChats={relevantChats}
-          pinnedContext={pinnedContext}
-          onTopicSelect={onTopicSelect}
-          onChatPin={onChatPin}
-          onChatPreview={onChatPreview}
-          onChatExclude={onChatExclude}
-          onContextRemove={onContextRemove}
+          memories={memories}
+          onMemoryToggle={onMemoryToggle}
+          onBlockToggle={onBlockToggle}
+          onMemoryExpand={onMemoryExpand}
+          onSubmitContext={onSubmitContext}
+          isNewChat={isNewChat}
+          contextSubmitted={contextSubmitted}
+          firstMessageSent={firstMessageSent}
+          onChatSelect={onChatSelect}
         />
       </div>
     </div>
