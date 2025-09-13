@@ -114,6 +114,7 @@ export interface PinnedContextProps {
 
 export interface MemoryDirectoryProps {
   memories: Memory[];
+  onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockId: string) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;

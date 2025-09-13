@@ -3,6 +3,7 @@ import type { Memory } from '../../types';
 
 interface RightSidebarProps {
   memories: Memory[];
+  onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockId: string) => void;
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
@@ -29,6 +30,7 @@ interface RightSidebarProps {
  */
 export const RightSidebar = ({
   memories,
+  onMemoryToggle,
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
@@ -42,6 +44,7 @@ export const RightSidebar = ({
       <div className="flex-1 overflow-y-auto min-h-0">
         <MemoryDirectory
           memories={memories}
+          onMemoryToggle={onMemoryToggle}
           onBlockToggle={onBlockToggle}
           onMemoryExpand={onMemoryExpand}
           onSubmitContext={onSubmitContext}

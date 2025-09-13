@@ -17,6 +17,7 @@ import type { MemoryDirectoryProps } from '../../types';
  */
 export const MemoryDirectory = ({
   memories,
+  onMemoryToggle,
   onBlockToggle,
   onMemoryExpand,
   onSubmitContext,
@@ -106,7 +107,7 @@ export const MemoryDirectory = ({
                     checked={memory.selected}
                     onChange={(e) => {
                       e.stopPropagation();
-                      handleMemoryToggle(memory.id);
+                      onMemoryToggle(memory.id);
                     }}
                     disabled={!allowInteraction || memory.isLocked}
                     className="absolute w-5 h-5 opacity-0 cursor-pointer z-10"

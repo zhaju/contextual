@@ -245,20 +245,23 @@ function App() {
     }));
     
     // Also update filtered memories if they exist
-    if (filteredMemories.length > 0) {
-      setFilteredMemories(prev => prev.map(memory => {
-        if (memory.id === memoryId) {
-          const newSelected = !memory.selected;
-          return {
-            ...memory,
-            selected: newSelected,
-            blocks: memory.blocks.map(block => ({ ...block, selected: newSelected }))
-          };
-        } else {
-          // Leave other memories as they are
-          return memory;
-        }
-      }));
+    const currentFilteredMemories = getFilteredMemories();
+    if (currentFilteredMemories.length > 0) {
+      // Update the filtered memories in the chat state
+      setAllChats(prev => prev.map(chat => 
+        chat.id === selectedChatId && chat.filteredMemories
+          ? {
+              ...chat,
+              filteredMemories: chat.filteredMemories.map(memId => {
+                if (memId === memoryId) {
+                  // This will be handled by the main memories state update above
+                  return memId;
+                }
+                return memId;
+              })
+            }
+          : chat
+      ));
     }
   };
 
@@ -390,6 +393,7 @@ function App() {
       onChatSelect={handleChatSelect}
       onNewChat={handleNewChat}
       onSendMessage={handleSendMessage}
+      onMemoryToggle={handleMemoryToggle}
       onBlockToggle={handleBlockToggle}
       onMemoryExpand={handleMemoryExpand}
       onSubmitContext={handleSubmitContext}
