@@ -1,5 +1,5 @@
 import os
-from groq import Groq
+from groq import AsyncGroq
 from groq.types.chat.completion_create_params import ResponseFormat
 from groq._types import NotGiven
 from typing import Dict, List, AsyncGenerator, TypeVar, Type, Union
@@ -11,7 +11,7 @@ T = TypeVar('T', bound=BaseModel)
 
 class GroqCaller:
     def __init__(self) -> None:
-        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        self.client = AsyncGroq(api_key=os.environ.get("GROQ_API_KEY"))
 
     async def call_groq(self, messages: List[Dict], model: str = "openai/gpt-oss-20b", response_format: type[BaseModel] | None = None, stream: bool = True) -> AsyncGenerator[str, None]:
         """
@@ -34,7 +34,8 @@ class GroqCaller:
                         "schema": response_format.model_json_schema()
                     }
                 } if response_format else None
-            completion = self.client.chat.completions.create(
+            
+            completion = await self.client.chat.completions.create(
                 model=model,
                 messages=messages,
                 temperature=1,
@@ -46,7 +47,7 @@ class GroqCaller:
             )
             
             if stream:
-                for chunk in completion:
+                async for chunk in completion:
                     if chunk.choices[0].delta.content:
                         yield chunk.choices[0].delta.content
             else:

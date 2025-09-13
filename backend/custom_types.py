@@ -17,6 +17,23 @@ class Block(BaseModel):
 class Memory(BaseModel):
     summary_string: str
     blocks: List[Block]
+    
+    def to_llm_str(self) -> str:
+        """
+        Convert memory to a string format suitable for LLM consumption
+        
+        Returns:
+            str: Formatted memory string
+        """
+        result = f"Memory Summary: {self.summary_string}\n\n"
+        
+        if self.blocks:
+            result += "Memory Blocks:\n"
+            for i, block in enumerate(self.blocks, 1):
+                result += f"{i}. Topic: {block.topic}\n"
+                result += f"   Description: {block.description}\n\n"
+        
+        return result.strip()
 
 class ChatMessage(BaseModel):
     role: Union[Literal["user"], Literal["assistant"]]
@@ -54,4 +71,5 @@ class StreamedChatResponse(BaseModel):
 
 
 class SetChatContextRequest(BaseModel):
-    wanted_context: List[str] # List of chat IDs for now #TODO
+    chat_id: str
+    required_context: List[str] # List of chat IDs for now #TODO

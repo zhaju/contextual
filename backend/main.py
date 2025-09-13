@@ -2,16 +2,65 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
+from contextlib import asynccontextmanager
 import json
 import uuid
 from datetime import datetime
 from custom_types import RootResponse, Chat, SendMessageRequest, SendMessageToChatRequest, ChatMessage, Memory, Block, ContextResponse, StreamedChatResponse, SetChatContextRequest
+from prompts import get_response_generation_prompt
+from groq_caller import GroqCaller
+from claude_caller import ClaudeCaller
 
-app = FastAPI(title="Contextual Chat API", version="1.0.0")
+# Global callers - initialized in lifespan
+groq_caller: Optional[GroqCaller] = None
+claude_caller: Optional[ClaudeCaller] = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifespan - startup and shutdown events"""
+    global groq_caller, claude_caller
+    
+    # Startup
+    try:
+        groq_caller = GroqCaller()
+        print("✅ GroqCaller initialized successfully")
+    except Exception as e:
+        print(f"❌ Failed to initialize GroqCaller: {e}")
+        groq_caller = None
+    
+    try:
+        claude_caller = ClaudeCaller()
+        print("✅ ClaudeCaller initialized successfully")
+    except Exception as e:
+        print(f"❌ Failed to initialize ClaudeCaller: {e}")
+        claude_caller = None
+    
+    yield
+    
+    # Shutdown
+    groq_caller = None
+    claude_caller = None
+    print("🔄 API callers cleaned up")
+
+app = FastAPI(title="Contextual Chat API", version="1.0.0", lifespan=lifespan)
 
 # In-memory storage (replace with database in production)
-chats_db: Dict[str, Chat] = {}
-
+chats_db: Dict[str, Chat] = {
+    "sample_chat": Chat(
+        id="sample_chat",
+        current_memory=Memory(
+            summary_string="This is a sample memory summary.",
+            blocks=[
+                Block(topic="sample_topic", description="This is a sample block description.")
+            ]
+        ),
+        title="Sample Chat",
+        chat_history=[
+            ChatMessage(role="user", content="Hello, how are you?", timestamp=datetime.now()),
+            ChatMessage(role="assistant", content="I'm good, thank you!", timestamp=datetime.now())
+        ]
+    )
+}
 
 @app.get("/", response_model=RootResponse)
 async def root():
@@ -35,7 +84,7 @@ async def get_chat(chat_id: str):
 
 
 
-@app.post("/chats/{chat_id}/send", response_model=StreamedChatResponse)
+@app.post("/chats/send", response_model=StreamedChatResponse)
 async def send_message(request: SendMessageToChatRequest):
     """
     Send a message to a chat and get SSE response from GPT
@@ -51,24 +100,48 @@ async def send_message(request: SendMessageToChatRequest):
     )
     chats_db[request.chat_id].chat_history.append(user_message)
     
-    # Placeholder SSE response
+    # Prepare context for the prompt
+    chat = chats_db[request.chat_id]
+    
+    # Get memory as string
+    memory_str = chat.current_memory.to_llm_str()
+    
+    # Get last 6 chat messages (truncated)
+    recent_messages = chat.chat_history[-6:] if len(chat.chat_history) > 6 else chat.chat_history
+    
+    # Create the system message and messages list
+    system_message, messages = get_response_generation_prompt(memory_str, recent_messages, request.message)
+    
     async def generate_response():
-        # Simulate GPT response streaming
-        response_text = f"Placeholder response to: {request.message}"
-        chunks = [response_text[i:i+10] for i in range(0, len(response_text), 10)]
+        if claude_caller is None:
+            # Fallback if Claude is not available
+            error_response = "Claude API is not available. Please check your configuration."
+            yield f"data: {json.dumps({'content': error_response})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
+            return
         
-        for chunk in chunks:
-            yield f"data: {json.dumps({'content': chunk})}\n\n"
-        
-        # Add assistant response to chat history
-        assistant_message = ChatMessage(
-            role="assistant",
-            content=response_text,
-            timestamp=datetime.now()
-        )
-        chats_db[request.chat_id].chat_history.append(assistant_message)
-        
-        yield f"data: {json.dumps({'done': True})}\n\n"
+        # Use Claude to generate the response
+        response_text = ""
+        try:
+            async for chunk in claude_caller.call_claude(messages=messages, system=system_message):
+                response_text += chunk
+                yield f"data: {json.dumps({'content': chunk})}\n\n"
+            
+            # Add assistant response to chat history
+            assistant_message = ChatMessage(
+                role="assistant",
+                content=response_text,
+                timestamp=datetime.now()
+            )
+            chats_db[request.chat_id].chat_history.append(assistant_message)
+            
+            yield f"data: {json.dumps({'done': True})}\n\n"
+            
+        except Exception as e:
+            # Handle errors gracefully
+            error_response = f"Error generating response: {str(e)}"
+            yield f"data: {json.dumps({'content': error_response})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
     
     return StreamingResponse(
         generate_response(),
@@ -123,7 +196,7 @@ async def new_chat(request: SendMessageRequest):
 
 
 
-@app.post("/chats/{chat_id}/set_context")
+@app.post("/chats/set_context")
 async def new_chat_context_set(request: SetChatContextRequest):
     """
     Set context for a chat and get SSE response from GPT
