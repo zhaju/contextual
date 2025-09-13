@@ -219,17 +219,27 @@ async def new_chat(request: SendMessageRequest):
     
     chat_id = str(uuid.uuid4())
     
-    # Get relevant chats using AI-powered selection
+    # Get relevant chats using AI-powered selection with strict relevance criteria
     relevant_chats = []
     
     if groq_caller is not None and len(chats_db) > 0:
         try:
             # Convert chats_db to list for selection
             all_chats = list(chats_db.values())
-            # Select up to 3 most relevant chats
-            relevant_chats = await get_selected_chats(all_chats, request.message, groq_caller, 3)
+            print(f"🔍 Analyzing {len(all_chats)} available chats for relevance to: '{request.message[:50]}...'")
+            
+            # Use strict selection - only select up to 2 highly relevant chats
+            # Better to have fewer, highly relevant chats than many loosely related ones
+            relevant_chats = await get_selected_chats(all_chats, request.message, groq_caller, 2)
+            
+            if relevant_chats:
+                print(f"✅ Found {len(relevant_chats)} highly relevant chats for context")
+            else:
+                print("ℹ️ No highly relevant chats found - new chat will start with empty context")
+                
         except Exception as e:
             print(f"⚠️ Failed to select relevant chats: {e}")
+            relevant_chats = []
     
     # Create initial memory as completely empty
     initial_memory = Memory(

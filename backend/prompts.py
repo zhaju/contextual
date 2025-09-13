@@ -3,7 +3,7 @@ Prompts for the Contextual Chat API
 Contains all the prompts used for different operations
 """
 from typing import List, Dict, Any
-from custom_types import ChatMessage, Chat
+from custom_types import ChatMessage, Chat, ChatSelectionResponse
 
 def get_response_generation_prompt(memory_str: str, chat_history_messages: List[ChatMessage], user_message: str) -> tuple[str, List[Dict[str, str]]]:
     """
@@ -106,16 +106,29 @@ def get_context_retrieval_prompt(chats: List[Chat], query: str, groq_caller, num
         List[Dict[str, str]]: List of message dictionaries for Groq API
     """
     # System prompt for instructions
-    system_instructions = f"""You are a context selection assistant. Your task is to analyze a query and select the most relevant chats from a provided list.
+    system_instructions = f"""You are a highly selective context assistant. Your task is to analyze a query and select ONLY the most relevant chats from a provided list.
+
+CRITICAL RELEVANCE REQUIREMENTS:
+1. ONLY select chats that are HIGHLY relevant to the specific query
+2. If a chat is only somewhat related or tangentially connected, DO NOT select it
+3. Better to return fewer chats (or even zero) than to include irrelevant ones
+4. Each selected chat must directly contribute meaningful context to answering the query
+5. Consider both the memory summary AND the specific topics discussed
+
+STRICT SELECTION CRITERIA:
+- The chat must contain information that directly helps answer the query
+- The topics must be closely related to what the user is asking about
+- Avoid generic or loosely related conversations
+- If no chats are highly relevant, return an empty list
 
 INSTRUCTIONS:
-1. Analyze the query to understand what information is needed
-2. Review each chat's memory summary and topics
-3. Select the {num_chats} most relevant chats that would provide the best context
-4. Return ONLY a list of integers representing the 1-indexed positions of the selected chats
-5. Do not include any explanation or additional text, just the numbers separated by commas
+1. Analyze the query to understand the specific information needed
+2. Review each chat's memory summary and topics with extreme scrutiny
+3. Select ONLY the {num_chats} most relevant chats (or fewer if none are highly relevant)
+4. Return the 1-indexed positions of selected chats in the selected_indices array
+5. If no chats are highly relevant, return an empty selected_indices array
 
-Example output format: 1, 3, 5"""
+You must respond with a JSON object containing a "selected_indices" array of integers."""
 
     # System prompt for ordered list of chats
     chat_list = ""
@@ -137,7 +150,9 @@ Example output format: 1, 3, 5"""
     user_message = f"""QUERY:
 {query}
 
-Please select the {num_chats} most relevant chats for this query. Return only the numbers separated by commas."""
+IMPORTANT: Only select chats that are HIGHLY relevant to this specific query. If no chats are directly relevant, return an empty selected_indices array. Better to have no context than irrelevant context.
+
+Select up to {num_chats} highly relevant chats (or fewer if none meet the strict relevance criteria). Return a JSON object with the selected_indices array."""
 
     return [
         {"role": "system", "content": system_instructions},

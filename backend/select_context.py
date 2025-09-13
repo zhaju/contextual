@@ -3,7 +3,7 @@ Context selection module for the Contextual Chat API
 Contains functions for selecting relevant chats based on queries
 """
 from typing import List
-from custom_types import Chat
+from custom_types import Chat, ChatSelectionResponse
 from groq_caller import GroqCaller
 from prompts import get_context_retrieval_prompt
 
@@ -24,25 +24,40 @@ async def get_selected_chats(chats: List[Chat], query: str, groq_caller: GroqCal
     # Generate the prompt for context retrieval
     messages = get_context_retrieval_prompt(chats, query, groq_caller, num_chats)
     
-    # Call Groq API to get the selected chat indices
-    response = await groq_caller.call_groq_single(messages)
+    # Call Groq API to get the selected chat indices with structured output
+    response = await groq_caller.call_groq_single(messages, response_format=ChatSelectionResponse)
     
-    # Parse the response to extract the selected indices
+    # Handle the structured response
     try:
-        # Clean the response and split by commas
-        selected_indices_str = str(response).strip()
-        selected_indices = [int(idx.strip()) for idx in selected_indices_str.split(',')]
+        if isinstance(response, ChatSelectionResponse):
+            selected_indices = response.selected_indices
+        else:
+            # Fallback if response format parsing failed
+            print(f"Failed to parse structured response: {response}")
+            return []
         
-        # Convert 1-indexed to 0-indexed and get the selected chats
+        # Handle empty selection
+        if not selected_indices:
+            print("No highly relevant chats found - returning empty list")
+            return []
+        
+        # Validate indices and convert 1-indexed to 0-indexed
         selected_chats = []
         for idx in selected_indices:
             if 1 <= idx <= len(chats):
                 selected_chats.append(chats[idx - 1])  # Convert to 0-indexed
+            else:
+                print(f"Warning: Invalid index {idx} (out of range 1-{len(chats)})")
+        
+        # Log the selection for debugging
+        if selected_chats:
+            print(f"Selected {len(selected_chats)} highly relevant chats")
+        else:
+            print("No valid chats selected - returning empty list")
         
         return selected_chats
         
-    except (ValueError, IndexError) as e:
-        # If parsing fails, return empty list or handle error as needed
-        print(f"Error parsing selected chat indices: {e}")
-        print(f"Raw response: {response}")
+    except Exception as e:
+        # If anything fails, return empty list
+        print(f"Error processing chat selection response: {e}")
         return []

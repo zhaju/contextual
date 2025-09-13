@@ -72,3 +72,7 @@ class StreamedChatResponse(BaseModel):
 class SetChatContextRequest(BaseModel):
     chat_id: str
     required_context: List[str] # List of chat IDs for now #TODO
+
+# Response model for chat selection
+class ChatSelectionResponse(BaseModel):
+    selected_indices: List[int]
