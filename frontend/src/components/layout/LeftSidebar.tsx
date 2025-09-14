@@ -3,6 +3,7 @@ import { Plus, Menu } from 'lucide-react';
 import { ChatSearchInput } from '../chat/ChatSearchInput';
 import { ChatList } from '../chat/ChatList';
 import type { Chat, Topic } from '../../types';
+import { chatController } from '../../controllers';
 
 interface LeftSidebarProps {
   chats: Chat[];
@@ -10,6 +11,7 @@ interface LeftSidebarProps {
   selectedChatId?: string | null;
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
+  onChatsUpdate?: (updater: (prev: Chat[]) => Chat[]) => void;
 }
 
 /**
@@ -32,10 +34,42 @@ export const LeftSidebar = ({
   topics, 
   selectedChatId,
   onChatSelect, 
-  onNewChat 
+  onNewChat,
+  onChatsUpdate
 }: LeftSidebarProps) => {
   const [searchValue, setSearchValue] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const openDeleteConfirm = (chatId: string) => {
+    setPendingDeleteId(chatId);
+  };
+
+  const closeDeleteConfirm = () => {
+    if (isDeleting) return;
+    setPendingDeleteId(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    try {
+      setIsDeleting(true);
+      await chatController.deleteChat({ chat_id: pendingDeleteId });
+      if (onChatsUpdate) {
+        onChatsUpdate(prev => prev.filter(c => c.id !== pendingDeleteId));
+      }
+      if (selectedChatId === pendingDeleteId) {
+        onNewChat();
+      }
+      setPendingDeleteId(null);
+    } catch (e) {
+      console.error('Failed to delete chat', e);
+      alert('Failed to delete chat.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // Filter chats based on search
   const filteredChats = chats.filter(chat =>
@@ -102,8 +136,33 @@ export const LeftSidebar = ({
           topics={topics}
           selectedChatId={selectedChatId}
           onChatSelect={onChatSelect}
+          onChatDelete={openDeleteConfirm}
         />
       </div>
+      {pendingDeleteId && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg p-6 w-full max-w-sm shadow-lg">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Delete chat?</h3>
+            <p className="text-[var(--text-secondary)] text-sm mb-4">This action cannot be undone.</p>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={closeDeleteConfirm}
+                disabled={isDeleting}
+                className="px-3 py-2 rounded-md border border-[var(--border-color)] text-sm hover:bg-[var(--bg-tertiary)] disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                className="px-3 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-sm disabled:opacity-50"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

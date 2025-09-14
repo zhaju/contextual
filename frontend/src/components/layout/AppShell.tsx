@@ -20,6 +20,7 @@ interface AppShellProps {
   isSubmittingContext?: boolean;
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
+  onChatsUpdate?: (updater: (prev: Chat[]) => Chat[]) => void;
   onSendMessage: (message: string) => void;
   onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockIndex: number) => void;
@@ -59,6 +60,7 @@ export const AppShell = ({
   isSubmittingContext = false,
   onChatSelect,
   onNewChat,
+  onChatsUpdate,
   onSendMessage,
   onMemoryToggle,
   onBlockToggle,
@@ -131,6 +133,7 @@ export const AppShell = ({
           selectedChatId={selectedChatId}
           onChatSelect={onChatSelect}
           onNewChat={onNewChat}
+          onChatsUpdate={onChatsUpdate}
         />
 
         {/* Chat Area */}

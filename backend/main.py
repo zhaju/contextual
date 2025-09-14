@@ -25,6 +25,8 @@ claude_caller: Optional[ClaudeCaller] = None
 memory_updater: Optional[ChatMemoryUpdater] = None
 
 # In-memory storage (replace with database in production)
+# key: chat_id
+# value: Chat
 chats_db: Optional[Dict[str, Chat]] = None
 
 async def generate_chat_response(chat_id: str) -> StreamingResponse:
@@ -376,6 +378,18 @@ async def new_chat_context_set(request: SetChatContextRequest):
     
     # Use the extracted response generation function
     return await generate_chat_response(request.chat_id)
+
+
+@app.post("/chats/delete")
+async def delete_chat(request: DeleteChatRequest):
+    """
+    Delete a chat
+    """
+    if chats_db is None or request.chat_id not in chats_db:
+        raise HTTPException(status_code=404, detail="Chat not found")
+    del chats_db[request.chat_id]
+    return {"message": "Chat deleted successfully"}
+
 
 if __name__ == "__main__":
     import uvicorn
