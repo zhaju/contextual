@@ -26,16 +26,17 @@ export const Composer = ({
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea with fixed button height
+  // Auto-resize textarea and match button height
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${scrollHeight}px`;
       
-      // Set fixed button height to match max textarea height (128px = max-h-32)
+      // Set button height to match textarea height
       const sendButton = textareaRef.current.parentElement?.nextElementSibling as HTMLButtonElement;
       if (sendButton) {
-        sendButton.style.height = '44px'; // Fixed height matching min-h-[44px]
+        sendButton.style.height = `${scrollHeight}px`;
         sendButton.style.minHeight = '44px';
         sendButton.style.maxHeight = '128px'; // Match max-h-32 of textarea
       }
@@ -114,7 +115,7 @@ export const Composer = ({
         <button
           onClick={handleSend}
           disabled={!message.trim() || disabled}
-          className={`p-3 rounded-lg transition-colors flex items-center justify-center min-h-[44px] max-h-32 w-12 ${
+          className={`p-3 rounded-lg transition-colors flex items-center justify-center min-h-[44px] w-12 ${
             disabled || !message.trim()
               ? 'bg-[var(--disabled-bg)] text-[var(--disabled-text)] cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800'
