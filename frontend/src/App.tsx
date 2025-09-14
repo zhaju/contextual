@@ -34,7 +34,6 @@ function App() {
   // UI state for new chats
   const [isNewChat, setIsNewChat] = useState(false);
   const [contextSubmitted, setContextSubmitted] = useState(false);
-  const [firstMessageSent, setFirstMessageSent] = useState(false);
 
   // Load chats from backend on component mount
   useEffect(() => {
@@ -80,20 +79,10 @@ function App() {
     ));
   };
 
-  // Sidebar state based on current chat state
-  const getSidebarState = () => {
-    // Show sidebar if it's a new chat with first message sent but context not submitted
-    const shouldShowSidebar = isNewChat && firstMessageSent && !contextSubmitted;
-    
-    // For now, return empty memories array since context is handled differently
-    // TODO: Implement context extraction from backend chat data when needed for sidebar
-    const memories: any[] = [];
-    
-    return {
-      isOpen: shouldShowSidebar,
-      isSubmitting: false, // This will be managed by the sidebar component itself
-      memories: memories
-    };
+  // Determine if right sidebar should be open based on new chat state
+  const shouldShowRightSidebar = () => {
+    // Show sidebar if it's a new chat that hasn't submitted context yet
+    return isNewChat && !contextSubmitted;
   };
 
 
@@ -110,7 +99,6 @@ function App() {
     // Reset new chat state
     setIsNewChat(false);
     setContextSubmitted(false);
-    setFirstMessageSent(false);
 
     try {
       // Check if chat is already loaded with messages
@@ -141,7 +129,6 @@ function App() {
     setSelectedChatId("");
     setIsNewChat(true);
     setContextSubmitted(false);
-    setFirstMessageSent(false);
   };
 
   // Message sending with context recommendation and SSE streaming
@@ -161,7 +148,6 @@ function App() {
     
     // First message in new chat triggers context recommendation flow
     if (selectedChatId === "" || selectedChatId === null) {
-      setFirstMessageSent(true);
       try {
         // Call backend API to create new chat and get context recommendations
         console.log('Sending to backend:', { message });
@@ -333,90 +319,7 @@ function App() {
     }
   };
 
-  // Simplified memory handling functions (will be managed by sidebar component)
-  const handleMemoryToggle = (memoryId: string) => {
-    console.log('Memory toggle:', memoryId);
-    // Memory state will be managed by the sidebar component itself
-  };
 
-  const handleBlockToggle = (memoryId: string, blockIndex: number) => {
-    console.log('Block toggle:', memoryId, blockIndex);
-    // Block state will be managed by the sidebar component itself
-  };
-
-  const handleMemoryExpand = (memoryId: string) => {
-    console.log('Memory expand:', memoryId);
-    // Memory expansion will be managed by the sidebar component itself
-  };
-
-  // Skip context and proceed with empty context
-  const handleSkipContext = async () => {
-    console.log('Context skipped - proceeding with empty context');
-    
-    if (!selectedChatId) {
-      setError('No chat selected. Please try again.');
-      return;
-    }
-    
-    setError(null);
-    
-    try {
-      // Call set_context with empty context
-      const request = {
-        chat_id: selectedChatId,
-        required_context: [] // Empty context
-      };
-      console.log('Skipping context with empty context:', request);
-      
-      const stream = await chatController.setChatContext(request);
-      
-      // Set typing indicator since backend will generate response
-      setIsTyping(true);
-      
-      // Update the current chat to mark context as submitted
-      setAllChats(prev => prev.map(chat => 
-        chat.id === selectedChatId 
-          ? { 
-              ...chat, 
-              contextSubmitted: true,
-              isNewChat: false // No longer a new chat after context is submitted
-            }
-          : chat
-      ));
-      
-      // Parse SSE stream for assistant response
-      let assistantResponse = '';
-      await chatController.parseSSEStream(
-        stream,
-        (data: any) => {
-          if (data.content) {
-            assistantResponse += data.content;
-            // Update the assistant message in real-time
-            updateCurrentChatMessages(prev => {
-              const lastMessage = prev[prev.length - 1];
-              if (lastMessage && lastMessage.role === 'assistant') {
-                return [...prev.slice(0, -1), { ...lastMessage, content: assistantResponse }];
-              } else {
-                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', content: assistantResponse }];
-              }
-            });
-          }
-        },
-        () => {
-          // Context skipped and assistant response received successfully
-          setIsTyping(false);
-        },
-        (error: any) => {
-          console.error('Context skip error:', error);
-          setError('Failed to skip context. Please try again.');
-          setIsTyping(false);
-        }
-      );
-    } catch (error) {
-      console.error('Failed to skip context:', error);
-      setError('Failed to skip context. Please try again.');
-    }
-  };
 
   // Context submission after user selection
   const handleSubmitContext = async () => {
@@ -493,30 +396,8 @@ function App() {
 
   // Legacy handlers for compatibility (can be removed later)
 
-  const handleChatPin = (chatId: string) => {
-    console.log('Chat pinned:', chatId);
-    const chat = allChats.find((c: any) => c.id === chatId);
-    alert(`Chat pinned: ${chat?.title || 'Unknown'}. In a real app, this would pin the chat.`);
-  };
-
-  const handleChatPreview = (chatId: string) => {
-    console.log('Chat preview:', chatId);
-    const chat = allChats.find((c: any) => c.id === chatId);
-    alert(`Chat preview: ${chat?.title || 'Unknown'}. In a real app, this would show a preview modal.`);
-  };
-
-  const handleChatExclude = (chatId: string) => {
-    console.log('Chat excluded:', chatId);
-    alert(`Chat excluded from suggestions. In a real app, this would update the backend.`);
-  };
-
-  const handleContextRemove = (id: string) => {
-    console.log('Context removed:', id);
-  };
 
 
-  // Get sidebar state based on current messages
-  const sidebarState = getSidebarState();
 
   // Show loading state
   if (isLoading) {
@@ -552,27 +433,16 @@ function App() {
     <AppShell
       chats={allChats}
       messages={getCurrentMessages()}
-      memories={sidebarState.memories}
       selectedChatId={selectedChatId}
       isTyping={isTyping} 
       isNewChat={isNewChat}
       contextSubmitted={contextSubmitted}
-      firstMessageSent={firstMessageSent}
-      isRightSidebarOpen={sidebarState.isOpen}
-      isSubmittingContext={sidebarState.isSubmitting}
+      isRightSidebarOpen={shouldShowRightSidebar()}
       onChatSelect={handleChatSelect}
       onNewChat={handleNewChat}
       onChatsUpdate={(updater) => setAllChats(prev => updater(prev))}
       onSendMessage={handleSendMessage}
-      onMemoryToggle={handleMemoryToggle}
-      onBlockToggle={handleBlockToggle}
-      onMemoryExpand={handleMemoryExpand}
       onSubmitContext={handleSubmitContext}
-      onSkipContext={handleSkipContext}
-      onChatPin={handleChatPin}
-      onChatPreview={handleChatPreview}
-      onChatExclude={handleChatExclude}
-      onContextRemove={handleContextRemove}
     />
   );
 }

@@ -1,6 +1,6 @@
 // Utility functions to convert between frontend and backend types
-import type { BackendChat, BackendMemory, BackendChatMessage } from '../controllers/types';
-import type { Chat, MemoryWithUI, BlockWithUI, Message, InternalMessage } from '../types';
+import type { BackendChat, BackendChatMessage } from '../controllers/types';
+import type { Chat, Message, InternalMessage } from '../types';
 
 /**
  * Convert backend chat to frontend chat format
@@ -29,27 +29,6 @@ export function convertBackendChatToFrontend(backendChat: BackendChat): Chat {
   };
 }
 
-/**
- * Convert backend memory to frontend memory format
- */
-export function convertBackendMemoryToFrontend(backendMemory: BackendMemory, memoryId: string, chatTitle?: string): MemoryWithUI {
-  const blocks: BlockWithUI[] = backendMemory.blocks.map((block) => ({
-    topic: block.topic,
-    description: block.description,
-    selected: true // Auto-select all blocks by default
-  }));
-
-  return {
-    id: memoryId,
-    summary: backendMemory.summary_string || 'Memory',
-    title: chatTitle || backendMemory.summary_string || 'Unknown Chat',
-    blocks,
-    selected: true, // Auto-select memory by default
-    isLocked: false,
-    isExpanded: false,
-    chatReferences: []
-  };
-}
 
 /**
  * Convert backend chat message to frontend message format (only user/assistant messages)
@@ -110,19 +89,4 @@ export function extractContextMessagesFromChat(backendChat: BackendChat): Intern
     .map((msg, index) => convertBackendMessageToInternal(msg, `ctx-${backendChat.id}-${index}`));
 }
 
-/**
- * Extract memory blocks from backend chat for context
- */
-export function extractMemoryBlocksFromChat(backendChat: BackendChat): MemoryWithUI[] {
-  if (!backendChat.current_memory || !backendChat.current_memory.blocks.length) {
-    return [];
-  }
-
-  const memory = convertBackendMemoryToFrontend(backendChat.current_memory, `mem-${backendChat.id}`, backendChat.title);
-  
-  // Set the chatReferences to include the source chat ID
-  memory.chatReferences = [backendChat.id];
-  
-  return [memory];
-}
 

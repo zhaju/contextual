@@ -4,32 +4,21 @@ import { ChatView } from '../chat/ChatView';
 import { Composer } from '../input/Composer';
 import { RightSidebar } from './RightSidebar';
 import { ThemeToggle } from '../ui/ThemeToggle';
-import type { Chat, Message, MemoryWithUI } from '../../types';
+import type { Chat, Message } from '../../types';
 
 interface AppShellProps {
   chats: Chat[];
   messages: Message[];
-  memories: MemoryWithUI[];
   selectedChatId?: string | null;
   isTyping?: boolean;
   isNewChat?: boolean;
   contextSubmitted?: boolean;
-  firstMessageSent?: boolean;
   isRightSidebarOpen?: boolean;
-  isSubmittingContext?: boolean;
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
   onChatsUpdate?: (updater: (prev: Chat[]) => Chat[]) => void;
   onSendMessage: (message: string) => void;
-  onMemoryToggle: (memoryId: string) => void;
-  onBlockToggle: (memoryId: string, blockIndex: number) => void;
-  onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
-  onSkipContext?: () => void;
-  onChatPin: (chatId: string) => void;
-  onChatPreview: (chatId: string) => void;
-  onChatExclude: (chatId: string) => void;
-  onContextRemove: (id: string) => void;
 }
 
 /**
@@ -46,27 +35,16 @@ interface AppShellProps {
 export const AppShell = ({
   chats,
   messages,
-  memories,
   selectedChatId,
   isTyping = false,
   isNewChat = false,
   contextSubmitted = false,
-  firstMessageSent = false,
-  isRightSidebarOpen = true,
-  isSubmittingContext = false,
+  isRightSidebarOpen = false,
   onChatSelect,
   onNewChat,
   onChatsUpdate,
   onSendMessage,
-  onMemoryToggle,
-  onBlockToggle,
-  onMemoryExpand,
   onSubmitContext,
-  onSkipContext,
-  onChatPin: _onChatPin,
-  onChatPreview: _onChatPreview,
-  onChatExclude: _onChatExclude,
-  onContextRemove,
 }: AppShellProps) => {
   const [isDark, setIsDark] = useState(false);
 
@@ -121,29 +99,19 @@ export const AppShell = ({
           />
           <Composer
             contextPills={[]}
-            onContextRemove={onContextRemove}
+            onContextRemove={() => {}}
             onSend={onSendMessage}
-            disabled={isNewChat && firstMessageSent && !contextSubmitted}
-            disabledMessage="Please select and submit your context before sending more messages"
+            disabled={isNewChat && !contextSubmitted}
+            disabledMessage="Please submit your context before sending more messages"
           />
         </div>
 
         {/* Right Sidebar - Conditionally visible based on toggle state */}
         {isRightSidebarOpen && (
           <RightSidebar
-            memories={memories}
-            onMemoryToggle={onMemoryToggle}
-            onBlockToggle={onBlockToggle}
-            onMemoryExpand={onMemoryExpand}
             onSubmitContext={onSubmitContext}
-            onSkipContext={onSkipContext}
-            onChatPin={_onChatPin}
-            onChatPreview={_onChatPreview}
-            onChatExclude={_onChatExclude}
             isNewChat={isNewChat}
             contextSubmitted={contextSubmitted}
-            firstMessageSent={firstMessageSent}
-            isSubmittingContext={isSubmittingContext}
           />
         )}
       </div>

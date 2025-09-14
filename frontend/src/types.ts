@@ -25,6 +25,7 @@ export type InternalMessage =
       content: ContextChat[];
     };
 
+// Backend types for context processing
 export interface Block {
   topic: string;
   description: string;
@@ -33,24 +34,6 @@ export interface Block {
 export interface Memory {
   summary_string: string;
   blocks: Block[];
-}
-
-// Legacy interfaces for UI state management
-export interface BlockWithUI {
-  topic: string;
-  description: string;
-  selected: boolean;
-}
-
-export interface MemoryWithUI {
-  id: string;
-  summary: string;
-  title: string; // Title of the chat this memory is associated with
-  blocks: BlockWithUI[];
-  selected: boolean;
-  isLocked: boolean; // true when context is submitted
-  isExpanded: boolean; // for collapsible UI
-  chatReferences: string[]; // Array of chat IDs that reference this memory
 }
 
 export interface ContextChat {
