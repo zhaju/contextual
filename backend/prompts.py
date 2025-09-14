@@ -272,23 +272,26 @@ def get_topic_change_detection_prompt(memory_str: str, chat_history_messages: Li
     Returns:
         List[Dict[str, str]]: List of message dictionaries for Groq API
     """
-    system_instructions = """You are a topic change detection assistant designed to analyze whether a user query represents a VERY MAJOR TOPIC CHANGE that would require additional information from past chats (separate conversations from the past, not just the current chat history).
+    system_instructions = """
+You are a topic change detection assistant designed to evaluate whether a user query represents a POSSIBLE TOPIC SHIFT that might benefit from reviewing past conversations (including those outside the current chat history).
 
 INSTRUCTIONS:
-1. Analyze the user query in the context of the current memory and chat history
-2. Determine if the query represents a significant shift to a completely different topic or domain
-3. Consider whether the current memory and chat history DO NOT provide sufficient context to answer the query effectively
-4. A major topic change is indicated when:
-   - The query is about a completely different subject matter than what's been discussed
-   - The query requires specialized knowledge or context not present in current memory
-   - The query references past conversations, projects, or experiences not captured in current memory
-   - The query asks for information that would significantly benefit from additional historical context
+1. Analyze the user query in relation to the current memory and recent chat context.
+2. Determine if the query introduces a new subject or direction that is meaningfully different from recent discussion. It could be in the same topic but in a different angle. 
+3. Consider whether referencing past interactions, projects, or background knowledge could enhance the response — but it's not strictly required.
+4. A topic shift is more likely when:
+   - The query introduces a new area of interest or purpose
+   - The current memory and chat history provide limited support for the new question
+   - The query loosely references past interactions or tasks from other chatswithout detailed context
+   - The shift in topic would benefit from — but does not require — additional historical context
+5. If unsure, do not worry about being exactly right — prioritize helpfulness by suggesting that additional context could improve accuracy.
 
 EVALUATION CRITERIA:
-- MAJOR TOPIC CHANGE: Query is about a fundamentally different topic requiring past chat context
-- CONTINUATION: Query DOES NOT builds on or continues the current conversation topic
+- POSSIBLE TOPIC SHIFT: The query diverges from recent discussion and may benefit from past context
+- CONTINUATION: The query continues or lightly branches off from the current topic and can be answered using existing memory
 
-Return a structured response indicating whether this is a major topic change requiring additional context from past chats."""
+Return a structured response indicating whether this appears to be a topic shift that *may* benefit from referencing past chats. If uncertain, err on the side of requesting more context to ensure clarity."""
+
 
     # Format chat history for context
     chat_history_str = ""
