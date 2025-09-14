@@ -97,29 +97,6 @@ export const AppShell = ({
           </h1>
         </div>
         <div className="flex items-center space-x-4">
-          <button
-            onClick={onNewChat}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg 
-                       transition-colors text-sm font-medium"
-          >
-            New Chat
-          </button>
-          {onToggleRightSidebar && (
-            <button
-              onClick={onToggleRightSidebar}
-              className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 
-                         hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-              title={isRightSidebarOpen ? "Hide sidebar" : "Show sidebar"}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isRightSidebarOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                )}
-              </svg>
-            </button>
-          )}
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
         </div>
       </header>
@@ -170,6 +147,27 @@ export const AppShell = ({
           />
         )}
       </div>
+
+      {/* Floating Right Sidebar Toggle Button */}
+      {onToggleRightSidebar && (
+        <button
+          onClick={onToggleRightSidebar}
+          className="fixed right-4 top-1/2 transform -translate-y-1/2 z-20 
+                     p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 
+                     text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 
+                     hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg shadow-lg transition-all duration-200
+                     hover:shadow-xl"
+          title={isRightSidebarOpen ? "Hide sidebar" : "Show sidebar"}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {isRightSidebarOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            )}
+          </svg>
+        </button>
+      )}
     </div>
   );
 };
