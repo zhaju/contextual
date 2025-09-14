@@ -40,6 +40,14 @@ export const ChatContext = ({ selectedChat, memories }: ChatContextProps) => {
     selectedChat.memoryIds?.includes(memory.id)
   );
 
+  // Debug logging
+  console.log('ChatContext Debug:', {
+    selectedChatId: selectedChat.id,
+    selectedChatMemoryIds: selectedChat.memoryIds,
+    availableMemories: memories.map(m => ({ id: m.id, title: m.title })),
+    filteredChatMemories: chatMemories.map(m => ({ id: m.id, title: m.title }))
+  });
+
   // If no context is associated with this chat
   if (chatMemories.length === 0) {
     return (

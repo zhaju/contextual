@@ -53,6 +53,23 @@ function App() {
           allMemories.push(...chatMemories);
         });
         setMemories(allMemories);
+        
+        // Debug logging
+        console.log('App Debug - Loaded Data:', {
+          backendChats: backendChats.map(c => ({ 
+            id: c.id, 
+            title: c.title, 
+            hasCurrentMemory: !!c.current_memory,
+            memoryBlocksCount: c.current_memory?.blocks?.length || 0
+          })),
+          frontendChats: frontendChats.map(c => ({ 
+            id: c.id, 
+            title: c.title, 
+            memoryIds: c.memoryIds,
+            contextSubmitted: c.contextSubmitted
+          })),
+          memories: allMemories.map(m => ({ id: m.id, title: m.title, blocksCount: m.blocks.length }))
+        });
       } catch (err) {
         console.error('Failed to load chats:', err);
         setError('Failed to load chats. Please check if the backend is running.');
