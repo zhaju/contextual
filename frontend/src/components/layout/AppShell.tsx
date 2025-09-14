@@ -33,6 +33,7 @@ interface AppShellProps {
   onChatExclude: (chatId: string) => void;
   onContextRemove: (id: string) => void;
   onToggleRightSidebar?: () => void;
+  onForkMessage?: (messageId: string) => void;
 }
 
 /**
@@ -73,6 +74,7 @@ export const AppShell = ({
   onChatExclude: _onChatExclude,
   onContextRemove,
   onToggleRightSidebar,
+  onForkMessage,
 }: AppShellProps) => {
   const [isDark, setIsDark] = useState(false);
 
@@ -118,6 +120,7 @@ export const AppShell = ({
           <ChatView
             messages={messages}
             isTyping={isTyping}
+            onForkMessage={onForkMessage}
           />
           <Composer
             contextPills={[]}

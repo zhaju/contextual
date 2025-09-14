@@ -6,6 +6,7 @@ import type { Message } from '../../types';
 interface ChatViewProps {
   messages: Message[];
   isTyping?: boolean;
+  onForkMessage?: (messageId: string) => void;
 }
 
 /**
@@ -21,7 +22,7 @@ interface ChatViewProps {
  * - Add message status indicators (sent, delivered, read)
  * - Implement message search and filtering
  */
-export const ChatView = ({ messages, isTyping = false }: ChatViewProps) => {
+export const ChatView = ({ messages, isTyping = false, onForkMessage }: ChatViewProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const rotatingTexts = [
@@ -49,7 +50,7 @@ export const ChatView = ({ messages, isTyping = false }: ChatViewProps) => {
             <p className="text-4xl font-medium text-[var(--text-primary)]">{randomText}</p>
           </div>
         ) : (
-          <MessageList messages={messages} />
+          <MessageList messages={messages} onForkMessage={onForkMessage} />
         )}
         <TypingIndicator active={isTyping} />
         <div ref={messagesEndRef} />

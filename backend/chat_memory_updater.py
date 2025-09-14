@@ -4,7 +4,8 @@ Singleton class for safely updating chat memory with asyncio task management
 """
 import asyncio
 from typing import Dict, List, Optional, Any
-from custom_types import Chat, ChatMessage, Memory, Block
+from datetime import datetime
+from custom_types import Chat, ChatMessage, Memory, Block, MemorySnapshot
 from groq_caller import GroqCaller
 from prompts import get_memory_summarization_prompt, get_chat_consolidation_prompt
 
@@ -170,10 +171,26 @@ class ChatMemoryUpdater:
                 groq_caller=self._groq_caller
             )
             
-            # Update the chat in the database
+            # Find the assistant message from the provided messages
+            assistant_message = None
+            for msg in messages:
+                if msg.role == "assistant":
+                    assistant_message = msg
+                    break
+            
+            # Create new memory snapshot
+            snapshot = MemorySnapshot(
+                memory=new_memory,
+                associated_assistant_message_id=assistant_message.id if assistant_message else None,
+                timestamp=datetime.now(),
+                sequence_number=len(chat.memory_snapshots)
+            )
+            chat.memory_snapshots.append(snapshot)
+            
+            # Update legacy current_memory for backward compatibility
             chat.current_memory = new_memory
             
-            print(f"✅ Memory updated for chat {chat_id}")
+            print(f"✅ Memory snapshot created for chat {chat_id}")
                 
         except Exception as e:
             print(f"❌ Error in memory update for chat {chat_id}: {e}")

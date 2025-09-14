@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Union, Literal
 from datetime import datetime
+import uuid
 
 
 # Output schema for root endpoint
@@ -35,16 +36,83 @@ class Memory(BaseModel):
         
         return result.strip()
 
+class MemorySnapshot(BaseModel):
+    memory: Memory = Field(description="The memory state at this point")
+    associated_assistant_message_id: Optional[str] = Field(default=None, description="ID of the assistant message this memory is associated with")
+    timestamp: datetime = Field(description="When this memory snapshot was created")
+    sequence_number: int = Field(description="Order of this memory in the chat's history")
+
 class ChatMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="Unique identifier for the message")
     role: Union[Literal["user"], Literal["assistant"]] = Field(description="The role of the message sender - either 'user' or 'assistant'")
     content: str = Field(description="The actual message content or text")
     timestamp: datetime = Field(description="When the message was created or sent")
 
 class Chat(BaseModel):
     id: str = Field(description="Unique identifier for the chat session")
-    current_memory: Memory = Field(description="The current memory state containing distilled memories and block summaries")
+    # New structure for fork support
+    memory_snapshots: List[MemorySnapshot] = Field(default_factory=list, description="Historical memory states with message associations")
+    # Legacy field for backward compatibility
+    current_memory: Optional[Memory] = Field(default=None, description="Legacy field - use memory_snapshots instead")
     title: str = Field(description="Human-readable title for the chat session")
     chat_history: List[ChatMessage] = Field(description="Complete history of messages in this chat")
+    
+    @property
+    def current_memory_property(self) -> Memory:
+        """Get the most recent memory state for backward compatibility"""
+        if self.memory_snapshots:
+            return self.memory_snapshots[-1].memory
+        elif self.current_memory is not None:
+            return self.current_memory
+        else:
+            return Memory()
+    
+    def is_forkable_at_message(self, assistant_message_id: str) -> bool:
+        """
+        Check if a chat can be forked at the specified assistant message.
+        Invariant: forkability requires equal number of assistant messages and memory snapshots.
+        """
+        # Count assistant messages up to and including the specified message
+        assistant_count = 0
+        target_message_found = False
+        
+        for message in self.chat_history:
+            if message.role == "assistant":
+                assistant_count += 1
+            if message.id == assistant_message_id:
+                target_message_found = True
+                break
+        
+        if not target_message_found:
+            return False
+        
+        # Count memory snapshots (should equal assistant message count)
+        memory_count = len(self.memory_snapshots)
+        
+        return assistant_count == memory_count
+    
+    def get_prefix_up_to_message(self, assistant_message_id: str) -> tuple[List[ChatMessage], List[MemorySnapshot]]:
+        """
+        Get the prefix of messages and memory snapshots up to the specified assistant message.
+        Returns (messages_prefix, memory_prefix)
+        """
+        messages_prefix = []
+        target_found = False
+        
+        for message in self.chat_history:
+            messages_prefix.append(message)
+            if message.id == assistant_message_id:
+                target_found = True
+                break
+        
+        if not target_found:
+            raise ValueError(f"Assistant message {assistant_message_id} not found in chat history")
+        
+        # Get corresponding memory snapshots (should match assistant message count)
+        assistant_count = sum(1 for msg in messages_prefix if msg.role == "assistant")
+        memory_prefix = self.memory_snapshots[:assistant_count]
+        
+        return messages_prefix, memory_prefix
 
 
 # Define request schemas
@@ -86,4 +154,13 @@ class SetChatContextRequest(BaseModel):
 # Response model for chat selection
 class ChatSelectionResponse(BaseModel):
     selected_indices: List[int] = Field(description="1-indexed list of selected chat indices, MUST BE BETWEEN 1 AND THE NUMBER OF CHATS, COMMA SEPARATED")
+
+# Fork-related types
+class ForkRequest(BaseModel):
+    source_chat_id: str = Field(description="ID of the chat to fork from")
+    assistant_message_id: str = Field(description="ID of the assistant message to fork from")
+
+class ForkResponse(BaseModel):
+    new_chat_id: str = Field(description="ID of the newly created forked chat")
+    message: str = Field(description="Confirmation message")
 

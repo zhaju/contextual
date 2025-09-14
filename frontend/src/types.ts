@@ -84,6 +84,7 @@ export interface ChatListProps {
 
 export interface MessageListProps {
   messages: Message[];
+  onForkMessage?: (messageId: string) => void;
 }
 
 export interface ComposerProps {

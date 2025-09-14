@@ -44,8 +44,8 @@ async def generate_chat_response(chat_id: str) -> StreamingResponse:
     
     chat = chats_db[chat_id]
     
-    # Get memory as string for context
-    memory_str = chat.current_memory.to_llm_str()
+    # Get memory as string for context (use new property for backward compatibility)
+    memory_str = chat.current_memory_property.to_llm_str()
     
     # Get last 6 chat messages (truncated)
     recent_messages = chat.chat_history[-6:] if len(chat.chat_history) > 6 else chat.chat_history
@@ -116,20 +116,41 @@ async def generate_chat_response(chat_id: str) -> StreamingResponse:
 """
 chat_db format:
 """
+# Create sample memory
+sample_memory = Memory(
+    summary_string="This is a sample memory summary.",
+    blocks=[
+        Block(topic="sample_topic", description="This is a sample block description.")
+    ]
+)
+
+# Create sample chat messages first
+sample_user_message = ChatMessage(
+    role="user", 
+    content="Hello, how are you?", 
+    timestamp=datetime.now()
+)
+sample_assistant_message = ChatMessage(
+    role="assistant", 
+    content="I'm good, thank you!", 
+    timestamp=datetime.now()
+)
+
+# Create sample memory snapshot with proper association
+sample_snapshot = MemorySnapshot(
+    memory=sample_memory,
+    associated_assistant_message_id=sample_assistant_message.id,
+    timestamp=datetime.now(),
+    sequence_number=0
+)
+
 sample_chats_db = {
     "sample_chat": Chat(
         id="sample_chat",
-        current_memory=Memory(
-            summary_string="This is a sample memory summary.",
-            blocks=[
-                Block(topic="sample_topic", description="This is a sample block description.")
-            ]
-        ),
+        memory_snapshots=[sample_snapshot],
+        current_memory=sample_memory,  # Legacy field
         title="Sample Chat",
-        chat_history=[
-            ChatMessage(role="user", content="Hello, how are you?", timestamp=datetime.now()),
-            ChatMessage(role="assistant", content="I'm good, thank you!", timestamp=datetime.now())
-        ]
+        chat_history=[sample_user_message, sample_assistant_message]
     )
 }
 
@@ -246,7 +267,7 @@ async def send_message(request: SendMessageToChatRequest):
         try:
             # Check if context is required
             context_required = await is_context_required(
-                memory=chats_db[request.chat_id].current_memory,
+                memory=chats_db[request.chat_id].current_memory_property,
                 chat_history_messages=chats_db[request.chat_id].chat_history,
                 user_query=request.message,
                 groq_caller=groq_caller
@@ -338,10 +359,11 @@ async def new_chat(request: SendMessageRequest):
     # Generate title using AI
     title = await create_chat_title(chat_history, groq_caller)
     
-    # Create new chat
+    # Create new chat with empty memory snapshots (will be populated when first assistant message is created)
     new_chat = Chat(
         id=chat_id,
-        current_memory=initial_memory,
+        memory_snapshots=[],  # Start with empty snapshots
+        current_memory=initial_memory,  # Legacy field for backward compatibility
         title=title,
         chat_history=chat_history
     )
@@ -387,6 +409,54 @@ async def delete_chat(request: DeleteChatRequest):
         raise HTTPException(status_code=404, detail="Chat not found")
     del chats_db[request.chat_id]
     return {"message": "Chat deleted successfully"}
+
+@app.post("/chats/fork", response_model=ForkResponse)
+async def fork_chat(request: ForkRequest):
+    """
+    Fork a chat at a specific assistant message.
+    Creates a new chat with the same history and memory up to the specified assistant message.
+    The user can then continue the conversation in the frontend.
+    """
+    if chats_db is None or request.source_chat_id not in chats_db:
+        raise HTTPException(status_code=404, detail="Source chat not found")
+    
+    source_chat = chats_db[request.source_chat_id]
+    
+    # Validate forkability
+    if not source_chat.is_forkable_at_message(request.assistant_message_id):
+        raise HTTPException(
+            status_code=400, 
+            detail="Chat cannot be forked at this message. The number of assistant messages must equal the number of memory snapshots."
+        )
+    
+    try:
+        # Get the prefix of messages and memory snapshots up to the target assistant message
+        messages_prefix, memory_prefix = source_chat.get_prefix_up_to_message(request.assistant_message_id)
+        
+        # Create new chat with prefix
+        new_chat_id = str(uuid.uuid4())
+        
+        # Create new chat with the prefix (no new message added - user will continue in frontend)
+        new_chat = Chat(
+            id=new_chat_id,
+            memory_snapshots=memory_prefix,
+            current_memory=memory_prefix[-1].memory if memory_prefix else Memory(),  # Legacy field
+            title=f"Fork of {source_chat.title}",
+            chat_history=messages_prefix
+        )
+        
+        # Store the new chat
+        chats_db[new_chat_id] = new_chat
+        
+        return ForkResponse(
+            new_chat_id=new_chat_id, 
+            message=f"Chat forked successfully. New chat created with {len(messages_prefix)} messages and {len(memory_prefix)} memory snapshots."
+        )
+        
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fork chat: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -6,7 +6,9 @@ import type {
   SetChatContextRequest,
   StreamedChatResponse,
   DeleteChatRequest,
-  DeleteChatResponse
+  DeleteChatResponse,
+  ForkRequest,
+  ForkResponse
 } from './types';
 import { API_BASE_URL } from './types';
 
@@ -179,6 +181,42 @@ export class ChatController {
       return data as DeleteChatResponse;
     } catch (error) {
       console.error('❌ Error deleting chat:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Fork a chat at a specific assistant message
+   */
+  async forkChat(request: ForkRequest): Promise<ForkResponse> {
+    try {
+      console.log('🔍 API Call: POST /chats/fork');
+      console.log('📤 Request body:', request);
+      const response = await fetch(`${this.baseUrl}/chats/fork`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
+
+      console.log('📡 Response status:', response.status, response.statusText);
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Source chat not found');
+        }
+        if (response.status === 400) {
+          const errorData = await response.json().catch(() => ({ detail: 'Bad request' }));
+          throw new Error(errorData.detail || 'Cannot fork chat at this message');
+        }
+        throw new Error(`Failed to fork chat: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('📊 Response data:', data);
+      return data as ForkResponse;
+    } catch (error) {
+      console.error('❌ Error forking chat:', error);
       throw error;
     }
   }

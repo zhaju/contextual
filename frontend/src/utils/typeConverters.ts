@@ -67,6 +67,7 @@ export function convertBackendMessageToFrontend(backendMessage: BackendChatMessa
  */
 export function convertFrontendMessagesToBackend(messages: Message[]): BackendChatMessage[] {
   return messages.map(message => ({
+    id: message.id,
     role: message.role,
     content: message.text,
     timestamp: new Date().toISOString()

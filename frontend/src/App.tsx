@@ -762,6 +762,52 @@ function App() {
     console.log('Context removed:', id);
   };
 
+  const handleForkMessage = async (messageId: string) => {
+    if (!selectedChatId) {
+      console.error('No chat selected for forking');
+      return;
+    }
+
+    try {
+      console.log('Forking chat from message:', messageId);
+      
+      // Call the fork API
+      const forkResponse = await chatController.forkChat({
+        source_chat_id: selectedChatId,
+        assistant_message_id: messageId
+      });
+
+      console.log('Chat forked successfully:', forkResponse);
+      
+      // Reload all chats to include the new forked chat
+      const backendChats = await chatController.getChats();
+      const frontendChats = backendChats.map(convertBackendChatToFrontend);
+      setAllChats(frontendChats);
+      
+      // Navigate to the new forked chat
+      setSelectedChatId(forkResponse.new_chat_id);
+      
+      // Load the forked chat's messages
+      const forkedChat = await chatController.getChat(forkResponse.new_chat_id);
+      const frontendMessages = forkedChat.chat_history.map(msg => 
+        convertBackendMessageToFrontend(msg, msg.id)
+      );
+      setCurrentMessages(frontendMessages);
+      
+      // Extract memories for the new chat
+      const chatMemories = extractMemoryBlocksFromChat(forkedChat);
+      setMemories(prev => {
+        // Remove any existing memories for this chat and add new ones
+        const filteredMemories = prev.filter(m => !m.chatReferences.includes(forkResponse.new_chat_id));
+        return [...filteredMemories, ...chatMemories];
+      });
+      
+    } catch (error) {
+      console.error('Failed to fork chat:', error);
+      setError(error instanceof Error ? error.message : 'Failed to fork chat');
+    }
+  };
+
   const toggleRightSidebar = () => {
     setIsRightSidebarOpen(prev => !prev);
   };
@@ -836,6 +882,7 @@ function App() {
       onChatExclude={handleChatExclude}
       onContextRemove={handleContextRemove}
       onToggleRightSidebar={toggleRightSidebar}
+      onForkMessage={handleForkMessage}
     />
   );
 }

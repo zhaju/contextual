@@ -1,7 +1,8 @@
 // API types that match the backend schema
 export interface BackendChat {
   id: string;
-  current_memory: BackendMemory;
+  memory_snapshots: BackendMemorySnapshot[];
+  current_memory: BackendMemory; // Legacy field for backward compatibility
   title: string;
   chat_history: BackendChatMessage[];
 }
@@ -11,12 +12,20 @@ export interface BackendMemory {
   blocks: BackendBlock[];
 }
 
+export interface BackendMemorySnapshot {
+  memory: BackendMemory;
+  associated_assistant_message_id: string | null;
+  timestamp: string; // ISO string
+  sequence_number: number;
+}
+
 export interface BackendBlock {
   topic: string;
   description: string;
 }
 
 export interface BackendChatMessage {
+  id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: string; // ISO string
@@ -55,5 +64,16 @@ export interface DeleteChatRequest {
 }
 
 export interface DeleteChatResponse {
+  message: string;
+}
+
+// Fork-related types
+export interface ForkRequest {
+  source_chat_id: string;
+  assistant_message_id: string;
+}
+
+export interface ForkResponse {
+  new_chat_id: string;
   message: string;
 }
