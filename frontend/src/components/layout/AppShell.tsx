@@ -132,6 +132,8 @@ export const AppShell = ({
         {isRightSidebarOpen && (
           <RightSidebar
             memories={memories}
+            chats={chats}
+            selectedChatId={selectedChatId || null}
             onMemoryToggle={onMemoryToggle}
             onBlockToggle={onBlockToggle}
             onMemoryExpand={onMemoryExpand}

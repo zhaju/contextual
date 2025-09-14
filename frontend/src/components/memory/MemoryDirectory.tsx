@@ -1,4 +1,5 @@
 import type { MemoryDirectoryProps } from '../../types';
+import { useState, useEffect } from 'react';
 
 /**
  * MemoryDirectory Component
@@ -27,6 +28,27 @@ export const MemoryDirectory = ({
   firstMessageSent,
   isSubmittingContext = false
 }: MemoryDirectoryProps) => {
+  const [isDark, setIsDark] = useState(false);
+
+  // Check if we're in dark mode
+  useEffect(() => {
+    const checkTheme = () => {
+      const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+      setIsDark(isDarkTheme);
+    };
+
+    // Check initially
+    checkTheme();
+
+    // Watch for theme changes
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleBlockToggle = (memoryId: string, blockIndex: number) => {
     if (memories.find(m => m.id === memoryId)?.isLocked) return;
@@ -196,12 +218,16 @@ export const MemoryDirectory = ({
                           )}
                         </span>
                       </label>
-                      <div className="flex-1 min-w-0">
+                      <div className={`flex-1 min-w-0 rounded p-2 border ${
+                        isDark 
+                          ? 'bg-blue-900/20 border-blue-800' 
+                          : 'bg-gray-200 border-gray-300'
+                      }`}>
                         <div className="flex items-center justify-between mb-1">
                           <span className={`text-sm font-medium ${
                             isDisabled || memory.isLocked 
-                              ? 'text-[var(--text-muted)]' 
-                              : 'text-[var(--text-primary)]'
+                              ? (isDark ? 'text-[var(--text-muted)]' : 'text-gray-400')
+                              : (isDark ? 'text-blue-200' : 'text-black')
                           }`}>
                             {block.topic}
                           </span>
@@ -211,8 +237,8 @@ export const MemoryDirectory = ({
                         </div>
                         <p className={`text-xs leading-relaxed ${
                           isDisabled || memory.isLocked 
-                            ? 'text-[var(--text-muted)]' 
-                            : 'text-[var(--text-secondary)]'
+                            ? (isDark ? 'text-[var(--text-muted)]' : 'text-gray-400')
+                            : (isDark ? 'text-[var(--text-secondary)]' : 'text-gray-700')
                         }`}>
                           {block.description.length > 52 ? `${block.description.substring(0, 50)}...` : block.description}
                         </p>

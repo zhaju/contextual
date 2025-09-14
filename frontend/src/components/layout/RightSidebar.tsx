@@ -1,8 +1,11 @@
 import { MemoryDirectory } from '../memory/MemoryDirectory';
-import type { Memory } from '../../types';
+import { ChatContext } from '../memory/ChatContext';
+import type { Memory, Chat } from '../../types';
 
 interface RightSidebarProps {
   memories: Memory[];
+  chats: Chat[];
+  selectedChatId: string | null;
   onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
@@ -35,6 +38,8 @@ interface RightSidebarProps {
  */
 export const RightSidebar = ({
   memories,
+  chats,
+  selectedChatId,
   onMemoryToggle,
   onBlockToggle,
   onMemoryExpand,
@@ -48,22 +53,36 @@ export const RightSidebar = ({
   firstMessageSent,
   isSubmittingContext = false,
 }: RightSidebarProps) => {
+  // Find the selected chat
+  const selectedChat = selectedChatId ? chats.find(chat => chat.id === selectedChatId) : null;
+  
+  // Determine what to show: memory directory for new chats, chat context for existing chats
+  const showMemoryDirectory = isNewChat || !selectedChat;
+  
   return (
   <div className="w-80 bg-[var(--bg-secondary)] border-l border-[var(--border-color)] flex flex-col h-full min-h-0">
-      <div className="flex-1 overflow-y-auto min-h-0 p-4">
-        {/* Show memory directory for context selection */}
-        <MemoryDirectory
-          memories={memories}
-          onMemoryToggle={onMemoryToggle}
-          onBlockToggle={onBlockToggle}
-          onMemoryExpand={onMemoryExpand}
-          onSubmitContext={onSubmitContext}
-          onSkipContext={onSkipContext}
-          isNewChat={isNewChat}
-          contextSubmitted={contextSubmitted}
-          firstMessageSent={firstMessageSent}
-          isSubmittingContext={isSubmittingContext}
-        />
+      <div className="flex-1 overflow-y-auto min-h-0">
+        {showMemoryDirectory ? (
+          /* Show memory directory for context selection in new chats */
+          <MemoryDirectory
+            memories={memories}
+            onMemoryToggle={onMemoryToggle}
+            onBlockToggle={onBlockToggle}
+            onMemoryExpand={onMemoryExpand}
+            onSubmitContext={onSubmitContext}
+            onSkipContext={onSkipContext}
+            isNewChat={isNewChat}
+            contextSubmitted={contextSubmitted}
+            firstMessageSent={firstMessageSent}
+            isSubmittingContext={isSubmittingContext}
+          />
+        ) : (
+          /* Show chat context for existing/active chats */
+          <ChatContext
+            selectedChat={selectedChat!}
+            memories={memories}
+          />
+        )}
       </div>
     </div>
   );

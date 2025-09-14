@@ -9,6 +9,10 @@ export function convertBackendChatToFrontend(backendChat: BackendChat): Chat {
   const lastMessage = backendChat.chat_history[backendChat.chat_history.length - 1];
   const lastMessageText = lastMessage ? lastMessage.content : '';
   
+  // Check if this chat has context/memory associated with it
+  const hasMemory = backendChat.current_memory && backendChat.current_memory.blocks.length > 0;
+  const memoryIds = hasMemory ? [`mem-${backendChat.id}`] : [];
+  
   return {
     id: backendChat.id,
     title: backendChat.title,
@@ -16,9 +20,9 @@ export function convertBackendChatToFrontend(backendChat: BackendChat): Chat {
     updatedAt: lastMessage ? new Date(lastMessage.timestamp).toLocaleTimeString() : 'Now',
     topicId: 't1', // Default topic - could be enhanced to extract from memory
     starred: false, // Default value
-    memoryIds: [], // Will be populated from memory blocks
+    memoryIds: memoryIds, // Populated with memory ID if chat has context
     isNewChat: false,
-    contextSubmitted: false,
+    contextSubmitted: hasMemory, // True if chat already has submitted context
     firstMessageSent: backendChat.chat_history.length > 0,
     filteredMemories: []
   };

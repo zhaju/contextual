@@ -45,11 +45,20 @@ function App() {
         const backendChats = await chatController.getChats();
         const frontendChats = backendChats.map(convertBackendChatToFrontend);
         setAllChats(frontendChats);
+        
+        // Extract memories from chats that have context
+        const allMemories: Memory[] = [];
+        backendChats.forEach(backendChat => {
+          const chatMemories = extractMemoryBlocksFromChat(backendChat);
+          allMemories.push(...chatMemories);
+        });
+        setMemories(allMemories);
       } catch (err) {
         console.error('Failed to load chats:', err);
         setError('Failed to load chats. Please check if the backend is running.');
-        // Fallback to empty array
+        // Fallback to empty arrays
         setAllChats([]);
+        setMemories([]);
       } finally {
         setIsLoading(false);
       }
