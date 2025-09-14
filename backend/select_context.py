@@ -5,12 +5,12 @@ Contains functions for selecting relevant chats based on queries
 from typing import List
 
 from pydantic import BaseModel, Field
-from custom_types import Chat, ChatSelectionResponse, Memory, ChatMessage
+from custom_types import Chat, ChatSelectionResponse, Memory, ChatMessage, ContextChats
 from groq_caller import GroqCaller
 from prompts import get_context_retrieval_prompt, get_topic_change_detection_prompt
 
 
-async def get_selected_chats(chats: List[Chat], query: str, groq_caller: GroqCaller, num_chats: int) -> List[Chat]:
+async def get_selected_chats(chats: List[Chat], query: str, groq_caller: GroqCaller, num_chats: int) -> List[ContextChats]:
     """
     Select the most relevant chats based on a query using AI-powered selection
     
@@ -60,7 +60,8 @@ async def get_selected_chats(chats: List[Chat], query: str, groq_caller: GroqCal
                 continue
             elif 1 <= idx <= len(chats):
                 if idx not in selected_ids:
-                    selected_chats.append(chats[idx - 1])  # Convert to 0-indexed
+                    tmp_chat = chats[idx - 1]
+                    selected_chats.append(ContextChats(id=tmp_chat.id, current_memory=tmp_chat.current_memory, title=tmp_chat.title))  # Convert to 0-indexed
             else:
                 print(f"Warning: Invalid index {idx} (out of range 1-{len(chats)})")
         
