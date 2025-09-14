@@ -35,7 +35,7 @@ export const ChatView = ({ messages, isTyping = false }: ChatViewProps) => {
       <div className="flex-1 overflow-y-auto min-h-0">
         {messages.length === 0 ? (
           <div className="h-full flex items-center justify-center p-8">
-            <p className="text-gray-500 dark:text-gray-400">Hello, how may I help?</p>
+            <p className="text-4xl font-medium text-[var(--text-primary)]">What should I remember today? 🦜</p>
           </div>
         ) : (
           <MessageList messages={messages} />
