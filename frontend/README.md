@@ -1,69 +1,39 @@
-# React + TypeScript + Vite
+![Contextual](frontend/public/contextual.png)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Inspiration
 
-Currently, two official plugins are available:
+Nobody likes saying things twice.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+If you're anything like us, your ChatGPT history is probably a mess: hundreds of chats that you won't use, can't delete, and are too scared to search through. Some LLMs remember nothing, and some remember everything, but wouldn't it be great if you could **tell it what to remember?**
 
-## Expanding the ESLint configuration
+Introducing **Contextual**, a dynamic AI context-manager. Our mascot is a parrot, because you'll never have to say anything twice again. 🦜
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## What it does
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Contextual is a web app built on top of your favourite LLMs, allowing you to select, delete, and combine your chat history into a concise context package. It does this by:
+1. Parsing your entire LLM history and sorting it into topics
+2. Automatically selecting your top chats that relate to your new prompt
+3. Allowing you to include or exclude whichever chat sections you want
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+How it makes your life easier:
+1. You **never have to search** through your GPT history again
+2. You can **choose which parts of the chat to exclude** (in case it ever went off-topic)
+3. You can emphasize which things you want the LLM to **remember more**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## How we built it
+1. Your entire GPT history is downloaded as a .json, which is then parsed into a .txt
+2. It's then sectioned into topics with Groq and Claude while preserving the key ideas
+3. When a user starts a new chat, they're presented with their 5 most similar past chats. They can add or delete chats, or even parts of chats.
+4. All of this can be processed by the LLM **in seconds** - It's like a GPT that can read your mind!
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Challenges we ran into
+- Node on Windows is tough :)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Accomplishments that we're proud of
+- Making a product that's simple on the surface but complex on the inside
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## What we learned
+- How to dynamically and autonomously manage memory
+
+## What's next for Contextual
+- Integrating with your favourite LLMs ❤️
