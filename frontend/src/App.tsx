@@ -173,69 +173,69 @@ function App() {
   // Message sending with context recommendation and SSE streaming
   const handleSendMessage = async (message: string) => {
     console.log('Message sent:', message);
+
+    const userMessage = {
+      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      role: 'user' as const,
+      text: message
+    };
+    
+    setCurrentMessages(prev => [...prev, userMessage]);
     
     // First message in new chat triggers context recommendation flow
     if (selectedChatId === "" || selectedChatId === null) {
       try {
-         // Call backend API to create new chat and get context recommendations
-         console.log('Sending to backend:', { message });
-         const contextResponse = await chatController.createNewChat({ message });
+        // Call backend API to create new chat and get context recommendations
+        console.log('Sending to backend:', { message });
+        const contextResponse = await chatController.createNewChat({ message });
         
         // Convert relevant chats to frontend format
         const relevantChatsList = contextResponse.relevant_chats.map(convertBackendChatToRelevantChat);
         setRelevantChats(relevantChatsList);
         
-         // Create a new chat object with the actual chat ID from backend
-         const actualChatId = contextResponse.chat_id;
-         
-         // Fetch the full chat details from backend to get the proper title
-         try {
-           const fullChat = await chatController.getChat(actualChatId);
-           const newChat: Chat = {
-             id: actualChatId,
-             title: fullChat.title,
-             last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
-             updatedAt: "Now",
-             topicId: "default", // Topics removed - using default
-             starred: false,
-             memoryIds: [],
-             isNewChat: true,
-             contextSubmitted: false,
-             firstMessageSent: true,
-             filteredMemories: [] // Will be populated with memory IDs after memories are extracted
-           };
-           
-           // Add the new chat to the beginning of the array
-           setAllChats(prev => [newChat, ...prev]);
-           setSelectedChatId(actualChatId);
-         } catch (error) {
-           console.error('Failed to fetch chat details:', error);
-           // Fallback: create chat with basic info
-           const newChat: Chat = {
-             id: actualChatId,
-             title: "New Chat",
-             last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
-             updatedAt: "Now",
-             topicId: "default",
-             starred: false,
-             memoryIds: [],
-             isNewChat: true,
-             contextSubmitted: false,
-             firstMessageSent: true,
-             filteredMemories: []
-           };
-           
-           setAllChats(prev => [newChat, ...prev]);
-           setSelectedChatId(actualChatId);
-         }
+        // Create a new chat object with the actual chat ID from backend
+        const actualChatId = contextResponse.chat_id;
         
-        // Store the user message
-        const userMessage = {
-          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          role: 'user' as const,
-          text: message
-        };
-        setCurrentMessages([userMessage]);
+        // Fetch the full chat details from backend to get the proper title
+        try {
+          const fullChat = await chatController.getChat(actualChatId);
+          const newChat: Chat = {
+            id: actualChatId,
+            title: fullChat.title,
+            last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
+            updatedAt: "Now",
+            topicId: "default", // Topics removed - using default
+            starred: false,
+            memoryIds: [],
+            isNewChat: true,
+            contextSubmitted: false,
+            firstMessageSent: true,
+            filteredMemories: [] // Will be populated with memory IDs after memories are extracted
+          };
+          
+          // Add the new chat to the beginning of the array
+          setAllChats(prev => [newChat, ...prev]);
+          setSelectedChatId(actualChatId);
+        } catch (error) {
+          console.error('Failed to fetch chat details:', error);
+          // Fallback: create chat with basic info
+          const newChat: Chat = {
+            id: actualChatId,
+            title: "New Chat",
+            last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
+            updatedAt: "Now",
+            topicId: "default",
+            starred: false,
+            memoryIds: [],
+            isNewChat: true,
+            contextSubmitted: false,
+            firstMessageSent: true,
+            filteredMemories: []
+          };
+          
+          setAllChats(prev => [newChat, ...prev]);
+          setSelectedChatId(actualChatId);
+        }
         
         // Extract memory blocks from relevant chats for context selection
         const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
@@ -245,7 +245,7 @@ function App() {
         if (actualChatId) {
           setAllChats(prev => prev.map(chat => 
             chat.id === actualChatId 
-              ? { ...chat, filteredMemories: relevantMemories.map(mem => mem.id) }
+              ? { ...chat, filteredMemories: relevantMemories.map((mem: any) => mem.id) }
               : chat
           ));
         }
@@ -339,13 +339,6 @@ function App() {
       return;
     }
     
-    const userMessage = {
-      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      role: 'user' as const,
-      text: message
-    };
-    
-    setCurrentMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
     
     try {
@@ -360,6 +353,31 @@ function App() {
       await chatController.parseSSEStream(
         stream,
         (data: any) => {
+          if (data.hasContext) {
+            // Convert relevant chats to frontend format
+            const contextResponse = data.context;
+            const relevantChatsList = contextResponse.relevant_chats.map(convertBackendChatToRelevantChat);
+            setRelevantChats(relevantChatsList);
+            
+            // Extract memory blocks from relevant chats for context selection
+            const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
+            setMemories(relevantMemories);
+            
+            // Update the chat with the memory IDs for filtering
+            if (selectedChatId) {
+              setAllChats(prev => prev.map(chat => 
+                chat.id === selectedChatId 
+                  ? { ...chat, filteredMemories: relevantMemories.map((mem: any) => mem.id) }
+                  : chat
+              ));
+            }
+            
+            // Auto-open memory directory for new chat with context
+            setIsRightSidebarOpen(true);
+            console.log('Context recommendations received:', contextResponse);
+            console.log("relevantMemories:", relevantMemories);
+            return; // Don't proceed with assistant response until context is submitted
+          }
           if (data.content) {
             assistantResponse += data.content;
             // Update the assistant message in real-time
