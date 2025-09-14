@@ -261,25 +261,23 @@ async def send_message(request: SendMessageToChatRequest):
                 if other_chats:
                     # Select up to 5 relevant chats
                     relevant_chats = await get_selected_chats(other_chats, request.message, groq_caller, 5)
-                    
-                    # Return a single streaming response with context
-                    async def context_response():
-                        relevant_chat_list = RelevantChatList(relevant_chats=relevant_chats)
-                        context_response = StreamedChatResponse(
-                            done=True,
-                            hasContext=True,
-                            context=relevant_chat_list
+
+                    if len(relevant_chats) > 0:
+                        # Return a single streaming response with context
+                        async def context_response():
+                            relevant_chat_list = RelevantChatList(relevant_chats=relevant_chats)
+                            context_response = StreamedChatResponse(
+                                done=True,
+                                hasContext=True,
+                                context=relevant_chat_list
+                            )
+                            yield f"data: {context_response.model_dump_json()}\n\n"
+                        
+                        return StreamingResponse(
+                            context_response(),
+                            media_type="text/plain",
+                            headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
                         )
-                        yield f"data: {context_response.model_dump_json()}\n\n"
-                    
-                    return StreamingResponse(
-                        context_response(),
-                        media_type="text/plain",
-                        headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
-                    )
-                else:
-                    # No other chats available, proceed with normal response
-                    pass
         except Exception as e:
             print(f"⚠️ Failed to check context requirement: {e}")
             # Continue with normal response generation

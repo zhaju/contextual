@@ -39,7 +39,7 @@ Please provide a thoughtful response that takes into account the context and mem
     for msg in chat_history_messages:
         messages.append({
             "role": msg.role,
-            "content": msg.content[:200] + "..." if len(msg.content) > 200 else msg.content
+            "content": msg.content[:800] + "..." if len(msg.content) > 800 else msg.content
         })
     
     # Add the current user message
