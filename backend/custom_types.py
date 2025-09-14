@@ -35,9 +35,14 @@ class Memory(BaseModel):
         
         return result.strip()
 
+class ContextChats(BaseModel):
+    id: str = Field(description="The unique identifier of the chat")
+    current_memory: Memory = Field(description="The memory of the chat")
+    title: str = Field(description="The title of the chat")
+
 class ChatMessage(BaseModel):
-    role: Union[Literal["user"], Literal["assistant"]] = Field(description="The role of the message sender - either 'user' or 'assistant'")
-    content: str = Field(description="The actual message content or text")
+    role: Union[Literal["user"], Literal["assistant"], Literal["context"]] = Field(description="The role of the message sender - either 'user' or 'assistant' or 'context'")
+    content: Union[str, List[ContextChats]] = Field(description="The actual message content or text")
     timestamp: datetime = Field(description="When the message was created or sent")
 
 class Chat(BaseModel):

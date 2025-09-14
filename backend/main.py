@@ -29,7 +29,7 @@ memory_updater: Optional[ChatMemoryUpdater] = None
 # value: Chat
 chats_db: Optional[Dict[str, Chat]] = None
 
-async def generate_chat_response(chat_id: str) -> StreamingResponse:
+async def generate_chat_response(chat_id: str, role: Literal["assistant", "context"] = "user") -> StreamingResponse:
     """
     Generate a streaming chat response using Claude and update memory.
     
@@ -230,27 +230,42 @@ async def send_message(request: SendMessageToChatRequest):
     """
     Send a message to a chat and get SSE response from GPT
     """
-    if chats_db is None or request.chat_id not in chats_db:
-        raise HTTPException(status_code=404, detail="Chat not found")
+    global chats_db
+    if chats_db is None:
+        chats_db = {}
     
-    # Add user message to chat history
-    user_message = ChatMessage(
-        role="user",
-        content=request.message,
-        timestamp=datetime.now()
-    )
-    chats_db[request.chat_id].chat_history.append(user_message)
+    chat_message = {
+        "role": "user",
+        "content": request.message,
+        "timestamp": datetime.now()
+    }
+    new_chat = False
+
+    if request.chat_id not in chats_db:
+        new_chat = True
+        title = await create_chat_title([chat_message], groq_caller)
+
+        chats_db[request.chat_id] = Chat(
+            id=request.chat_id,
+            current_memory=Memory(),
+            title=title,
+            chat_history=[chat_message]
+        )
+    else:
+        chats_db[request.chat_id].chat_history.append(chat_message)
     
     # Check if additional context is required
     if groq_caller is not None:
         try:
-            # Check if context is required
-            context_required = await is_context_required(
-                memory=chats_db[request.chat_id].current_memory,
-                chat_history_messages=chats_db[request.chat_id].chat_history,
-                user_query=request.message,
-                groq_caller=groq_caller
-            )
+            if new_chat:
+                context_required = True
+            else:
+                context_required = await is_context_required(
+                    memory=chats_db[request.chat_id].current_memory,
+                    chat_history_messages=chats_db[request.chat_id].chat_history,
+                    user_query=request.message,
+                    groq_caller=groq_caller
+                )
             
             if context_required:
                 # Get relevant chats from all available chats
@@ -260,19 +275,20 @@ async def send_message(request: SendMessageToChatRequest):
                 
                 if other_chats:
                     # Select up to 5 relevant chats
-                    relevant_chats = await get_selected_chats(other_chats, request.message, groq_caller, 5)
+                    relevant_context_chats = await get_selected_chats(other_chats, request.message, groq_caller, 5)
 
-                    if len(relevant_chats) > 0:
+                    if len(relevant_context_chats) > 0:
+                        # Add context to chat history
+                        chats_db[request.chat_id].chat_history.append(ChatMessage(role="context", content=relevant_context_chats, timestamp=datetime.now())) 
+                        
                         # Return a single streaming response with context
                         async def context_response():
-                            relevant_chat_list = RelevantChatList(relevant_chats=relevant_chats)
                             context_response = StreamedChatResponse(
                                 done=True,
                                 hasContext=True,
-                                context=relevant_chat_list
+                                context=relevant_context_chats
                             )
-                            yield f"data: {context_response.model_dump_json()}\n\n"
-                        
+                            yield f"data: {context_response.model_dump_json()}\n\n"                        
                         return StreamingResponse(
                             context_response(),
                             media_type="text/plain",
@@ -288,7 +304,7 @@ async def send_message(request: SendMessageToChatRequest):
 
 
 @app.post("/chats/new", response_model=ContextResponse)
-async def new_chat(request: SendMessageRequest):
+async def new_chat(request: SendMessageToChatRequest):
     """
     Create a new chat with first message and context prompt
     """
