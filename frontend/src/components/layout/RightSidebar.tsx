@@ -1,6 +1,6 @@
 interface RightSidebarProps {
   onSubmitContext: () => void;
-  isNewChat: boolean;
+  isContextRequest?: boolean;
   contextSubmitted: boolean;
 }
 
@@ -19,7 +19,7 @@ interface RightSidebarProps {
  */
 export const RightSidebar = ({
   onSubmitContext,
-  isNewChat,
+  isContextRequest,
   contextSubmitted,
 }: RightSidebarProps) => {
   return (
@@ -28,7 +28,7 @@ export const RightSidebar = ({
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">Context</h3>
           
-          {isNewChat && !contextSubmitted ? (
+          {isContextRequest && !contextSubmitted ? (
             <div className="space-y-4">
               <p className="text-sm text-[var(--text-secondary)]">
                 Select relevant context for your new chat.

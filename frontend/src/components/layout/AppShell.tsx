@@ -11,7 +11,7 @@ interface AppShellProps {
   messages: Message[];
   selectedChatId?: string | null;
   isTyping?: boolean;
-  isNewChat?: boolean;
+  isContextRequest?: boolean;
   contextSubmitted?: boolean;
   isRightSidebarOpen?: boolean;
   onChatSelect: (chatId: string) => void;
@@ -37,7 +37,7 @@ export const AppShell = ({
   messages,
   selectedChatId,
   isTyping = false,
-  isNewChat = false,
+  isContextRequest = false,
   contextSubmitted = false,
   isRightSidebarOpen = false,
   onChatSelect,
@@ -101,7 +101,7 @@ export const AppShell = ({
             contextPills={[]}
             onContextRemove={() => {}}
             onSend={onSendMessage}
-            disabled={isNewChat && !contextSubmitted}
+            disabled={isContextRequest && !contextSubmitted}
             disabledMessage="Please submit your context before sending more messages"
           />
         </div>
@@ -110,7 +110,7 @@ export const AppShell = ({
         {isRightSidebarOpen && (
           <RightSidebar
             onSubmitContext={onSubmitContext}
-            isNewChat={isNewChat}
+            isContextRequest={isContextRequest}
             contextSubmitted={contextSubmitted}
           />
         )}

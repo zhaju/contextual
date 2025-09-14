@@ -32,7 +32,6 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   
   // UI state for new chats
-  const [isNewChat, setIsNewChat] = useState(false);
   const [contextSubmitted, setContextSubmitted] = useState(false);
 
   // Load chats from backend on component mount
@@ -67,6 +66,13 @@ function App() {
     const chat = getCurrentChat();
     return chat?.messages || [];
   };
+
+  const lastMessageIsContextRequest = (): boolean => {
+    const messages = getCurrentMessages();
+    if (messages.length === 0) return false;
+    const lastMessage = messages[messages.length - 1];
+    return lastMessage.role === 'context';
+  }
   
   // Helper function to update messages in the current chat
   const updateCurrentChatMessages = (updater: (messages: Message[]) => Message[]) => {
@@ -435,7 +441,7 @@ function App() {
       messages={getCurrentMessages()}
       selectedChatId={selectedChatId}
       isTyping={isTyping} 
-      isNewChat={isNewChat}
+      isContextRequest={lastMessageIsContextRequest()}
       contextSubmitted={contextSubmitted}
       isRightSidebarOpen={shouldShowRightSidebar()}
       onChatSelect={handleChatSelect}

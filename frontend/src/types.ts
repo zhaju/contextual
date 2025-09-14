@@ -10,15 +10,12 @@ export interface Chat {
 }
 
 // Messages for display in chat UI (no context messages shown)
-export interface Message {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-// Internal message type that includes context (used for processing, not display)
-export type InternalMessage =
-  | Message
+export type Message =
+  | {
+      id: string;
+      role: 'user' | 'assistant';
+      content: string;
+    }
   | {
       id: string;
       role: 'context';
