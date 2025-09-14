@@ -1,5 +1,14 @@
 import { GripVertical, X } from 'lucide-react';
-import type { PinnedContextProps } from '../../types';
+
+export interface PinnedContext {
+  id: string;
+  label: string;
+}
+
+export interface PinnedContextProps {
+  pinned: PinnedContext[];
+  onRemove: (id: string) => void;
+}
 
 /**
  * PinnedContext Component

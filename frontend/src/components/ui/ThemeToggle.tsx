@@ -1,5 +1,9 @@
 import { Moon, Sun } from 'lucide-react';
-import type { ThemeToggleProps } from '../../types';
+
+export interface ThemeToggleProps {
+  isDark: boolean;
+  onToggle: () => void;
+}
 
 /**
  * ThemeToggle Component

@@ -4,13 +4,12 @@ import { ChatView } from '../chat/ChatView';
 import { Composer } from '../input/Composer';
 import { RightSidebar } from './RightSidebar';
 import { ThemeToggle } from '../ui/ThemeToggle';
-import type { Chat, Topic, Message, Memory } from '../../types';
+import type { Chat, Message, MemoryWithUI } from '../../types';
 
 interface AppShellProps {
   chats: Chat[];
-  topics: Topic[];
   messages: Message[];
-  memories: Memory[];
+  memories: MemoryWithUI[];
   selectedChatId?: string | null;
   isTyping?: boolean;
   isNewChat?: boolean;
@@ -27,12 +26,10 @@ interface AppShellProps {
   onMemoryExpand: (memoryId: string) => void;
   onSubmitContext: () => void;
   onSkipContext?: () => void;
-  onTopicSelect: (topicId: string) => void;
   onChatPin: (chatId: string) => void;
   onChatPreview: (chatId: string) => void;
   onChatExclude: (chatId: string) => void;
   onContextRemove: (id: string) => void;
-  onToggleRightSidebar?: () => void;
 }
 
 /**
@@ -48,7 +45,6 @@ interface AppShellProps {
  */
 export const AppShell = ({
   chats,
-  topics,
   messages,
   memories,
   selectedChatId,
@@ -67,12 +63,10 @@ export const AppShell = ({
   onMemoryExpand,
   onSubmitContext,
   onSkipContext,
-  onTopicSelect: _onTopicSelect,
   onChatPin: _onChatPin,
   onChatPreview: _onChatPreview,
   onChatExclude: _onChatExclude,
   onContextRemove,
-  onToggleRightSidebar,
 }: AppShellProps) => {
   const [isDark, setIsDark] = useState(false);
 
@@ -97,6 +91,13 @@ export const AppShell = ({
           </h1>
         </div>
         <div className="flex items-center space-x-4">
+          <button
+            onClick={onNewChat}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg 
+                       transition-colors text-sm font-medium"
+          >
+            New Chat
+          </button>
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
         </div>
       </header>
@@ -106,7 +107,6 @@ export const AppShell = ({
         {/* Left Sidebar */}
         <LeftSidebar
           chats={chats}
-          topics={topics}
           selectedChatId={selectedChatId}
           onChatSelect={onChatSelect}
           onNewChat={onNewChat}
@@ -148,26 +148,6 @@ export const AppShell = ({
         )}
       </div>
 
-      {/* Floating Right Sidebar Toggle Button */}
-      {onToggleRightSidebar && (
-        <button
-          onClick={onToggleRightSidebar}
-          className="fixed right-4 top-1/2 transform -translate-y-1/2 z-20 
-                     p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 
-                     text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 
-                     hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg shadow-lg transition-all duration-200
-                     hover:shadow-xl"
-          title={isRightSidebarOpen ? "Hide sidebar" : "Show sidebar"}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {isRightSidebarOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            )}
-          </svg>
-        </button>
-      )}
     </div>
   );
 };

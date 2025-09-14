@@ -16,11 +16,23 @@ export interface BackendBlock {
   description: string;
 }
 
-export interface BackendChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string; // ISO string
+export interface BackendContextChat {
+  id: string;
+  current_memory: BackendMemory;
+  title: string;
 }
+
+export type BackendChatMessage =
+  | {
+      id: string;
+      role: 'user' | 'assistant';
+      content: string;
+    }
+  | {
+      id: string;
+      role: 'context';
+      content: BackendContextChat[];
+    };
 
 export interface ContextResponse {
   relevant_chats: BackendChat[];
@@ -44,6 +56,14 @@ export interface SetChatContextRequest {
 export interface StreamedChatResponse {
   content?: string;
   done?: boolean;
+  hasContext?: boolean;
+  context?: ContextChats[];
+}
+
+export interface ContextChats {
+  id: string;
+  current_memory: BackendMemory;
+  title: string;
 }
 
 // API Configuration

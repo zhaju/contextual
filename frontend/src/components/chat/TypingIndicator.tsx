@@ -1,4 +1,6 @@
-import type { TypingIndicatorProps } from '../../types';
+export interface TypingIndicatorProps {
+  active: boolean;
+}
 
 /**
  * TypingIndicator Component

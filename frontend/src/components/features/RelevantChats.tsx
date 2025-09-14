@@ -1,5 +1,17 @@
 import { Pin, Eye, X } from 'lucide-react';
-import type { RelevantChatsProps } from '../../types';
+
+export interface RelevantChat {
+  chatId: string;
+  title: string;
+  snippet: string;
+}
+
+export interface RelevantChatsProps {
+  items: RelevantChat[];
+  onPin: (chatId: string) => void;
+  onPreview: (chatId: string) => void;
+  onExclude: (chatId: string) => void;
+}
 
 /**
  * RelevantChats Component

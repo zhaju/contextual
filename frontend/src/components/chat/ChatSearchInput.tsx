@@ -1,5 +1,10 @@
 import { Search } from 'lucide-react';
-import type { ChatSearchInputProps } from '../../types';
+
+export interface ChatSearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
 
 /**
  * ChatSearchInput Component

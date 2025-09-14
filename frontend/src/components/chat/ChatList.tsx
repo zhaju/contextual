@@ -1,12 +1,16 @@
-import { Star, X } from 'lucide-react';
-import type { ChatListProps } from '../../types';
+import { X } from 'lucide-react';
+import type { Chat } from '../../types';
+
+export interface ChatListProps {
+  chats: Chat[];
+  onChatSelect: (chatId: string) => void;
+}
 
 /**
  * ChatList Component
  * 
  * Props:
  * - chats: Chat[] - array of chat objects to display
- * - topics: Topic[] - array of topics for color mapping
  * - onChatSelect: (chatId: string) => void - callback when chat is selected
  * 
  * How to integrate:
@@ -20,11 +24,7 @@ interface ChatListPropsWithSelection extends ChatListProps {
   onChatDelete?: (chatId: string) => void;
 }
 
-export const ChatList = ({ chats, topics, onChatSelect, selectedChatId, onChatDelete }: ChatListPropsWithSelection) => {
-  const getTopicColor = (topicId: string) => {
-    const topic = topics.find(t => t.id === topicId);
-    return topic?.color || '#6b7280';
-  };
+export const ChatList = ({ chats, onChatSelect, selectedChatId, onChatDelete }: ChatListPropsWithSelection) => {
 
   return (
     <div className="space-y-1">
@@ -40,18 +40,11 @@ export const ChatList = ({ chats, topics, onChatSelect, selectedChatId, onChatDe
         >
           <div className="flex items-start justify-between mb-1">
             <div className="flex items-center space-x-2 flex-1 min-w-0">
-              <div
-                className="w-3 h-3 rounded-full flex-shrink-0"
-                style={{ backgroundColor: getTopicColor(chat.topicId) }}
-              />
               <h3 className="font-medium text-sm text-[var(--text-primary)] truncate">
                 {chat.title}
               </h3>
             </div>
             <div className="flex items-center space-x-1 flex-shrink-0">
-              {chat.starred && (
-                <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              )}
               <button
                 className="p-1 rounded hover:bg-[var(--bg-tertiary)] text-[var(--text-muted)]"
                 onClick={(e) => {

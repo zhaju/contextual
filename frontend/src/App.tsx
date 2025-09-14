@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { AppShell } from './components';
 // Mock data imports removed - now using backend API calls
 import { chatController } from './controllers';
-import { convertBackendChatToFrontend, convertBackendMessageToFrontend, extractMemoryBlocksFromChat, convertBackendChatToRelevantChat } from './utils';
-import type { Memory, Chat, Message, RelevantChat } from './types';
+import { convertBackendChatToFrontend } from './utils';
+import type { Chat, Message } from './types';
 
 /**
  * Main App Component - Contextual Chat Frontend
@@ -25,16 +25,16 @@ import type { Memory, Chat, Message, RelevantChat } from './types';
  * 4. Add proper error handling and loading states
  */
 function App() {
-  const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-  const [memories, setMemories] = useState<Memory[]>([]);
   const [allChats, setAllChats] = useState<Chat[]>([]);
-  const [relevantChats, setRelevantChats] = useState<RelevantChat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
-  const [isSubmittingContext, setIsSubmittingContext] = useState(false);
+  
+  // UI state for new chats
+  const [isNewChat, setIsNewChat] = useState(false);
+  const [contextSubmitted, setContextSubmitted] = useState(false);
+  const [firstMessageSent, setFirstMessageSent] = useState(false);
 
   // Load chats from backend on component mount
   useEffect(() => {
@@ -58,39 +58,44 @@ function App() {
     loadChats();
   }, []);
 
-  // Function to get memories for a specific chat
-  const getMemoriesForChat = (chatId: string) => {
-    const chat = allChats.find(c => c.id === chatId);
-    if (!chat) return [];
-    
-    return memories.filter(memory => chat.memoryIds.includes(memory.id));
-  };
 
   // Helper functions to get current chat state
   const getCurrentChat = () => {
     return allChats.find(c => c.id === selectedChatId);
   };
-
-  const isNewChat = () => {
+  
+  const getCurrentMessages = (): Message[] => {
     const chat = getCurrentChat();
-    return chat?.isNewChat || false;
+    return chat?.messages || [];
+  };
+  
+  // Helper function to update messages in the current chat
+  const updateCurrentChatMessages = (updater: (messages: Message[]) => Message[]) => {
+    if (!selectedChatId) return;
+    
+    setAllChats(prev => prev.map(chat => 
+      chat.id === selectedChatId 
+        ? { ...chat, messages: updater(chat.messages) }
+        : chat
+    ));
   };
 
-  const isContextSubmitted = () => {
-    const chat = getCurrentChat();
-    return chat?.contextSubmitted || false;
+  // Sidebar state based on current chat state
+  const getSidebarState = () => {
+    // Show sidebar if it's a new chat with first message sent but context not submitted
+    const shouldShowSidebar = isNewChat && firstMessageSent && !contextSubmitted;
+    
+    // For now, return empty memories array since context is handled differently
+    // TODO: Implement context extraction from backend chat data when needed for sidebar
+    const memories: any[] = [];
+    
+    return {
+      isOpen: shouldShowSidebar,
+      isSubmitting: false, // This will be managed by the sidebar component itself
+      memories: memories
+    };
   };
 
-  const isFirstMessageSent = () => {
-    const chat = getCurrentChat();
-    return chat?.firstMessageSent || false;
-  };
-
-  const getFilteredMemories = () => {
-    const chat = getCurrentChat();
-    if (!chat?.filteredMemories) return [];
-    return memories.filter(memory => chat.filteredMemories!.includes(memory.id));
-  };
 
 
   // Event handlers - TODO: Replace with real API calls to backend
@@ -98,69 +103,34 @@ function App() {
   // Chat selection with memory context loading from backend
   const handleChatSelect = async (chatId: string) => {
     console.log('Chat selected:', chatId);
-    console.log("!" + chatId + "!");
     if (chatId === "") return;
-    
-    // Debug print current memory for the selected chat
-    const currentChat = allChats.find(c => c.id === chatId);
-    if (currentChat) {
-      const chatMemories = getMemoriesForChat(chatId);
-      console.log('Current memory for chat', chatId, ':', {
-        chat: {
-          id: currentChat.id,
-          title: currentChat.title,
-          memoryIds: currentChat.memoryIds
-        },
-        memories: chatMemories.map(memory => ({
-          id: memory.id,
-          summary: memory.summary,
-          title: currentChat.title,
-          selected: memory.selected,
-          isLocked: memory.isLocked,
-          isExpanded: memory.isExpanded,
-          chatReferences: memory.chatReferences,
-          blocks: memory.blocks.map(block => ({
-            topic: block.topic,
-            description: block.description,
-            selected: block.selected,
-            chatReferences: block.chatReferences
-          }))
-        }))
-      });
-    }
     
     setSelectedChatId(chatId);
     
-    // Auto-close memory directory when selecting existing chat (not new chat)
-    setIsRightSidebarOpen(false);
+    // Reset new chat state
+    setIsNewChat(false);
+    setContextSubmitted(false);
+    setFirstMessageSent(false);
 
     try {
-      // Load chat data from backend
-      const backendChat = await chatController.getChat(chatId);
-      
-      // Convert backend messages to frontend format
-      const frontendMessages = backendChat.chat_history.map((msg: any, index: number) => 
-        convertBackendMessageToFrontend(msg, `msg-${chatId}-${index}`)
-      );
-      
-      setCurrentMessages(frontendMessages);
-      
-      // Extract memory blocks from the chat's current memory
-      const chatMemories = extractMemoryBlocksFromChat(backendChat);
-      if (chatMemories.length > 0) {
-        setMemories(prev => {
-          const map = new Map(prev.map(m => [m.id, m]));
-          for (const m of chatMemories) {
-            map.set(m.id, m);
-          }
-          return Array.from(map.values());
-        });
+      // Check if chat is already loaded with messages
+      const existingChat = allChats.find(c => c.id === chatId);
+      if (existingChat && existingChat.messages.length > 0) {
+        // Chat already loaded, no need to fetch again
+        return;
       }
+      
+      // Load chat data from backend and update the chat in allChats
+      const backendChat = await chatController.getChat(chatId);
+      const updatedChat = convertBackendChatToFrontend(backendChat);
+      
+      setAllChats(prev => prev.map(chat => 
+        chat.id === chatId ? updatedChat : chat
+      ));
       
     } catch (error) {
       console.error('Failed to load chat:', error);
       setError('Failed to load chat. Please try again.');
-      setCurrentMessages([]);
     }
   };
 
@@ -169,35 +139,34 @@ function App() {
     console.log('New chat created');
     
     setSelectedChatId("");
-    setCurrentMessages([]);
-    setMemories([]);
-    
-    // Auto-close memory directory when creating new chat (will auto-open when first message sent)
-    setIsRightSidebarOpen(false);
+    setIsNewChat(true);
+    setContextSubmitted(false);
+    setFirstMessageSent(false);
   };
 
   // Message sending with context recommendation and SSE streaming
   const handleSendMessage = async (message: string) => {
     console.log('Message sent:', message);
 
-    const userMessage = {
+    const userMessage: Message = {
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      role: 'user' as const,
-      text: message
+      role: 'user',
+      content: message
     };
     
-    setCurrentMessages(prev => [...prev, userMessage]);
+    // Add user message to current chat if it exists
+    if (selectedChatId && selectedChatId !== "") {
+      updateCurrentChatMessages(prev => [...prev, userMessage]);
+    }
     
     // First message in new chat triggers context recommendation flow
     if (selectedChatId === "" || selectedChatId === null) {
+      setFirstMessageSent(true);
       try {
         // Call backend API to create new chat and get context recommendations
         console.log('Sending to backend:', { message });
         const contextResponse = await chatController.createNewChat({ message });
         
-        // Convert relevant chats to frontend format
-        const relevantChatsList = contextResponse.relevant_chats.map(convertBackendChatToRelevantChat);
-        setRelevantChats(relevantChatsList);
         
         // Create a new chat object with the actual chat ID from backend
         const actualChatId = contextResponse.chat_id;
@@ -210,13 +179,7 @@ function App() {
             title: fullChat.title,
             last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
             updatedAt: "Now",
-            topicId: "default", // Topics removed - using default
-            starred: false,
-            memoryIds: [],
-            isNewChat: true,
-            contextSubmitted: false,
-            firstMessageSent: true,
-            filteredMemories: [] // Will be populated with memory IDs after memories are extracted
+            messages: [userMessage] // Start with the user's message
           };
           
           // Add the new chat to the beginning of the array
@@ -230,44 +193,17 @@ function App() {
             title: "New Chat",
             last: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
             updatedAt: "Now",
-            topicId: "default",
-            starred: false,
-            memoryIds: [],
-            isNewChat: true,
-            contextSubmitted: false,
-            firstMessageSent: true,
-            filteredMemories: []
+            messages: [userMessage] // Start with the user's message
           };
           
           setAllChats(prev => [newChat, ...prev]);
           setSelectedChatId(actualChatId);
         }
         
-        // Extract memory blocks from relevant chats for context selection
-        const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
-        setMemories(prev => {
-          const map = new Map(prev.map(m => [m.id, m]));
-          for (const m of relevantMemories) {
-            map.set(m.id, m);
-          }
-          return Array.from(map.values());
-        });
-        
-        // Update the chat with the memory IDs for filtering
-        if (actualChatId) {
-          setAllChats(prev => prev.map(chat => 
-            chat.id === actualChatId 
-              ? { ...chat, filteredMemories: relevantMemories.map((mem: any) => mem.id) }
-              : chat
-          ));
-        }
         
         // If no relevant memories, automatically set context with empty context
-        if (relevantMemories.length === 0) {
+        if (contextResponse.relevant_chats.length === 0) {
           console.log('No relevant memories found, setting context with empty context');
-          
-          // Auto-open memory directory for new chat (even with no context)
-          setIsRightSidebarOpen(true);
           
           // Update chat to mark context as submitted and no longer new
           if (actualChatId) {
@@ -303,12 +239,12 @@ function App() {
                 if (data.content) {
                   assistantResponse += data.content;
                   // Update the assistant message in real-time
-                  setCurrentMessages(prev => {
+                  updateCurrentChatMessages(prev => {
                     const lastMessage = prev[prev.length - 1];
                     if (lastMessage && lastMessage.role === 'assistant') {
-                      return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
+                      return [...prev.slice(0, -1), { ...lastMessage, content: assistantResponse }];
                     } else {
-                      return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', text: assistantResponse }];
+                      return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', content: assistantResponse }];
                     }
                   });
                 }
@@ -332,10 +268,7 @@ function App() {
           return; // Exit early since we handled the message
         }
         
-        // Auto-open memory directory for new chat with context
-        setIsRightSidebarOpen(true);
         console.log('Context recommendations received:', contextResponse);
-        console.log("relevantMemories:", relevantMemories);
         return; // Don't proceed with assistant response until context is submitted
       } catch (error) {
         console.error('Failed to create new chat:', error);
@@ -366,45 +299,19 @@ function App() {
         stream,
         (data: any) => {
           if (data.hasContext) {
-            // Convert relevant chats to frontend format
-            const contextResponse = data.context;
-            const relevantChatsList = contextResponse.relevant_chats.map(convertBackendChatToRelevantChat);
-            setRelevantChats(relevantChatsList);
-            
-            // Extract memory blocks from relevant chats for context selection
-            const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
-            setMemories(prev => {
-              const map = new Map(prev.map(m => [m.id, m]));
-              for (const m of relevantMemories) {
-                map.set(m.id, m);
-              }
-              return Array.from(map.values());
-            });
-            
-            // Update the chat with the memory IDs for filtering
-            if (selectedChatId) {
-              setAllChats(prev => prev.map(chat => 
-                chat.id === selectedChatId 
-                  ? { ...chat, filteredMemories: relevantMemories.map((mem: any) => mem.id) }
-                  : chat
-              ));
-            }
-            
-            // Auto-open memory directory for new chat with context
-            setIsRightSidebarOpen(true);
-            console.log('Context recommendations received:', contextResponse);
-            console.log("relevantMemories:", relevantMemories);
+            // Context recommendations received - sidebar will show automatically based on chat state
+            console.log('Context recommendations received:', data.context);
             return; // Don't proceed with assistant response until context is submitted
           }
           if (data.content) {
             assistantResponse += data.content;
             // Update the assistant message in real-time
-            setCurrentMessages(prev => {
+            updateCurrentChatMessages(prev => {
               const lastMessage = prev[prev.length - 1];
               if (lastMessage && lastMessage.role === 'assistant') {
-                return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
+                return [...prev.slice(0, -1), { ...lastMessage, content: assistantResponse }];
               } else {
-                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', text: assistantResponse }];
+                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', content: assistantResponse }];
               }
             });
           }
@@ -426,77 +333,24 @@ function App() {
     }
   };
 
-  // Memory handling functions
+  // Simplified memory handling functions (will be managed by sidebar component)
   const handleMemoryToggle = (memoryId: string) => {
-    setMemories(prev => prev.map(memory => {
-      if (memory.id === memoryId) {
-        // Toggle only the selected memory, leave others unchanged
-        const newSelected = !memory.selected;
-        return {
-          ...memory,
-          selected: newSelected,
-          blocks: memory.blocks.map(block => ({ ...block, selected: newSelected }))
-        };
-      } else {
-        // Leave other memories as they are
-        return memory;
-      }
-    }));
-    
-    // Also update filtered memories if they exist
-    const currentFilteredMemories = getFilteredMemories();
-    if (currentFilteredMemories.length > 0) {
-      // Update the filtered memories in the chat state
-      setAllChats(prev => prev.map(chat => 
-        chat.id === selectedChatId && chat.filteredMemories
-          ? {
-              ...chat,
-              filteredMemories: chat.filteredMemories.map(memId => {
-                if (memId === memoryId) {
-                  // This will be handled by the main memories state update above
-                  return memId;
-                }
-                return memId;
-              })
-            }
-          : chat
-      ));
-    }
+    console.log('Memory toggle:', memoryId);
+    // Memory state will be managed by the sidebar component itself
   };
 
   const handleBlockToggle = (memoryId: string, blockIndex: number) => {
-    setMemories(prev => prev.map(memory => {
-      if (memory.id === memoryId) {
-        const updatedBlocks = memory.blocks.map((block, index) => 
-          index === blockIndex ? { ...block, selected: !block.selected } : block
-        );
-        const someBlocksSelected = updatedBlocks.some(block => block.selected);
-        
-        return {
-          ...memory,
-          selected: someBlocksSelected, // Memory is selected if any blocks are selected
-          blocks: updatedBlocks
-        };
-      }
-      return memory;
-    }));
+    console.log('Block toggle:', memoryId, blockIndex);
+    // Block state will be managed by the sidebar component itself
   };
 
   const handleMemoryExpand = (memoryId: string) => {
-    setMemories(prev => prev.map(memory => 
-      memory.id === memoryId 
-        ? { ...memory, isExpanded: !memory.isExpanded }
-        : memory
-    ));
+    console.log('Memory expand:', memoryId);
+    // Memory expansion will be managed by the sidebar component itself
   };
 
   // Skip context and proceed with empty context
   const handleSkipContext = async () => {
-    if (isSubmittingContext) {
-      console.log('Context submission already in progress, ignoring skip request');
-      return;
-    }
-    
     console.log('Context skipped - proceeding with empty context');
     
     if (!selectedChatId) {
@@ -504,10 +358,7 @@ function App() {
       return;
     }
     
-    setIsSubmittingContext(true);
     setError(null);
-    // Auto-close memory directory when context is skipped (chat no longer new)
-    setIsRightSidebarOpen(false);
     
     try {
       // Call set_context with empty context
@@ -541,126 +392,49 @@ function App() {
           if (data.content) {
             assistantResponse += data.content;
             // Update the assistant message in real-time
-            setCurrentMessages(prev => {
+            updateCurrentChatMessages(prev => {
               const lastMessage = prev[prev.length - 1];
               if (lastMessage && lastMessage.role === 'assistant') {
-                return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
+                return [...prev.slice(0, -1), { ...lastMessage, content: assistantResponse }];
               } else {
-                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', text: assistantResponse }];
+                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', content: assistantResponse }];
               }
             });
           }
         },
         () => {
           // Context skipped and assistant response received successfully
-          setIsSubmittingContext(false);
           setIsTyping(false);
         },
         (error: any) => {
           console.error('Context skip error:', error);
           setError('Failed to skip context. Please try again.');
-          setIsSubmittingContext(false);
           setIsTyping(false);
         }
       );
     } catch (error) {
       console.error('Failed to skip context:', error);
       setError('Failed to skip context. Please try again.');
-      setIsSubmittingContext(false);
     }
   };
 
   // Context submission after user selection
   const handleSubmitContext = async () => {
-    if (isSubmittingContext) {
-      console.log('Context submission already in progress, ignoring duplicate request');
-      return;
-    }
-    
     console.log('Context submitted');
     console.log('Selected chat ID:', selectedChatId);
-    console.log('Available memories:', memories);
-    console.log('Relevant chats:', relevantChats);
-    
-    // Get selected memory descriptions for context injection
-    const selectedMemories = memories.filter(memory => 
-      memory.selected || memory.blocks.some(block => block.selected)
-    );
-    
-    console.log('Selected memories:', selectedMemories);
-    
-    if (selectedMemories.length === 0) {
-      setError('Please select at least one context item before submitting.');
-      return;
-    }
     
     if (!selectedChatId) {
       setError('No chat selected. Please try again.');
       return;
     }
     
-    setIsSubmittingContext(true);
     setError(null);
-    // Auto-close memory directory when context is submitted (chat no longer new)
-    setIsRightSidebarOpen(false);
     
     try {
-      // Get the relevant chats that correspond to the selected memories
-      // We need to map the selected memories back to their source chats
-      const selectedChatIds = selectedMemories.flatMap(memory => {
-        // Use the chatReferences field which contains the actual chat IDs
-        return memory.chatReferences || [];
-      });
-      
-      console.log('Selected chat IDs:', selectedChatIds);
-      
-      // Fetch the full chat objects from the backend
-      const fullChats = await Promise.all(
-        selectedChatIds.map(chatId => chatController.getChat(chatId))
-      );
-      
-      console.log('Full chats for context:', fullChats);
-      
-      if (fullChats.length === 0) {
-        setError('No relevant chats found for selected context.');
-        setIsSubmittingContext(false);
-        return;
-      }
-      
-      // Filter the memory blocks based on user selection
-      const selectedChats = fullChats.map(chat => {
-        // Find the corresponding memory for this chat
-        const memory = selectedMemories.find(mem => 
-          mem.chatReferences.includes(chat.id)
-        );
-        
-        if (!memory) {
-          // If no memory found, return the chat as-is
-          return chat;
-        }
-        
-        // Filter the blocks to only include selected ones
-        const selectedBlocks = memory.blocks.filter(block => block.selected);
-        
-        // Create a new chat object with filtered memory blocks
-        return {
-          ...chat,
-          current_memory: {
-            ...chat.current_memory,
-            blocks: selectedBlocks.map(block => ({
-              topic: block.topic,
-              description: block.description
-            }))
-          }
-        };
-      });
-      
-      console.log('Selected chats with filtered blocks:', selectedChats);
-      
-      // Call backend API to set context for the chat
+      // For now, submit with empty context - the sidebar component will handle selection
       const request = {
         chat_id: selectedChatId,
-        required_context: selectedChats
+        required_context: [] // Empty context for now
       };
       console.log('Sending context request:', request);
       
@@ -682,11 +456,6 @@ function App() {
         ));
       }
       
-      // Lock all selected memories to prevent further changes
-      setMemories(prev => prev.map(memory => ({
-        ...memory,
-        isLocked: memory.selected || memory.blocks.some(block => block.selected)
-      })));
       
       // Parse SSE stream for context confirmation and assistant response
       let assistantResponse = '';
@@ -696,41 +465,33 @@ function App() {
           if (data.content) {
             assistantResponse += data.content;
             // Update the assistant message in real-time
-            setCurrentMessages(prev => {
+            updateCurrentChatMessages(prev => {
               const lastMessage = prev[prev.length - 1];
               if (lastMessage && lastMessage.role === 'assistant') {
-                return [...prev.slice(0, -1), { ...lastMessage, text: assistantResponse }];
+                return [...prev.slice(0, -1), { ...lastMessage, content: assistantResponse }];
               } else {
-                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', text: assistantResponse }];
+                return [...prev, { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', content: assistantResponse }];
               }
             });
           }
         },
         () => {
           // Context set and assistant response received successfully
-          setIsSubmittingContext(false);
           setIsTyping(false);
         },
         (error: any) => {
           console.error('Context setting error:', error);
           setError('Failed to set context. Please try again.');
-          setIsSubmittingContext(false);
           setIsTyping(false);
         }
       );
     } catch (error) {
       console.error('Failed to set context:', error);
       setError('Failed to set context. Please try again.');
-      setIsSubmittingContext(false);
     }
   };
 
   // Legacy handlers for compatibility (can be removed later)
-  const handleTopicSelect = (topicId: string) => {
-    console.log('Topic selected:', topicId);
-    // Topics functionality removed - implement if needed with backend API
-    alert(`Topic selected: ${topicId}. Topics functionality not implemented yet.`);
-  };
 
   const handleChatPin = (chatId: string) => {
     console.log('Chat pinned:', chatId);
@@ -753,21 +514,9 @@ function App() {
     console.log('Context removed:', id);
   };
 
-  const toggleRightSidebar = () => {
-    setIsRightSidebarOpen(prev => !prev);
-  };
 
-  // Get the appropriate memories to display
-  const getDisplayMemories = () => {
-    if (isNewChat() && isFirstMessageSent()) {
-      // For new chats, return filtered memories for context selection
-      return getFilteredMemories();
-    }
-    if (selectedChatId) {
-      return getMemoriesForChat(selectedChatId);
-    }
-    return memories;
-  };
+  // Get sidebar state based on current messages
+  const sidebarState = getSidebarState();
 
   // Show loading state
   if (isLoading) {
@@ -802,16 +551,15 @@ function App() {
   return (
     <AppShell
       chats={allChats}
-      topics={[]} // Topics functionality removed - implement if needed
-      messages={currentMessages}
-      memories={getDisplayMemories()}
+      messages={getCurrentMessages()}
+      memories={sidebarState.memories}
       selectedChatId={selectedChatId}
       isTyping={isTyping} 
-      isNewChat={isNewChat()}
-      contextSubmitted={isContextSubmitted()}
-      firstMessageSent={isFirstMessageSent()}
-      isRightSidebarOpen={isRightSidebarOpen}
-      isSubmittingContext={isSubmittingContext}
+      isNewChat={isNewChat}
+      contextSubmitted={contextSubmitted}
+      firstMessageSent={firstMessageSent}
+      isRightSidebarOpen={sidebarState.isOpen}
+      isSubmittingContext={sidebarState.isSubmitting}
       onChatSelect={handleChatSelect}
       onNewChat={handleNewChat}
       onChatsUpdate={(updater) => setAllChats(prev => updater(prev))}
@@ -821,12 +569,10 @@ function App() {
       onMemoryExpand={handleMemoryExpand}
       onSubmitContext={handleSubmitContext}
       onSkipContext={handleSkipContext}
-      onTopicSelect={handleTopicSelect}
       onChatPin={handleChatPin}
       onChatPreview={handleChatPreview}
       onChatExclude={handleChatExclude}
       onContextRemove={handleContextRemove}
-      onToggleRightSidebar={toggleRightSidebar}
     />
   );
 }

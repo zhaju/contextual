@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { Plus, Menu } from 'lucide-react';
 import { ChatSearchInput } from '../chat/ChatSearchInput';
 import { ChatList } from '../chat/ChatList';
-import type { Chat, Topic } from '../../types';
+import type { Chat } from '../../types';
 import { chatController } from '../../controllers';
 
 interface LeftSidebarProps {
   chats: Chat[];
-  topics: Topic[];
   selectedChatId?: string | null;
   onChatSelect: (chatId: string) => void;
   onNewChat: () => void;
@@ -19,7 +18,6 @@ interface LeftSidebarProps {
  * 
  * Props:
  * - chats: Chat[] - array of chat objects
- * - topics: Topic[] - array of topics for color mapping
  * - onChatSelect: (chatId: string) => void - callback when chat is selected
  * - onNewChat: () => void - callback for new chat button
  * 
@@ -31,7 +29,6 @@ interface LeftSidebarProps {
  */
 export const LeftSidebar = ({ 
   chats, 
-  topics, 
   selectedChatId,
   onChatSelect, 
   onNewChat,
@@ -133,7 +130,6 @@ export const LeftSidebar = ({
       <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
         <ChatList
           chats={filteredChats}
-          topics={topics}
           selectedChatId={selectedChatId}
           onChatSelect={onChatSelect}
           onChatDelete={openDeleteConfirm}

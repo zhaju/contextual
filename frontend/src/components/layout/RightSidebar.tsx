@@ -1,8 +1,8 @@
 import { MemoryDirectory } from '../memory/MemoryDirectory';
-import type { Memory } from '../../types';
+import type { MemoryWithUI } from '../../types';
 
 interface RightSidebarProps {
-  memories: Memory[];
+  memories: MemoryWithUI[];
   onMemoryToggle: (memoryId: string) => void;
   onBlockToggle: (memoryId: string, blockIndex: number) => void;
   onMemoryExpand: (memoryId: string) => void;
@@ -21,7 +21,7 @@ interface RightSidebarProps {
  * RightSidebar Component
  * 
  * Props:
- * - memories: Memory[] - array of memories with blocks
+ * - memories: MemoryWithUI[] - array of memories with blocks
  * - onMemoryToggle: (memoryId: string) => void - callback when memory is toggled
  * - onBlockToggle: (memoryId: string, blockId: string) => void - callback when block is toggled
  * - onSubmitContext: () => void - callback when context is submitted
@@ -40,9 +40,6 @@ export const RightSidebar = ({
   onMemoryExpand,
   onSubmitContext,
   onSkipContext,
-  onChatPin,
-  onChatPreview,
-  onChatExclude,
   isNewChat,
   contextSubmitted,
   firstMessageSent,

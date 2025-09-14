@@ -1,4 +1,17 @@
-import type { MemoryDirectoryProps } from '../../types';
+import type { MemoryWithUI } from '../../types';
+
+export interface MemoryDirectoryProps {
+  memories: MemoryWithUI[];
+  onMemoryToggle: (memoryId: string) => void;
+  onBlockToggle: (memoryId: string, blockIndex: number) => void;
+  onMemoryExpand: (memoryId: string) => void;
+  onSubmitContext: () => void;
+  onSkipContext?: () => void;
+  isNewChat: boolean;
+  contextSubmitted: boolean;
+  firstMessageSent: boolean;
+  isSubmittingContext?: boolean;
+}
 
 /**
  * MemoryDirectory Component

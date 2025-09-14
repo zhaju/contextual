@@ -1,5 +1,9 @@
-import type { MessageListProps } from '../../types';
+import type { Message } from '../../types';
 import { MarkdownMessage } from './MarkdownMessage';
+
+export interface MessageListProps {
+  messages: Message[];
+}
 
 /**
  * MessageList Component
@@ -29,9 +33,9 @@ export const MessageList = ({ messages }: MessageListProps) => {
             }`}
           >
             {message.role === 'assistant' ? (
-              <MarkdownMessage text={message.text} />
+              <MarkdownMessage text={message.content} />
             ) : (
-              <p className="whitespace-pre-wrap">{message.text}</p>
+              <p className="whitespace-pre-wrap">{message.content}</p>
             )}
           </div>
         </div>

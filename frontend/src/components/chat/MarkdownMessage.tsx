@@ -1,5 +1,8 @@
 import ReactMarkdown from 'react-markdown';
-import type { MarkdownMessageProps } from '../../types';
+
+export interface MarkdownMessageProps {
+  text: string;
+}
 
 /**
  * MarkdownMessage Component
