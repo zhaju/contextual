@@ -59,6 +59,9 @@ class SendMessageToChatRequest(SendMessageRequest):
 
 # Define response schemas
 
+class RelevantChatList(BaseModel):
+    relevant_chats: List[Chat] = Field(description="List of chats that are relevant to the current context")
+
 # ContextResponse returns a list of relevant contexts to the chat
 class ContextResponse(BaseModel):
     relevant_chats: List[Chat] = Field(description="List of chats that are relevant to the current context")
@@ -68,6 +71,8 @@ class ContextResponse(BaseModel):
 class StreamedChatResponse(BaseModel):
     content: Optional[str] = Field(default=None, description="Partial or complete content of the streaming response")
     done: Optional[bool] = Field(default=None, description="Indicates whether the streaming response is complete")
+    hasContext: Optional[bool] = Field(default=None, description="Indicates whether this response contains context information")
+    context: Optional[List[Chat]] = Field(default=None, description="List of relevant chats for context when hasContext is True")
 
 
 class SetChatContextRequest(BaseModel):

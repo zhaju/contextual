@@ -17,7 +17,7 @@ from claude_caller import ClaudeCaller
 from data_init.load_initial_chats import load_initial_chats
 from chat_memory_updater import ChatMemoryUpdater, consolidate_chats_into_memory
 from title_creator import create_chat_title
-from select_context import get_selected_chats
+from select_context import get_selected_chats, is_context_required
 
 # Global callers - initialized in lifespan
 groq_caller: Optional[GroqCaller] = None
@@ -26,7 +26,6 @@ memory_updater: Optional[ChatMemoryUpdater] = None
 
 # In-memory storage (replace with database in production)
 chats_db: Optional[Dict[str, Chat]] = None
-
 
 async def generate_chat_response(chat_id: str) -> StreamingResponse:
     """
@@ -223,7 +222,6 @@ async def get_chat(chat_id: str):
         raise HTTPException(status_code=404, detail="Chat not found")
     return chats_db[chat_id]
 
-
 @app.post("/chats/send", response_model=StreamedChatResponse)
 async def send_message(request: SendMessageToChatRequest):
     """
@@ -239,6 +237,44 @@ async def send_message(request: SendMessageToChatRequest):
         timestamp=datetime.now()
     )
     chats_db[request.chat_id].chat_history.append(user_message)
+    
+    # Check if additional context is required
+    if groq_caller is not None:
+        try:
+            # Check if context is required
+            context_required = await is_context_required(
+                memory=chats_db[request.chat_id].current_memory,
+                chat_history_messages=chats_db[request.chat_id].chat_history,
+                user_query=request.message,
+                groq_caller=groq_caller
+            )
+            
+            if context_required:
+                # Get relevant chats from all available chats
+                all_chats = list(chats_db.values())
+                # Remove the current chat from the list to avoid self-reference
+                other_chats = [chat for chat in all_chats if chat.id != request.chat_id]
+                
+                if other_chats:
+                    # Select up to 5 relevant chats
+                    relevant_chats = await get_selected_chats(other_chats, request.message, groq_caller, 5)
+                    
+                    # Return a single streaming response with context
+                    async def context_response():
+                        relevant_chat_list = RelevantChatList(relevant_chats=relevant_chats)
+                        yield f"data: {json.dumps({'done': True, 'hasContext': True, 'context': relevant_chat_list.model_dump()})}\n\n"
+                    
+                    return StreamingResponse(
+                        context_response(),
+                        media_type="text/plain",
+                        headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
+                    )
+                else:
+                    # No other chats available, proceed with normal response
+                    pass
+        except Exception as e:
+            print(f"⚠️ Failed to check context requirement: {e}")
+            # Continue with normal response generation
     
     # Use the extracted response generation function
     return await generate_chat_response(request.chat_id)

@@ -257,3 +257,61 @@ Please provide a good title for this chat."""
 Please provide a concise, descriptive title."""
     
     return system_prompt, user_prompt
+
+
+def get_topic_change_detection_prompt(memory_str: str, chat_history_messages: List[ChatMessage], user_query: str) -> List[Dict[str, str]]:
+    """
+    Generate a list of messages for detecting if a user query represents a major topic change
+    that would require additional context from past chats
+    
+    Args:
+        memory_str: String representation of current memory
+        chat_history_messages: List of recent chat messages (last 6, truncated)
+        user_query: The current user query to analyze
+        
+    Returns:
+        List[Dict[str, str]]: List of message dictionaries for Groq API
+    """
+    system_instructions = """You are a topic change detection assistant designed to analyze whether a user query represents a VERY MAJOR TOPIC CHANGE that would require additional information from past chats (separate conversations from the past, not just the current chat history).
+
+INSTRUCTIONS:
+1. Analyze the user query in the context of the current memory and chat history
+2. Determine if the query represents a significant shift to a completely different topic or domain
+3. Consider whether the current memory and chat history DO NOT provide sufficient context to answer the query effectively
+4. A major topic change is indicated when:
+   - The query is about a completely different subject matter than what's been discussed
+   - The query requires specialized knowledge or context not present in current memory
+   - The query references past conversations, projects, or experiences not captured in current memory
+   - The query asks for information that would significantly benefit from additional historical context
+
+EVALUATION CRITERIA:
+- MAJOR TOPIC CHANGE: Query is about a fundamentally different topic requiring past chat context
+- CONTINUATION: Query DOES NOT builds on or continues the current conversation topic
+
+Return a structured response indicating whether this is a major topic change requiring additional context from past chats."""
+
+    # Format chat history for context
+    chat_history_str = ""
+    for msg in chat_history_messages:
+        role = "User" if msg.role == "user" else "Assistant"
+        content = msg.content[:200] + "..." if len(msg.content) > 200 else msg.content
+        chat_history_str += f"{role}: {content}\n"
+    
+    system_context = f"""CURRENT MEMORY:
+{memory_str}
+
+RECENT CHAT HISTORY:
+{chat_history_str.strip()}
+
+Analyze the following user query to determine if it represents a major topic change requiring additional context from past chats."""
+
+    user_message = f"""USER QUERY TO ANALYZE:
+{user_query}
+
+Determine if this query represents a VERY MAJOR TOPIC CHANGE that would require additional information from past chats to provide a comprehensive response. Consider whether the current memory and chat history provide sufficient context, or if the query would benefit from historical context from previous conversations."""
+
+    return [
+        {"role": "system", "content": system_instructions},
+        {"role": "system", "content": system_context},
+        {"role": "user", "content": user_message}
+    ]
