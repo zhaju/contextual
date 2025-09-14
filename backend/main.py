@@ -66,6 +66,7 @@ async def generate_chat_response(chat_id: str) -> StreamingResponse:
     )
     
     async def generate_response():
+        assert chats_db is not None
         if claude_caller is None:
             # Fallback if Claude is not available
             error_response = "Claude API is not available. Please check your configuration."
@@ -262,7 +263,12 @@ async def send_message(request: SendMessageToChatRequest):
                     # Return a single streaming response with context
                     async def context_response():
                         relevant_chat_list = RelevantChatList(relevant_chats=relevant_chats)
-                        yield f"data: {json.dumps({'done': True, 'hasContext': True, 'context': relevant_chat_list.model_dump()})}\n\n"
+                        context_response = StreamedChatResponse(
+                            done=True,
+                            hasContext=True,
+                            context=relevant_chat_list
+                        )
+                        yield f"data: {context_response.model_dump_json()}\n\n"
                     
                     return StreamingResponse(
                         context_response(),

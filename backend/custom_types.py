@@ -72,7 +72,7 @@ class StreamedChatResponse(BaseModel):
     content: Optional[str] = Field(default=None, description="Partial or complete content of the streaming response")
     done: Optional[bool] = Field(default=None, description="Indicates whether the streaming response is complete")
     hasContext: Optional[bool] = Field(default=None, description="Indicates whether this response contains context information")
-    context: Optional[List[Chat]] = Field(default=None, description="List of relevant chats for context when hasContext is True")
+    context: Optional[RelevantChatList] = Field(default=None, description="List of relevant chats for context when hasContext is True")
 
 
 class SetChatContextRequest(BaseModel):
