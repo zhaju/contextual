@@ -57,6 +57,10 @@ class SendMessageRequest(BaseModel):
 class SendMessageToChatRequest(SendMessageRequest):
     chat_id: str = Field(description="The unique identifier of the chat to send the message to")
 
+# DeleteChatRequest is the request for deleting a chat
+class DeleteChatRequest(BaseModel):
+    chat_id: str = Field(description="The unique identifier of the chat to delete")
+
 # Define response schemas
 
 class RelevantChatList(BaseModel):
@@ -82,3 +86,4 @@ class SetChatContextRequest(BaseModel):
 # Response model for chat selection
 class ChatSelectionResponse(BaseModel):
     selected_indices: List[int] = Field(description="1-indexed list of selected chat indices, MUST BE BETWEEN 1 AND THE NUMBER OF CHATS, COMMA SEPARATED")
+

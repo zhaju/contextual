@@ -1,4 +1,4 @@
-import { Star, Clock } from 'lucide-react';
+import { Star, X } from 'lucide-react';
 import type { ChatListProps } from '../../types';
 
 /**
@@ -17,9 +17,10 @@ import type { ChatListProps } from '../../types';
  */
 interface ChatListPropsWithSelection extends ChatListProps {
   selectedChatId?: string | null;
+  onChatDelete?: (chatId: string) => void;
 }
 
-export const ChatList = ({ chats, topics, onChatSelect, selectedChatId }: ChatListPropsWithSelection) => {
+export const ChatList = ({ chats, topics, onChatSelect, selectedChatId, onChatDelete }: ChatListPropsWithSelection) => {
   const getTopicColor = (topicId: string) => {
     const topic = topics.find(t => t.id === topicId);
     return topic?.color || '#6b7280';
@@ -51,7 +52,16 @@ export const ChatList = ({ chats, topics, onChatSelect, selectedChatId }: ChatLi
               {chat.starred && (
                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
               )}
-              <Clock className="w-3 h-3 text-[var(--text-muted)]" />
+              <button
+                className="p-1 rounded hover:bg-[var(--bg-tertiary)] text-[var(--text-muted)]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChatDelete?.(chat.id);
+                }}
+                title="Delete chat"
+              >
+                <X className="w-3 h-3" />
+              </button>
             </div>
           </div>
           <p className="text-xs text-[var(--text-secondary)] truncate mb-1">

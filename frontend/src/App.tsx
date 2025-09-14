@@ -148,7 +148,13 @@ function App() {
       // Extract memory blocks from the chat's current memory
       const chatMemories = extractMemoryBlocksFromChat(backendChat);
       if (chatMemories.length > 0) {
-        setMemories(prev => [...prev, ...chatMemories]);
+        setMemories(prev => {
+          const map = new Map(prev.map(m => [m.id, m]));
+          for (const m of chatMemories) {
+            map.set(m.id, m);
+          }
+          return Array.from(map.values());
+        });
       }
       
     } catch (error) {
@@ -239,7 +245,13 @@ function App() {
         
         // Extract memory blocks from relevant chats for context selection
         const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
-        setMemories(relevantMemories);
+        setMemories(prev => {
+          const map = new Map(prev.map(m => [m.id, m]));
+          for (const m of relevantMemories) {
+            map.set(m.id, m);
+          }
+          return Array.from(map.values());
+        });
         
         // Update the chat with the memory IDs for filtering
         if (actualChatId) {
@@ -361,7 +373,13 @@ function App() {
             
             // Extract memory blocks from relevant chats for context selection
             const relevantMemories = contextResponse.relevant_chats.flatMap(extractMemoryBlocksFromChat);
-            setMemories(relevantMemories);
+            setMemories(prev => {
+              const map = new Map(prev.map(m => [m.id, m]));
+              for (const m of relevantMemories) {
+                map.set(m.id, m);
+              }
+              return Array.from(map.values());
+            });
             
             // Update the chat with the memory IDs for filtering
             if (selectedChatId) {
@@ -796,6 +814,7 @@ function App() {
       isSubmittingContext={isSubmittingContext}
       onChatSelect={handleChatSelect}
       onNewChat={handleNewChat}
+      onChatsUpdate={(updater) => setAllChats(prev => updater(prev))}
       onSendMessage={handleSendMessage}
       onMemoryToggle={handleMemoryToggle}
       onBlockToggle={handleBlockToggle}

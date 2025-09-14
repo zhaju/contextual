@@ -4,7 +4,9 @@ import type {
   SendMessageRequest, 
   SendMessageToChatRequest, 
   SetChatContextRequest,
-  StreamedChatResponse
+  StreamedChatResponse,
+  DeleteChatRequest,
+  DeleteChatResponse
 } from './types';
 import { API_BASE_URL } from './types';
 
@@ -149,6 +151,38 @@ export class ChatController {
     }
   }
 
+  /**
+   * Delete a chat by ID
+   */
+  async deleteChat(request: DeleteChatRequest): Promise<DeleteChatResponse> {
+    try {
+      console.log('🔍 API Call: POST /chats/delete');
+      console.log('📤 Request body:', request);
+      const response = await fetch(`${this.baseUrl}/chats/delete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
+
+      console.log('📡 Response status:', response.status, response.statusText);
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Chat not found');
+        }
+        throw new Error(`Failed to delete chat: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('📊 Response data:', data);
+      return data as DeleteChatResponse;
+    } catch (error) {
+      console.error('❌ Error deleting chat:', error);
+      throw error;
+    }
+  }
+ 
   /**
    * Parse SSE stream and call callback for each chunk
    */

@@ -48,3 +48,12 @@ export interface StreamedChatResponse {
 
 // API Configuration
 export const API_BASE_URL = 'http://localhost:8000';
+
+// Delete chat request/response
+export interface DeleteChatRequest {
+  chat_id: string;
+}
+
+export interface DeleteChatResponse {
+  message: string;
+}
